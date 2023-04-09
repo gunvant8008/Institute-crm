@@ -39,6 +39,7 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "testing-library/no-render-in-setup": "warn",
     // added this rule to solve this issue in details page- Invalid type "string | string[] | undefined" of template literal expression.
     // "@typescript-eslint/restrict-template-expressions": "error"
   },
