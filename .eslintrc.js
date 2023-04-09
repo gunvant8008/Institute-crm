@@ -26,18 +26,20 @@ module.exports = {
     "plugin:jest/style",
     "plugin:testing-library/react",
     "next",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: "module"
+    sourceType: "module",
   },
   rules: {
-    "@typescript-eslint/explicit-module-boundary-types": "off"
-  }
-}
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    // added this rule to solve this issue in details page- Invalid type "string | string[] | undefined" of template literal expression.
+    // "@typescript-eslint/restrict-template-expressions": "error"
+  },
+};
