@@ -5,19 +5,19 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 
-export interface RootObject {
+export interface Photo {
   albumId: number;
   id: number;
   title: string;
   url: string;
   thumbnailUrl: string;
 }
-const fetchPhoto = async (id: string): Promise<RootObject | undefined> => {
+const fetchPhoto = async (id: string): Promise<Photo | undefined> => {
   // added if stat to resolve id type error, Invalid type "string | string[] | undefined" of template literal expression.
   return await axios
     .get(`https://jsonplaceholder.typicode.com/photos/${id}`)
     // solved error- return type any by adding as RootObject in return statement
-    .then((response) => response.data as RootObject);
+    .then((response) => response.data as Photo);
 };
 
 const Details = () => {
@@ -28,10 +28,7 @@ const Details = () => {
     queryKey: ["photo", id],
     queryFn: () => fetchPhoto(id),
   });
-  console.log(data);
-  if (isLoading) {
-    return <h2>Loading...</h2>;
-  }
+
   if (isError) {
     return <h2>Something went wrong!</h2>;
   }
@@ -46,6 +43,9 @@ const Details = () => {
         </Link>
       </div>
     );
+  }
+  if (isLoading) {
+    return <h2>Loading...</h2>;
   }
 };
 

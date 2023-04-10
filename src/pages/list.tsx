@@ -3,17 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
 
-export interface RootObject {
+export interface Photo {
   albumId: number;
   id: number;
   title: string;
   url: string;
   thumbnailUrl: string;
 }
-const getPhotos = async (): Promise<RootObject[]> => {
+const getPhotos = async (): Promise<Photo[]> => {
   return await axios
     .get("https://jsonplaceholder.typicode.com/photos")
-    .then((response) => response.data as RootObject[]);
+    .then((response) => response.data as Photo[]);
 };
 
 const List = () => {
@@ -24,9 +24,7 @@ const List = () => {
     queryKey: ["photos"],
     queryFn: getPhotos,
   });
-  if (isLoading) {
-    return <h2>Loading...</h2>;
-  }
+
   if (isError) {
     return <h2>Something went wrong!</h2>;
   }
@@ -34,7 +32,7 @@ const List = () => {
   if (data) {
     return (
       <div className="grid grid-cols-2 gap-8 max-w-xl p-8">
-        {data?.map((item: RootObject, index: number) => {
+        {data.map((item, index: number) => {
           if (index < 10) {
             return (
               <Link
@@ -51,6 +49,9 @@ const List = () => {
         })}
       </div>
     );
+  }
+  if (isLoading) {
+    return <h2>Loading...</h2>;
   }
 };
 
