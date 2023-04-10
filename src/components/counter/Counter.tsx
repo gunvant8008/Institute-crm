@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react"
 
 export interface CounterProps {
-  description: string;
-  defaultCount: number;
+  description: string
+  defaultCount: number
 }
 
 const Counter = ({ description, defaultCount }: CounterProps) => {
-  const [count, setCount] = useState(defaultCount);
-  const [incrementor, setIncrementor] = useState(1);
+  const [count, setCount] = useState(defaultCount)
+  const [incrementor, setIncrementor] = useState(1)
+  const [bigEnough, setBigEnough] = useState(defaultCount >= 15)
+
+  useEffect(() => {
+    let id: NodeJS.Timeout
+    if (count >= 15) {
+      id = setTimeout(() => setBigEnough(true), 300)
+    }
+    return function cleanup() {
+      clearTimeout(id)
+    }
+  })
 
   return (
     <div className="flex flex-col space-y-4">
@@ -19,8 +30,8 @@ const Counter = ({ description, defaultCount }: CounterProps) => {
         <input
           className="text-black"
           value={incrementor}
-          onChange={(evt) => {
-            setIncrementor(parseInt(evt.target.value) || 1);
+          onChange={evt => {
+            setIncrementor(parseInt(evt.target.value) || 1)
           }}
           type="number"
         />
@@ -42,8 +53,9 @@ const Counter = ({ description, defaultCount }: CounterProps) => {
           +
         </button>
       </div>
+      {bigEnough ? null : <div>I am too small.</div>}
     </div>
-  );
-};
+  )
+}
 
-export default Counter;
+export default Counter
