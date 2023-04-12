@@ -1,28 +1,13 @@
-// module.exports = {
-//   extends: [
-//     "eslint:recommended",
-//     "plugin:react/recommended",
-//     "plugin:@typescript-eslint/recommended",
-//     "plugin:@typescript-eslint/recommended-requiring-type-checking",
-//     "next",
-//     "next/core-web-vitals"
-//   ],
-//   overrides: [],
-//   parser: "@typescript-eslint/parser",
-//   parserOptions: {
-//     project: "./tsconfig.json",
-//     ecmaVersion: "latest",
-//     sourceType: "module"
-//   },
-//   rules: {}
-// }
+//
 module.exports = {
   extends: [
     "eslint:recommended",
+    "eslint-config-prettier",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:jest/recommended",
+    "plugin:jest-dom/recommended",
     "plugin:jest/style",
     "plugin:testing-library/react",
     "next",
@@ -39,7 +24,7 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "testing-library/no-render-in-setup": "warn",
+    "testing-library/no-render-in-setup": "off",
     // added this rule to solve this issue in details page- Invalid type "string | string[] | undefined" of template literal expression.
     // "@typescript-eslint/restrict-template-expressions": "error"
   },
