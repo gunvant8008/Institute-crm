@@ -53,5 +53,8 @@
   "lint-staged": {
     "*.(tsx|ts)": "eslint --cache --fix",
     "*": "prettier --write --ignore-unknown"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

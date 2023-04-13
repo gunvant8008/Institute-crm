@@ -8,18 +8,6 @@ const PhotoList = () => {
   const queryClient = useQueryClient();
   const { isLoading, isError, data: photos } = useQuery(["photos"], getPhotos);
 
-  // const addPhotoMutation = useMutation(addPhoto, {
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries(["photos"])
-  //   }
-  // })
-
-  // const updatePhotoMutation = useMutation(updatePhoto, {
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries(["photos"])
-  //   }
-  // })
-
   const deletePhotoMutation = useMutation(deletePhoto, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["photos"]);
@@ -32,7 +20,12 @@ const PhotoList = () => {
     }
     return (
       <div className="flex flex-col items-center">
-        <h2 className="p-4 text-2xl text-center">List of photos</h2>
+        <div className="flex items-center justify-center gap-4">
+          <h2 className="p-4 text-2xl text-center">List of photos</h2>
+          <Link className="p-2 bg-teal-900" href="/new">
+            Add Photo
+          </Link>
+        </div>
         <ul className="grid max-w-xl grid-cols-2 gap-8 p-8">
           {photos.map((item: Photo, index: number) => {
             while (index < 10) {
@@ -52,6 +45,13 @@ const PhotoList = () => {
                   >
                     Delete
                   </button>
+                  <Link
+                    href={`/edit/${item.id}`}
+                    className="p-1.5 ml-2 bg-blue-800"
+                    // onClick={() => deletePhotoMutation.mutate(item.id)}
+                  >
+                    Edit
+                  </Link>
                 </li>
               );
             }
