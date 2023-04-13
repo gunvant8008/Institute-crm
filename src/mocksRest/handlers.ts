@@ -38,6 +38,7 @@ let photos: Photo[] = [
     thumbnailUrl: "https://via.placeholder.com/150/f66b97",
   },
 ];
+let lastId = photos.length + 1;
 
 export const handlers = [
   // api for all photos
@@ -47,14 +48,14 @@ export const handlers = [
   // api for a single photo
   rest.get("/api/photos/:id", (req, res, ctx) => {
     // REVIEW: req.params.id is a string, so we need to convert it to a number
-    const id = Number(req.params.id);
+    const id = parseInt(req.params.id.toString());
     const photo = photos.find((photo) => photo.id === id);
     if (photo) {
-      return res(ctx.status(200), ctx.delay(500), ctx.json(photo));
+      return res(ctx.status(200), ctx.delay(2000), ctx.json(photo));
     } else {
       return res(
         ctx.status(404),
-        ctx.delay(500),
+        ctx.delay(2000),
         ctx.json({ message: "Photo not found" }),
       );
     }
@@ -63,17 +64,18 @@ export const handlers = [
   rest.post("/api/photos/new", async (req, res, ctx) => {
     const newPhoto: Photo = await req.json();
     // REVIEW: how calculation of id changes a se interact at front end
-    newPhoto.id = photos.length + 1;
+    newPhoto.id = ++lastId;
     photos.push(newPhoto);
     return res(ctx.status(201), ctx.delay(500), ctx.json(newPhoto));
   }),
   // api for deleting a photo
   rest.delete("/api/photos/:id", (req, res, ctx) => {
-    const id = Number(req.params.id);
+    const id = parseInt(req.params.id.toString());
     photos = photos.filter((photo) => photo.id !== id);
     // REVIEW: react-query throws an error if we don't return a response
     return res(ctx.status(204));
   }),
+
   // api for updating a photo
   rest.patch("/api/photos/:id", async (req, res, ctx) => {
     const id = Number(req.params.id);

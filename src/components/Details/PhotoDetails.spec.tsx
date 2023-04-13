@@ -1,33 +1,13 @@
 import { customRender } from "../../mocks/utils";
 import PhotoDetails from "./PhotoDetails";
-import { screen, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import { server } from "../../mocks/server";
 import { rest } from "msw";
 import { useRouter } from "next/router";
 import userEvent from "@testing-library/user-event";
+import { RouterContext } from 'next/dist/shared/lib/router-context';
+import { createMockRouter } from "./createMockRouter";
 
-// jest.mock("next/router", () => ({
-//   useRouter() {
-//     return {
-//       route: "/",
-//       pathname: "",
-//       query: "",
-//       asPath: "",
-//       push: jest.fn(),
-//       events: {
-//         on: jest.fn(),
-//         off: jest.fn()
-//       },
-//       beforePopState: jest.fn(() => null),
-//       prefetch: jest.fn(() => null)
-//     }
-//   }
-// }))
-jest.mock("next/router", () => ({
-  useRouter: jest.fn(),
-}));
-
-const mockedRouter = jest.mocked(useRouter as jest.Mock);
 
 describe("PhotoDetails component", () => {
   it("should display photo details after loading disappear", async () => {
@@ -36,7 +16,7 @@ describe("PhotoDetails component", () => {
 
     expect(await screen.findByText("Album Id- 1")).toBeInTheDocument();
     expect(
-      await screen.findByText("Title- My title for detail page"),
+      await screen.findByText("Title- My title for detail page")
     ).toBeInTheDocument();
   });
 
@@ -46,30 +26,53 @@ describe("PhotoDetails component", () => {
         "https://jsonplaceholder.typicode.com/photos/:id",
         (req, res, ctx) => {
           return res(ctx.status(500));
-        },
-      ),
+        }
+      )
     );
     customRender(<PhotoDetails id="1" />);
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
     expect(
-      await screen.findByText("Something went wrong!"),
+      await screen.findByText("Something went wrong!")
     ).toBeInTheDocument();
   });
 
-  it("when delete button is clicked, it should redirect to list page", async () => {
+  it.only("when delete button is clicked, it should redirect to list page", async () => {
+    server.use(
+      rest.delete('http://localhost:3000/api/photos/1', (req, res, ctx) => {
+        return res(
+          ctx.status(200),
+          ctx.json({}),
+        );
+      }),
+      rest.get(
+        "http://localhost:3000/api/photos/1",
+        (req, res, ctx) => {
+          return res(
+            ctx.status(200),
+            ctx.json({
+              albumId: 1,
+              id: 1,
+              title: "My title for detail page",
+              url: "https://via.placeholder.com/600/92c952",
+              thumbnailUrl: "https://via.placeholder.com/150/92c952",
+            }),
+          );
+        },
+      )
+    );
+  
     const pushMock = jest.fn();
-    mockedRouter.mockReturnValue({
-      query: {},
-      // return mock for push method
-      push: pushMock,
-    });
 
-    customRender(<PhotoDetails id="1" />);
+    customRender(
+      <RouterContext.Provider value={createMockRouter({ query: { id: "1" }, push: pushMock })}>
+        <PhotoDetails id="1" />
+      </RouterContext.Provider>
+    );
+
     await waitForElementToBeRemoved(() => screen.queryByText("Loading..."));
-    const deleteButton = await screen.findByText("Delete");
-    // fireEvent.click(deleteButton)
+    const deleteButton = await screen.findByRole("button", { name: "Delete" });
     await userEvent.click(deleteButton);
-    expect(mockedRouter).toHaveBeenCalled();
-    expect(pushMock).toHaveBeenCalled();
+        expect(pushMock).toHaveBeenCalledTimes(1);
+    expect(pushMock).toHaveBeenCalledWith('/list')
   });
 });
