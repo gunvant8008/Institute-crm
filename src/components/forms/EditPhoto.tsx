@@ -2,23 +2,34 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { getPhoto, updatePhoto } from "../../axios/photoApi";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Photo } from "@/types";
 
 const EditPhoto = ({ id }: { id: string }) => {
   const { isLoading, isError, data } = useQuery(["photo", id], () =>
-    getPhoto(id),
+    id ? getPhoto(id) : null
   );
-  const [formData, setFormData] = useState({
-    // albumId: `${data?.albumId}`,
-    // title: `${data?.title}`,
-    // url: `${data?.url}`,
-    // thumbnailUrl: `${data?.thumbnailUrl}`
 
-    albumId: "",
+  const [formData, setFormData] = useState<Omit<Photo, 'id'>>({
+    albumId: 0,
     title: "",
     url: "",
     thumbnailUrl: "",
   });
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    setFormData({
+      albumId: data.albumId,
+      title: data.title,
+      url: data.url,
+      thumbnailUrl: data.thumbnailUrl,
+    });
+  }, [data]);
+
   console.log(formData);
 
   const router = useRouter();
@@ -35,7 +46,7 @@ const EditPhoto = ({ id }: { id: string }) => {
   if (isError) {
     return <h2>Something went wrong!</h2>;
   }
-  if (isLoading) {
+  if (isLoading || !data) {
     return <h2>Loading...</h2>;
   }
   if (data) {
@@ -56,9 +67,9 @@ const EditPhoto = ({ id }: { id: string }) => {
             <input
               className=" text-black"
               type="number"
-              value={formData.albumId}
+              value={formData.albumId || ''}
               onChange={(e) =>
-                setFormData({ ...formData, albumId: e.target.value })
+                setFormData({ ...formData, albumId: parseInt(e.target.value) })
               }
             />
           </label>
@@ -98,6 +109,7 @@ const EditPhoto = ({ id }: { id: string }) => {
 
           <button
             className="p-1 bg-red-800"
+            type="submit"
             onClick={(e) => {
               e.preventDefault();
               // REVIEW: is this the right way to do it?
@@ -113,7 +125,7 @@ const EditPhoto = ({ id }: { id: string }) => {
       </div>
     );
     // REVIEW:
-  } else return null;
+  } 
 };
 
 export default EditPhoto;

@@ -29,6 +29,10 @@ const PhotoList = () => {
         <ul className="grid max-w-xl grid-cols-2 gap-8 p-8">
           {photos.map((item: Photo, index: number) => {
             while (index < 10) {
+              // just be careful doing this if you have loads of data.
+              // the cache will become gigantic!
+              queryClient.setQueryData(["photo", item.id.toString()], item);
+
               return (
                 <li key={item.id}>
                   <Link
@@ -48,7 +52,6 @@ const PhotoList = () => {
                   <Link
                     href={`/edit/${item.id}`}
                     className="p-1.5 ml-2 bg-blue-800"
-                    // onClick={() => deletePhotoMutation.mutate(item.id)}
                   >
                     Edit
                   </Link>
