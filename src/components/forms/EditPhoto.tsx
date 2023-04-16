@@ -31,9 +31,38 @@ const EditPhoto = ({ id }: { id: string }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const updatePhotoMutation = useMutation(updatePhoto, {
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(["photos"]);
+    // onSuccess: async () => {
+    //   await queryClient.invalidateQueries(["photos"]);
+    //   await router.push("/list");
+    // },
+    onMutate: async (photo: Photo) => {
       await router.push("/list");
+      // await queryClient.cancelQueries(["photo", photo.id.toString()])
+      await queryClient.cancelQueries(["photos"]);
+      // const previousPhoto = queryClient.getQueryData([
+      //   "photo",
+      //   photo.id.toString()
+      // ])
+      const previousPhotos = queryClient.getQueryData<Photo[]>(["photos"]);
+      const newPhoto = queryClient.setQueryData(
+        ["photo", photo.id.toString()],
+        photo,
+      );
+      // REVIEW: Typescript error here
+
+      queryClient.setQueryData(["photos"], (old: Photo[] | undefined) => {
+        return newPhoto
+          ? old?.map((item) => (item.id === photo.id ? newPhoto : item))
+          : old;
+      });
+      return { previousPhotos };
+    },
+    onError: (context: { previousPhotos: Photo[] }) => {
+      queryClient.setQueryData(["photos"], context.previousPhotos);
+    },
+    onSettled: async () => {
+      // await queryClient.invalidateQueries(["photo", id])
+      await queryClient.invalidateQueries(["photos"]);
     },
   });
 
