@@ -13,7 +13,6 @@ const PhotoDetails = ({ id }: { id: string }) => {
   );
   const deletePhotoMutation = useMutation(deletePhoto, {
     onSuccess: async () => {
-      console.log('BRUNOOOO SUCCESS')
       await queryClient.invalidateQueries(["photos"]);
       await router.push("/list");
     },
@@ -34,8 +33,7 @@ const PhotoDetails = ({ id }: { id: string }) => {
         <button
           className="p-1 bg-red-800"
           onClick={() => {
-            console.log('MUTATION')
-            deletePhotoMutation.mutate(data.id)
+            deletePhotoMutation.mutate(data.id);
           }}
         >
           Delete

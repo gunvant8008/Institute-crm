@@ -3,10 +3,11 @@ import Link from "next/link";
 import { addPhoto } from "../../axios/photoApi";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Photo } from "@/types";
 
 const NewPhoto = () => {
-  const [formData, setFormData] = useState({
-    albumId: "",
+  const [formData, setFormData] = useState<Omit<Photo, "id">>({
+    albumId: 0,
     title: "",
     url: "",
     thumbnailUrl: "",
@@ -16,15 +17,25 @@ const NewPhoto = () => {
 
   const queryClient = useQueryClient();
 
-  const addPhotoMutation = useMutation(addPhoto, {
+  const { mutate, isError } = useMutation(addPhoto, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["photos"]);
       await router.push("/list");
     },
   });
+  if (isError)
+    return (
+      <div className="flex items-center justify-center gap-4 mt-10">
+        <p>Something went wrong!</p>
+        <Link className="self-center p-2 bg-teal-800" href="/list">
+          Try again{" "}
+        </Link>
+      </div>
+    );
 
   return (
     <div className="gap-y-10 flex flex-col items-center p-8">
+      <h2 className="p-4 text-2xl text-center">Create Photo</h2>
       <form className="gap-y-4 flex flex-col w-[700px]">
         <label className="grid grid-cols-2">
           Id-
@@ -43,7 +54,7 @@ const NewPhoto = () => {
             type="number"
             value={formData.albumId}
             onChange={(e) =>
-              setFormData({ ...formData, albumId: e.target.value })
+              setFormData({ ...formData, albumId: parseInt(e.target.value) })
             }
           />
         </label>
@@ -84,7 +95,9 @@ const NewPhoto = () => {
           onClick={(e) => {
             e.preventDefault();
             // REVIEW: is this the right way to do it?
-            addPhotoMutation.mutate({ ...formData });
+            mutate({
+              ...formData,
+            });
           }}
         >
           Add Photo

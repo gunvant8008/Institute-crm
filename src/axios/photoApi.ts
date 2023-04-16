@@ -18,7 +18,7 @@ export const getPhoto = async (id: string): Promise<Photo | undefined> => {
     .then((response) => response.data as Photo);
 };
 
-export const addPhoto = async (photo: Photo): Promise<Photo> => {
+export const addPhoto = async (photo: Omit<Photo, "id">): Promise<Photo> => {
   return await photoApi.post("/photos/new", photo);
 };
 

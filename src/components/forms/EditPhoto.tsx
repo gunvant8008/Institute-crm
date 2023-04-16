@@ -7,10 +7,9 @@ import { Photo } from "@/types";
 
 const EditPhoto = ({ id }: { id: string }) => {
   const { isLoading, isError, data } = useQuery(["photo", id], () =>
-    id ? getPhoto(id) : null
+    id ? getPhoto(id) : null,
   );
-
-  const [formData, setFormData] = useState<Omit<Photo, 'id'>>({
+  const [formData, setFormData] = useState<Omit<Photo, "id">>({
     albumId: 0,
     title: "",
     url: "",
@@ -21,7 +20,6 @@ const EditPhoto = ({ id }: { id: string }) => {
     if (!data) {
       return;
     }
-
     setFormData({
       albumId: data.albumId,
       title: data.title,
@@ -30,12 +28,8 @@ const EditPhoto = ({ id }: { id: string }) => {
     });
   }, [data]);
 
-  console.log(formData);
-
   const router = useRouter();
-
   const queryClient = useQueryClient();
-
   const updatePhotoMutation = useMutation(updatePhoto, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["photos"]);
@@ -52,6 +46,7 @@ const EditPhoto = ({ id }: { id: string }) => {
   if (data) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8">
+        <h2 className="p-4 text-2xl text-center">Edit Photo</h2>
         <form className="gap-y-4 flex flex-col w-[700px]">
           <label className="grid grid-cols-2">
             Id-
@@ -67,7 +62,7 @@ const EditPhoto = ({ id }: { id: string }) => {
             <input
               className=" text-black"
               type="number"
-              value={formData.albumId || ''}
+              value={formData.albumId || ""}
               onChange={(e) =>
                 setFormData({ ...formData, albumId: parseInt(e.target.value) })
               }
@@ -112,7 +107,6 @@ const EditPhoto = ({ id }: { id: string }) => {
             type="submit"
             onClick={(e) => {
               e.preventDefault();
-              // REVIEW: is this the right way to do it?
               updatePhotoMutation.mutate({ id: data.id, ...formData });
             }}
           >
@@ -125,7 +119,9 @@ const EditPhoto = ({ id }: { id: string }) => {
       </div>
     );
     // REVIEW:
-  } 
+  } else {
+    return <h2>No Data Found</h2>;
+  }
 };
 
 export default EditPhoto;
