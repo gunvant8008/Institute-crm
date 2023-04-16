@@ -9,7 +9,22 @@ const PhotoList = () => {
   const { isLoading, isError, data: photos } = useQuery(["photos"], getPhotos);
 
   const deletePhotoMutation = useMutation(deletePhoto, {
-    onSuccess: async () => {
+    // onSuccess: async () => {
+    //   await queryClient.invalidateQueries(["photos"]);
+    // },
+    onMutate: async (photoId) => {
+      await queryClient.cancelQueries(["photos"]);
+      const previousPhotos = queryClient.getQueryData<Photo[]>(["photos"]);
+      // REVIEW: Typescript error here
+      queryClient.setQueryData(["photos"], (old: Photo[] | undefined) => {
+        return old?.filter((photo) => photo.id !== photoId);
+      });
+      return { previousPhotos };
+    },
+    onError: (_error, _heroId, context) => {
+      queryClient.setQueryData(["photos"], context?.previousPhotos);
+    },
+    onSettled: async () => {
       await queryClient.invalidateQueries(["photos"]);
     },
   });
