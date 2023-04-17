@@ -67,30 +67,32 @@ const NewPhoto = () => {
   return (
     <div className="gap-y-10 flex flex-col items-center p-8">
       <h2 className="p-4 text-2xl text-center">Create Photo</h2>
-      <form className="gap-y-4 flex flex-col w-[700px]">
-        <label className="grid grid-cols-2">
-          Id-
+      <form className="gap-y-4 flex flex-col w-[400px]">
+        <label className="flex flex-col">
+          Id
           <input
-            className=" text-black"
+            className=" p-1 text-black"
             type="number"
             placeholder="id"
             readOnly
-            value="id"
+            value="0"
           />
+          <span className=" text-sm text-red-300">An error</span>
         </label>
-        <label className="grid grid-cols-2">
-          Album Id-
+        <label className="flex flex-col">
+          Album Id
           <input
-            className=" text-black"
+            className=" p-1 text-black"
             type="number"
             value={formData.albumId}
             onChange={(e) =>
               setFormData({ ...formData, albumId: parseInt(e.target.value) })
             }
           />
+          <span className=" text-sm text-red-300">An error</span>
         </label>
-        <label className="grid grid-cols-2">
-          Title-
+        <label className="flex flex-col">
+          Title
           <input
             className=" text-black break-words"
             type="text"
@@ -99,33 +101,35 @@ const NewPhoto = () => {
               setFormData({ ...formData, title: e.target.value })
             }
           />
+          <span className=" text-sm text-red-300">An error</span>
         </label>
-        <label className="grid grid-cols-2">
-          Url-
+        <label className="flex flex-col">
+          Url
           <input
-            className=" text-black"
+            className=" p-1 text-black"
             type="text"
             value={formData.url}
             onChange={(e) => setFormData({ ...formData, url: e.target.value })}
           />
+          <span className=" text-sm text-red-300">An error</span>
         </label>
-        <label className="grid grid-cols-2">
-          Thumbnail Url-
+        <label className="flex flex-col">
+          Thumbnail Url
           <input
-            className=" text-black"
+            className=" p-1 text-black"
             type="text"
             value={formData.thumbnailUrl}
             onChange={(e) =>
               setFormData({ ...formData, thumbnailUrl: e.target.value })
             }
           />
+          <span className=" text-sm text-red-300">An error</span>
         </label>
 
         <button
           className="p-1 bg-red-800"
           onClick={(e) => {
             e.preventDefault();
-            // REVIEW: is this the right way to do it?
             mutate({
               ...formData,
             });
