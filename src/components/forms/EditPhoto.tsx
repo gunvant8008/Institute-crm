@@ -2,59 +2,48 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { getPhoto, updatePhoto } from "../../axios/photoApi";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { Photo } from "@/types";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
+
+const EditPhotoSchema = z.object({
+  albumId: z.coerce
+    .number()
+    .int()
+    .min(1, { message: "Album Id must be greater than or equal to 1" }),
+  title: z
+    .string()
+    .min(1, { message: "Title must contain at least 1 character(s)" })
+    .max(20),
+  url: z.string().url().min(1).max(100),
+  thumbnailUrl: z.string().url().min(1).max(100),
+});
+type TEditPhotoForm = z.infer<typeof EditPhotoSchema>;
 
 const EditPhoto = ({ id }: { id: string }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { isLoading, isError, data } = useQuery(["photo", id], () =>
     id ? getPhoto(id) : null,
   );
-  const [formData, setFormData] = useState<Omit<Photo, "id">>({
-    albumId: 0,
-    title: "",
-    url: "",
-    thumbnailUrl: "",
-  });
 
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-    setFormData({
-      albumId: data.albumId,
-      title: data.title,
-      url: data.url,
-      thumbnailUrl: data.thumbnailUrl,
-    });
-  }, [data]);
-
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const updatePhotoMutation = useMutation(updatePhoto, {
-    // onSuccess: async () => {
-    //   await queryClient.invalidateQueries(["photos"]);
-    //   await router.push("/list");
-    // },
+  const { mutate } = useMutation(updatePhoto, {
     onMutate: async (photo: Photo) => {
-      await router.push("/list");
-      // await queryClient.cancelQueries(["photo", photo.id.toString()])
       await queryClient.cancelQueries(["photos"]);
-      // const previousPhoto = queryClient.getQueryData([
-      //   "photo",
-      //   photo.id.toString()
-      // ])
       const previousPhotos = queryClient.getQueryData<Photo[]>(["photos"]);
       const newPhoto = queryClient.setQueryData(
         ["photo", photo.id.toString()],
         photo,
       );
       // REVIEW: Typescript error here
-
       queryClient.setQueryData(["photos"], (old: Photo[] | undefined) => {
         return newPhoto
           ? old?.map((item) => (item.id === photo.id ? newPhoto : item))
           : old;
       });
+      await router.push("/list");
       return { previousPhotos };
     },
     onError: (context: { previousPhotos: Photo[] }) => {
@@ -66,6 +55,27 @@ const EditPhoto = ({ id }: { id: string }) => {
     },
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TEditPhotoForm>({
+    resolver: zodResolver(EditPhotoSchema),
+    defaultValues: {
+      albumId: data?.albumId,
+      title: data?.title,
+      url: data?.url,
+      thumbnailUrl: data?.thumbnailUrl,
+    },
+  });
+
+  const onSubmit = (data: TEditPhotoForm) => {
+    mutate({
+      id: Number(id),
+      ...data,
+    });
+  };
+
   if (isError) {
     return <h2>Something went wrong!</h2>;
   }
@@ -76,71 +86,44 @@ const EditPhoto = ({ id }: { id: string }) => {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8">
         <h2 className="p-4 text-2xl text-center">Edit Photo</h2>
-        <form className="gap-y-4 flex flex-col w-[700px]">
-          <label className="grid grid-cols-2">
-            Id-
-            <input
-              className=" text-black"
-              type="number"
-              readOnly
-              value={data.id}
-            />
-          </label>
-          <label className="grid grid-cols-2">
-            Album Id-
-            <input
-              className=" text-black"
-              type="number"
-              value={formData.albumId || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, albumId: parseInt(e.target.value) })
-              }
-            />
-          </label>
-          <label className="grid grid-cols-2">
-            Title-
-            <input
-              className=" text-black break-words"
-              type="text"
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-            />
-          </label>
-          <label className="grid grid-cols-2">
-            Url-
-            <input
-              className=" text-black"
-              type="text"
-              value={formData.url}
-              onChange={(e) =>
-                setFormData({ ...formData, url: e.target.value })
-              }
-            />
-          </label>
-          <label className="grid grid-cols-2">
-            Thumbnail Url-
-            <input
-              className=" text-black"
-              type="text"
-              value={formData.thumbnailUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, thumbnailUrl: e.target.value })
-              }
-            />
-          </label>
+        <form
+          className="gap-y-4 flex flex-col w-[700px]"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <TextFieldWithLabel
+            labelText="Id"
+            inputType="number"
+            placeholder={data.id.toString()}
+            readOnly
+            className="text-gray-400"
+          />
+          <TextFieldWithLabel
+            labelText="Album Id"
+            inputType="number"
+            error={errors.albumId?.message as string}
+            inputProps={register("albumId")}
+          />
+          <TextFieldWithLabel
+            labelText="Title"
+            inputType="text"
+            error={errors.title?.message as string}
+            inputProps={register("title")}
+          />
+          <TextFieldWithLabel
+            labelText="Url"
+            inputType="text"
+            error={errors.url?.message as string}
+            inputProps={register("url")}
+          />
+          <TextFieldWithLabel
+            labelText="Thumbnail Url"
+            inputType="text"
+            error={errors.url?.message as string}
+            inputProps={register("thumbnailUrl")}
+          />
 
-          <button
-            className="p-1 bg-red-800"
-            type="submit"
-            onClick={(e) => {
-              e.preventDefault();
-              updatePhotoMutation.mutate({ id: data.id, ...formData });
-            }}
-          >
-            Update
-          </button>
+          <button className="p-1 bg-red-800">Update</button>
         </form>
         <Link className="self-center p-4 bg-teal-800" href="/list">
           Go Back

@@ -2,58 +2,72 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { addPhoto } from "../../axios/photoApi";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Photo } from "@/types";
+// import { DevTool } from "@hookform/devtools"
+
+const AddPhotoSchema = z.object({
+  albumId: z.coerce
+    .number()
+    .int()
+    .min(1, { message: "Album Id must be greater than or equal to 1" }),
+  title: z
+    .string()
+    .min(1, { message: "Title must contain at least 1 character(s)" })
+    .max(20),
+  url: z.string().url().min(1).max(100),
+  thumbnailUrl: z.string().url().min(1).max(100),
+});
+type TAddPhotoForm = z.infer<typeof AddPhotoSchema>;
 
 const NewPhoto = () => {
-  const [formData, setFormData] = useState<Omit<Photo, "id">>({
-    albumId: 0,
-    title: "",
-    url: "",
-    thumbnailUrl: "",
-  });
-
   const router = useRouter();
-
   const queryClient = useQueryClient();
-
   const { mutate, isError } = useMutation(addPhoto, {
-    // onSuccess: async () => {
-    //   await queryClient.invalidateQueries(["photos"]);
-    //   await router.push("/list");
-    // },
-    onMutate: async (photo: Omit<Photo, "id">) => {
-      // await queryClient.cancelQueries(["photo", photo.id.toString()])
+    onMutate: async (photo: TAddPhotoForm) => {
       await queryClient.cancelQueries(["photos"]);
-      // const previousPhoto = queryClient.getQueryData([
-      //   "photo",
-      //   photo.id.toString()
-      // ])
       const previousPhotos = queryClient.getQueryData<Photo[]>(["photos"]);
-      await router.push("/list");
-
-      // let lastId = previousPhotos.length + 1
       const newId = 0;
       const newPhoto = queryClient.setQueryData(["photo", newId.toString()], {
         ...photo,
         id: 0,
       });
-
       queryClient.setQueryData(["photos"], (old: Photo[] | undefined) => {
         return newPhoto && old ? [...old, newPhoto] : old;
       });
-
+      await router.push("/list");
       return { previousPhotos };
-      // REVIEW: Typescript error here
     },
     onError: (context: { previousPhotos: Photo[] }) => {
       queryClient.setQueryData(["photos"], context.previousPhotos);
     },
     onSettled: async () => {
-      // await queryClient.invalidateQueries(["photo", id.toString()])
       await queryClient.invalidateQueries(["photos"]);
     },
   });
+
+  const {
+    // control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TAddPhotoForm>({
+    resolver: zodResolver(AddPhotoSchema),
+    defaultValues: {
+      albumId: 1,
+      title: "New Photo Title",
+      url: "Enter URL",
+      thumbnailUrl: "Enter Thumbnail URL",
+    },
+  });
+
+  const onSubmit = (data: TAddPhotoForm) => {
+    mutate(data);
+  };
+
   if (isError)
     return (
       <div className="flex items-center justify-center gap-4 mt-10">
@@ -67,77 +81,46 @@ const NewPhoto = () => {
   return (
     <div className="gap-y-10 flex flex-col items-center p-8">
       <h2 className="p-4 text-2xl text-center">Create Photo</h2>
-      <form className="gap-y-4 flex flex-col w-[400px]">
-        <label className="flex flex-col">
-          Id
-          <input
-            className=" p-1 text-black"
-            type="number"
-            placeholder="id"
-            readOnly
-            value="0"
-          />
-          <span className=" text-sm text-red-300">An error</span>
-        </label>
-        <label className="flex flex-col">
-          Album Id
-          <input
-            className=" p-1 text-black"
-            type="number"
-            value={formData.albumId}
-            onChange={(e) =>
-              setFormData({ ...formData, albumId: parseInt(e.target.value) })
-            }
-          />
-          <span className=" text-sm text-red-300">An error</span>
-        </label>
-        <label className="flex flex-col">
-          Title
-          <input
-            className=" text-black break-words"
-            type="text"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-          />
-          <span className=" text-sm text-red-300">An error</span>
-        </label>
-        <label className="flex flex-col">
-          Url
-          <input
-            className=" p-1 text-black"
-            type="text"
-            value={formData.url}
-            onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-          />
-          <span className=" text-sm text-red-300">An error</span>
-        </label>
-        <label className="flex flex-col">
-          Thumbnail Url
-          <input
-            className=" p-1 text-black"
-            type="text"
-            value={formData.thumbnailUrl}
-            onChange={(e) =>
-              setFormData({ ...formData, thumbnailUrl: e.target.value })
-            }
-          />
-          <span className=" text-sm text-red-300">An error</span>
-        </label>
-
-        <button
-          className="p-1 bg-red-800"
-          onClick={(e) => {
-            e.preventDefault();
-            mutate({
-              ...formData,
-            });
-          }}
-        >
-          Add Photo
-        </button>
+      <form
+        className="gap-y-4 flex flex-col w-[400px]"
+        // REVIEW: Typescript error removed after adding void
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        <TextFieldWithLabel
+          labelText="Id"
+          inputType="number"
+          placeholder="1"
+          readOnly
+          className="text-gray-400"
+        />
+        <TextFieldWithLabel
+          labelText="Album Id"
+          inputType="number"
+          error={errors.albumId?.message as string}
+          inputProps={register("albumId")}
+        />
+        <TextFieldWithLabel
+          labelText="Title"
+          inputType="text"
+          error={errors.title?.message as string}
+          inputProps={register("title")}
+        />
+        <TextFieldWithLabel
+          labelText="Url"
+          inputType="text"
+          error={errors.url?.message as string}
+          inputProps={register("url")}
+        />
+        <TextFieldWithLabel
+          labelText="Thumbnail Url"
+          inputType="text"
+          error={errors.url?.message as string}
+          inputProps={register("thumbnailUrl")}
+        />
+        <button className="p-1 bg-red-800">Add Photo</button>
       </form>
+      {/* <DevTool control={control} /> */}
       <Link className="self-center p-4 bg-teal-800" href="/list">
         Go Back
       </Link>

@@ -66,8 +66,8 @@ export const handlers = [
     // REVIEW: how calculation of id changes a se interact at front end
     newPhoto.id = ++lastId;
     photos.push(newPhoto);
-    return res(ctx.status(201), ctx.delay(500), ctx.json(newPhoto));
-    // return res(ctx.status(500));
+    // return res(ctx.status(201), ctx.delay(500), ctx.json(newPhoto));
+    return res(ctx.status(500));
   }),
   // api for deleting a photo
   rest.delete("/api/photos/:id", (req, res, ctx) => {
