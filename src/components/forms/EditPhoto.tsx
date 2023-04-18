@@ -7,16 +7,17 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
+import { useEffect } from "react";
 
 const EditPhotoSchema = z.object({
-  albumId: z.coerce
+  albumId: z
     .number()
     .int()
     .min(1, { message: "Album Id must be greater than or equal to 1" }),
   title: z
     .string()
     .min(1, { message: "Title must contain at least 1 character(s)" })
-    .max(20),
+    .max(100),
   url: z.string().url().min(1).max(100),
   thumbnailUrl: z.string().url().min(1).max(100),
 });
@@ -50,12 +51,12 @@ const EditPhoto = ({ id }: { id: string }) => {
       queryClient.setQueryData(["photos"], context.previousPhotos);
     },
     onSettled: async () => {
-      // await queryClient.invalidateQueries(["photo", id])
       await queryClient.invalidateQueries(["photos"]);
     },
   });
 
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -68,6 +69,15 @@ const EditPhoto = ({ id }: { id: string }) => {
       thumbnailUrl: data?.thumbnailUrl,
     },
   });
+
+  // REVIEW: IS THIS THE BEST WAY TO DO THIS? resetting the data on hard refresh
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    reset(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const onSubmit = (data: TEditPhotoForm) => {
     mutate({
@@ -102,7 +112,7 @@ const EditPhoto = ({ id }: { id: string }) => {
             labelText="Album Id"
             inputType="number"
             error={errors.albumId?.message as string}
-            inputProps={register("albumId")}
+            inputProps={register("albumId", { valueAsNumber: true })}
           />
           <TextFieldWithLabel
             labelText="Title"

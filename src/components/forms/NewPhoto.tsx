@@ -10,14 +10,14 @@ import { Photo } from "@/types";
 // import { DevTool } from "@hookform/devtools"
 
 const AddPhotoSchema = z.object({
-  albumId: z.coerce
+  albumId: z
     .number()
     .int()
     .min(1, { message: "Album Id must be greater than or equal to 1" }),
   title: z
     .string()
     .min(1, { message: "Title must contain at least 1 character(s)" })
-    .max(20),
+    .max(100),
   url: z.string().url().min(1).max(100),
   thumbnailUrl: z.string().url().min(1).max(100),
 });
@@ -43,6 +43,7 @@ const NewPhoto = () => {
     },
     onError: (context: { previousPhotos: Photo[] }) => {
       queryClient.setQueryData(["photos"], context.previousPhotos);
+      // await queryClient.invalidateQueries(["photos"])
     },
     onSettled: async () => {
       await queryClient.invalidateQueries(["photos"]);
@@ -98,7 +99,7 @@ const NewPhoto = () => {
           labelText="Album Id"
           inputType="number"
           error={errors.albumId?.message as string}
-          inputProps={register("albumId")}
+          inputProps={register("albumId", { valueAsNumber: true })}
         />
         <TextFieldWithLabel
           labelText="Title"
