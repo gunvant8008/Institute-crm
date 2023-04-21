@@ -46,30 +46,29 @@ const PhotoList = () => {
         </Link>
       </div>
       <ul className="grid max-w-xl grid-cols-2 gap-8 p-8">
-        {photos.map((item: Photo, index: number) => {
+        {photos.map((photo: Photo, index: number) => {
           while (index < 10) {
             // just be careful doing this if you have loads of data.
             // the cache will become gigantic!
-            queryClient.setQueryData(["photo", item.id.toString()], item);
-
+            queryClient.setQueryData(["photo", photo.id.toString()], photo);
             return (
-              <li key={item.id}>
+              <li key={photo.id}>
                 <Link
-                  href={`/details/${item.id}`}
+                  href={`/details/${photo.id}`}
                   className="flex flex-col p-4 space-y-2 bg-gray-800"
                 >
-                  <h2>Album Id- {item.albumId}</h2>
-                  <h2>Id- {item.id}</h2>
-                  <h2>Album Title- {item.title}</h2>
+                  <h2>Album Id- {photo.albumId}</h2>
+                  <h2>Id- {photo.id}</h2>
+                  <h2>Album Title- {photo.title}</h2>
                 </Link>
                 <button
                   className="p-1 bg-red-800"
-                  onClick={() => deletePhotoMutation.mutate(item.id)}
+                  onClick={() => deletePhotoMutation.mutate(photo.id)}
                 >
                   Delete
                 </button>
                 <Link
-                  href={`/edit/${item.id}`}
+                  href={`/edit/${photo.id}`}
                   className="p-1.5 ml-2 bg-blue-800"
                 >
                   Edit

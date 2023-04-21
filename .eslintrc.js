@@ -25,6 +25,15 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "testing-library/no-render-in-setup": "off",
+    // added this rule to solve void return issue in handleSubmit function from react hook form
+    "@typescript-eslint/no-misused-promises": [
+      2,
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
+      },
+    ],
     // added this rule to solve this issue in details page- Invalid type "string | string[] | undefined" of template literal expression.
     // "@typescript-eslint/restrict-template-expressions": "error"
   },

@@ -67,7 +67,7 @@ export const handlers = [
     newPhoto.id = ++lastId;
     photos.push(newPhoto);
     return res(ctx.status(201), ctx.delay(500), ctx.json(newPhoto));
-    // return res(ctx.status(500));
+    return res(ctx.status(500));
   }),
   // api for deleting a photo
   rest.delete("/api/photos/:id", (req, res, ctx) => {
@@ -76,9 +76,9 @@ export const handlers = [
     // REVIEW: react-query throws an error if we don't return a response
     return res(ctx.status(204));
   }),
-
   // api for updating a photo
   rest.patch("/api/photos/:id", async (req, res, ctx) => {
+    // return res(ctx.status(500))
     const id = Number(req.params.id);
     const reqBody: Photo = await req.json();
     const photo = photos.find((photo) => photo.id === id);
