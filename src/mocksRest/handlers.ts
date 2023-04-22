@@ -1,5 +1,99 @@
 import { rest } from "msw";
 import { Photo } from "@/types";
+import { TUser } from "@/features/user/types/userTypes";
+
+let users: TUser[] = [
+  {
+    id: 1,
+    fullName: "John Doe",
+    instituteName: "University of California",
+    city: "Los Angeles",
+    phone: "1234567890",
+    email: "johndoe@gmail.com",
+    mathsPurchased: true,
+    biologyPurchased: false,
+    chemistryPurchased: false,
+    physicsPurchased: false,
+    amountPaid: 8000,
+    discountGiven: 2000,
+    amountDue: 0,
+    datePurchased: new Date("2022-01-01"),
+    validity: new Date("2023-01-30"),
+    dueDate: new Date("2022-06-030"),
+  },
+  {
+    id: 2,
+    fullName: "Jane Doe",
+    instituteName: "University of California",
+    city: "Los Angeles",
+    phone: "1234567890",
+    email: "johndoe@gmail.com",
+    mathsPurchased: false,
+    biologyPurchased: true,
+    chemistryPurchased: true,
+    physicsPurchased: true,
+    amountPaid: 20000,
+    discountGiven: 10000,
+    amountDue: 0,
+    datePurchased: new Date("2022-01-01"),
+    validity: new Date("2023-01-30"),
+    dueDate: new Date("2022-06-030"),
+  },
+  {
+    id: 3,
+    fullName: "Jane Doe",
+    instituteName: "University of California",
+    city: "Los Angeles",
+    phone: "1234567890",
+    email: "johndoe@gmail.com",
+    mathsPurchased: true,
+    biologyPurchased: false,
+    chemistryPurchased: false,
+    physicsPurchased: false,
+    amountPaid: 5000,
+    discountGiven: 2000,
+    amountDue: 3000,
+    datePurchased: new Date("2022-01-01"),
+    validity: new Date("2023-01-30"),
+    dueDate: new Date("2022-06-030"),
+  },
+  {
+    id: 4,
+    fullName: "Jane Doe",
+    instituteName: "University of California",
+    city: "Los Angeles",
+    phone: "1234567890",
+    email: "johndoe@gmail.com",
+    mathsPurchased: true,
+    biologyPurchased: true,
+    chemistryPurchased: true,
+    physicsPurchased: true,
+    amountPaid: 20000,
+    discountGiven: 5000,
+    amountDue: 5000,
+    datePurchased: new Date("2022-01-01"),
+    validity: new Date("2023-01-30"),
+    dueDate: new Date("2022-06-030"),
+  },
+  {
+    id: 5,
+    fullName: "Jane Doe",
+    instituteName: "University of California",
+    city: "Los Angeles",
+    phone: "1234567890",
+    email: "johndoe@gmail.com",
+    mathsPurchased: false,
+    biologyPurchased: false,
+    chemistryPurchased: false,
+    physicsPurchased: false,
+    amountPaid: 0,
+    discountGiven: 0,
+    amountDue: 0,
+    datePurchased: new Date("2022-01-01"),
+    validity: new Date("2023-01-30"),
+    dueDate: new Date("2022-06-030"),
+  },
+];
 
 let photos: Photo[] = [
   {
@@ -39,11 +133,16 @@ let photos: Photo[] = [
   },
 ];
 let lastId = photos.length + 1;
+let lastUserId = users.length + 1;
 
 export const handlers = [
   // api for all photos
   rest.get("/api/photos", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.delay(500), ctx.json(photos));
+    return res(ctx.status(200), ctx.delay(200), ctx.json(photos));
+  }),
+  // api for all users
+  rest.get("/api/users", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.delay(200), ctx.json(users));
   }),
   // api for a single photo
   rest.get("/api/photos/:id", (req, res, ctx) => {
@@ -51,12 +150,26 @@ export const handlers = [
     const id = parseInt(req.params.id.toString());
     const photo = photos.find((photo) => photo.id === id);
     if (photo) {
-      return res(ctx.status(200), ctx.delay(2000), ctx.json(photo));
+      return res(ctx.status(200), ctx.delay(200), ctx.json(photo));
     } else {
       return res(
         ctx.status(404),
-        ctx.delay(2000),
+        ctx.delay(200),
         ctx.json({ message: "Photo not found" }),
+      );
+    }
+  }),
+  // api for a single user
+  rest.get("/api/users/:id", (req, res, ctx) => {
+    const id = parseInt(req.params.id.toString());
+    const user = users.find((user) => user.id === id);
+    if (user) {
+      return res(ctx.status(200), ctx.delay(200), ctx.json(user));
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.delay(200),
+        ctx.json({ message: "User not found" }),
       );
     }
   }),
@@ -69,11 +182,24 @@ export const handlers = [
     return res(ctx.status(201), ctx.delay(500), ctx.json(newPhoto));
     return res(ctx.status(500));
   }),
+  // api for creating a new user
+  rest.post("/api/users/new", async (req, res, ctx) => {
+    const newUser: TUser = await req.json();
+    newUser.id = ++lastUserId;
+    users.push(newUser);
+    return res(ctx.status(201), ctx.delay(200), ctx.json(newUser));
+  }),
   // api for deleting a photo
   rest.delete("/api/photos/:id", (req, res, ctx) => {
     const id = parseInt(req.params.id.toString());
     photos = photos.filter((photo) => photo.id !== id);
     // REVIEW: react-query throws an error if we don't return a response
+    return res(ctx.status(204));
+  }),
+  // api for deleting a user
+  rest.delete("/api/users/:id", (req, res, ctx) => {
+    const id = parseInt(req.params.id.toString());
+    users = users.filter((user) => user.id !== id);
     return res(ctx.status(204));
   }),
   // api for updating a photo
@@ -97,6 +223,30 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(500),
         ctx.json({ message: "Photo not found" }),
+      );
+    }
+  }),
+  // api for updating a user
+  rest.patch("/api/users/:id", async (req, res, ctx) => {
+    const id = parseInt(req.params.id.toString());
+    const reqBody: TUser = await req.json();
+    const user = users.find((user) => user.id === id);
+    if (user) {
+      user.fullName = reqBody.fullName;
+      user.instituteName = reqBody.instituteName;
+      user.city = reqBody.city;
+      user.phone = reqBody.phone;
+      user.email = reqBody.email;
+      return res(
+        ctx.status(200),
+        ctx.delay(100),
+        ctx.json({ message: "User updated" }),
+      );
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.delay(500),
+        ctx.json({ message: "User not found" }),
       );
     }
   }),
