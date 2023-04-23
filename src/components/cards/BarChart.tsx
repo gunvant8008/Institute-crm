@@ -20,9 +20,19 @@ ChartJS.register(
   Legend,
 );
 
+type TDatasets = {
+  label: string;
+  data: number[];
+  borderColor: string;
+  backgroundColor: string;
+};
+
 const BarChart = () => {
+  const datasets: TDatasets[] = [];
+  const labels: string[] = [];
   const [chartData, setChartData] = useState({
-    datasets: [],
+    labels,
+    datasets,
   });
   const [chartOptions, setChartOptions] = useState({});
 
