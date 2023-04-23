@@ -3,7 +3,8 @@ import axios from "axios";
 
 const userApi = axios.create({
   // baseURL: "https://jsonplaceholder.typicode.com",
-  baseURL: "http://localhost:3000/api/",
+  // baseURL: "http://localhost:3000/api/",
+  baseURL: "https://institute-crm.vercel.app//api/",
 });
 
 export const getUsers = async (): Promise<TUser[]> => {
