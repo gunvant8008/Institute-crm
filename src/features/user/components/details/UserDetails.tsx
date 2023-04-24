@@ -23,7 +23,7 @@ const UserDetails = ({ id }: { id: number }) => {
   const { mutate, isLoading: deleteLoading } = useMutation(deleteUser, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["users"]);
-      await router.push("/list");
+      await router.push("/users");
     },
   });
 
