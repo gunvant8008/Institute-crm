@@ -124,46 +124,28 @@ const UserDetails = ({ id }: { id: number }) => {
               </p>
               <p className="text-sm font-semibold text-gray-500 bg-blue-200 p-1">
                 PURCHASED DATE-{" "}
-                {user.datePurchased instanceof Date
-                  ? user.datePurchased.toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : new Date(user.datePurchased).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                {new Date(user.datePurchased).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
               <p className="text-sm font-semibold text-gray-500 bg-gray-200 p-1">
                 VALIDITY-{" "}
-                {user.validity instanceof Date
-                  ? user.validity.toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : new Date(user.validity).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                {new Date(user.validity).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
               <p className="text-sm font-semibold text-gray-500 p-1 bg-red-300">
                 DUE DATE-{" "}
                 {user.amountDue
-                  ? user.validity instanceof Date
-                    ? user.validity.toLocaleDateString("en-GB", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : new Date(user.validity).toLocaleDateString("en-GB", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
+                  ? new Date(user.validity).toLocaleDateString("en-GB", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   : "No Due Payment"}
               </p>
             </div>

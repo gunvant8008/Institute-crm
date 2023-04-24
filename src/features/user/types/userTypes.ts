@@ -1,17 +1,17 @@
-type TSubjectPurchased = {
-  maths: boolean;
-  biology: boolean;
-  chemistry: boolean;
-  physics: boolean;
-};
-type TPaymentStatus = {
-  amountPaid: number;
-  discountGiven: number;
-  amountDue: number;
-  datePurchased: Date;
-  validity: Date;
-  dueDate: Date;
-};
+// type TSubjectPurchased = {
+//   maths: boolean;
+//   biology: boolean;
+//   chemistry: boolean;
+//   physics: boolean;
+// };
+// type TPaymentStatus = {
+//   amountPaid: number;
+//   discountGiven: number;
+//   amountDue: number;
+//   datePurchased: Date;
+//   validity: Date;
+//   dueDate: Date;
+// };
 
 export type TUser = {
   id: number;

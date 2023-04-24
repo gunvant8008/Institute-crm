@@ -9,7 +9,6 @@ import Loading from "@/features/user/components/basic/Loading";
 const UsersList = () => {
   const queryClient = useQueryClient();
   const { isLoading, isError, data: users } = useQuery(["users"], getUsers);
-  console.log(users);
   const deleteUserMutation = useMutation(deleteUser, {
     onMutate: async (userId) => {
       await queryClient.cancelQueries(["users"]);
@@ -37,14 +36,14 @@ const UsersList = () => {
     return <h3>No data found!</h3>;
   }
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen">
-      <h2 className="text-2xl p-4">Users List</h2>
-      <div className="w-full p-4 border rounded-lg bg-white overflow-y-auto">
-        <div className="my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer font-semibold">
+    <div className="flex flex-col items-center min-h-screen bg-gray-100">
+      <h2 className="p-4 text-2xl">Users List</h2>
+      <div className="w-full p-4 overflow-y-auto bg-white border rounded-lg">
+        <div className="md:grid-cols-4 sm:grid-cols-3 grid items-center justify-between grid-cols-2 p-2 my-3 font-semibold cursor-pointer">
           <span>Name</span>
           <span className="sm:text-left text-right">Email</span>
-          <span className="hidden md:grid">Institute</span>
-          <span className="hidden sm:grid">City</span>
+          <span className="md:grid hidden">Institute</span>
+          <span className="sm:grid hidden">City</span>
         </div>
         <ul>
           {users.map((user: TUser, index: number) => {
@@ -55,21 +54,21 @@ const UsersList = () => {
               return (
                 <li
                   key={user.id}
-                  className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between"
+                  className="bg-gray-50 hover:bg-gray-100 md:grid-cols-4 sm:grid-cols-3 grid items-center justify-between grid-cols-2 p-2 my-3 rounded-lg"
                 >
                   <div className="flex items-center">
-                    <div className="bg-purple-100 p-3 rounded-lg">
+                    <div className="p-3 bg-purple-100 rounded-lg">
                       <BsPersonFill className="text-purple-800" />
                     </div>
                     <p className="pl-4">{user.fullName}</p>
                   </div>
-                  <p className="text-gray-600 sm:text-left text-right">
+                  <p className="sm:text-left text-right text-gray-600">
                     {user.email}
                   </p>
-                  <p className="hidden md:flex">{user.instituteName}</p>
-                  <div className="sm:flex hidden gap-x-4 justify-between items-center">
+                  <p className="md:flex hidden">{user.instituteName}</p>
+                  <div className="sm:flex gap-x-4 items-center justify-between hidden">
                     <p>{user.city}</p>
-                    <div className="flex gap-x-2">
+                    <div className="gap-x-2 flex">
                       <Link
                         href={`/user/${user.id}`}
                         className="p-1.5  bg-gray-200 rounded-md"

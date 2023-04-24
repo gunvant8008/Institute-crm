@@ -90,9 +90,9 @@ const EditUser = ({ id }: { id: number }) => {
       amountPaid: data?.amountPaid,
       discountGiven: data?.discountGiven,
       amountDue: data?.amountDue,
-      datePurchased: data?.datePurchased,
-      validity: data?.validity,
-      dueDate: data?.dueDate,
+      datePurchased: data?.datePurchased.toString().substring(0, 10),
+      validity: data?.validity.toString().substring(0, 10),
+      dueDate: data?.dueDate.toString().substring(0, 10),
     },
   });
 
@@ -101,7 +101,13 @@ const EditUser = ({ id }: { id: number }) => {
     if (!data) {
       return;
     }
-    reset(data);
+    // REVIEW: SOLVED THE ISSUE OF DATEPICKER NOT SHOWING THE DATE
+    reset({
+      ...data,
+      datePurchased: data.datePurchased.toString().substring(0, 10),
+      validity: data.validity.toString().substring(0, 10),
+      dueDate: data.dueDate.toString().substring(0, 10),
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
@@ -125,9 +131,11 @@ const EditUser = ({ id }: { id: number }) => {
   if (isLoading || !data) {
     return <h2>Loading...</h2>;
   }
+
+  // console.log(new Date(data.dueDate.substring(0, 10)))
   return (
     <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-      <h2 className="p-4 text-2xl text-center">Add User</h2>
+      <h2 className="p-4 text-2xl text-center">Update User</h2>
       <form
         className=" bg-gray-200 p-8 rounded-xl shadow-lg flex flex-col gap-4 w-[70vw]"
         // REVIEW: Typescript error removed after adding void
@@ -135,13 +143,13 @@ const EditUser = ({ id }: { id: number }) => {
         noValidate
       >
         <div className="grid grid-cols-2 gap-8">
-          <div className="gap-y-4 flex col-span-1 flex-col w-full">
+          <div className="gap-y-4 flex flex-col w-full col-span-1">
             <TextFieldWithLabel
               labelText="Id"
               inputType="number"
               placeholder={data?.id.toString()}
               readOnly
-              className="text-gray-400 p-1 rounded-md"
+              className="p-1 text-gray-400 rounded-md"
             />
             <TextFieldWithLabel
               labelText="Full Name"
@@ -174,47 +182,47 @@ const EditUser = ({ id }: { id: number }) => {
               inputProps={register("email")}
             />
           </div>
-          <div className="flex flex-col gap-y-4">
+          <div className="gap-y-4 flex flex-col">
             <h2 className="font-semibold text-gray-400">Subject Purchased</h2>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Maths
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("mathsPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Biology
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("biologyPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Physics
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("physicsPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Chemistry
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("chemistryPurchased")}
               />
             </label>
-            <div className="flex flex-col gap-y-4">
+            <div className="gap-y-4 flex flex-col">
               <h2 className="font-semibold text-gray-400">Payment Details</h2>
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Amount Paid
                 <input
                   type="number"
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   {...register("amountPaid", { valueAsNumber: true })}
                 />
               </label>
@@ -223,10 +231,10 @@ const EditUser = ({ id }: { id: number }) => {
                   {errors.amountPaid.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Discount Given
                 <input
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   type="number"
                   {...register("discountGiven", { valueAsNumber: true })}
                 />
@@ -236,10 +244,10 @@ const EditUser = ({ id }: { id: number }) => {
                   {errors.discountGiven.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Amount Due
                 <input
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   type="number"
                   {...register("amountDue", { valueAsNumber: true })}
                 />
@@ -249,9 +257,10 @@ const EditUser = ({ id }: { id: number }) => {
                   {errors.amountDue.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Date Of Purchase
                 <input
+                  // value={data.datePurchased.substring(0, 10)}
                   type="date"
                   {...register("datePurchased", { valueAsDate: true })}
                 />
@@ -261,9 +270,10 @@ const EditUser = ({ id }: { id: number }) => {
                   {errors.datePurchased.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Validity
                 <input
+                  // value={data.validity.substring(0, 10)}
                   type="date"
                   {...register("validity", { valueAsDate: true })}
                 />
@@ -273,12 +283,10 @@ const EditUser = ({ id }: { id: number }) => {
                   {errors.validity.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Due Date
                 <input
-                  // defaultValue={new Date(data.dueDate)
-                  //   .toISOString()
-                  //   .substring(0, 10)}
+                  // value={data?.dueDate.substring(0, 10)}
                   // defaultValue={
                   //   data.dueDate instanceof Date
                   //     ? data.dueDate.toLocaleDateString()
@@ -296,10 +304,10 @@ const EditUser = ({ id }: { id: number }) => {
             </div>
           </div>
         </div>
-        <button className="p-1 bg-blue-300">Update User</button>
+        <button className="self-center p-1.5 bg-blue-300">Update User</button>
       </form>
       {/* <DevTool control={control} /> */}
-      <Link className="self-center p-2 bg-white rounded-md " href="/list">
+      <Link className=" self-center p-2 bg-white rounded-md" href="/list">
         Go Back
       </Link>
     </div>

@@ -10,6 +10,8 @@ import {
   ChartType,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useQuery } from "@tanstack/react-query";
+import { getMonthWiseRevenue } from "@/features/user/axios/userApi";
 
 ChartJS.register(
   CategoryScale,
@@ -22,12 +24,17 @@ ChartJS.register(
 
 type TDatasets = {
   label: string;
-  data: number[];
+  data: number[] | undefined;
   borderColor: string;
   backgroundColor: string;
 };
 
 const BarChart = () => {
+  const { data: monthWiseRevenue } = useQuery(
+    ["monthWiseRevenue"],
+    getMonthWiseRevenue,
+  );
+  console.log(monthWiseRevenue);
   const datasets: TDatasets[] = [];
   const labels: string[] = [];
   const [chartData, setChartData] = useState({
@@ -38,11 +45,24 @@ const BarChart = () => {
 
   useEffect(() => {
     setChartData({
-      labels: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       datasets: [
         {
           label: "Sales $",
-          data: [18127, 22201, 19490, 17938, 24182, 17842, 22475],
+          data: monthWiseRevenue,
           borderColor: "rgb(53, 162, 235)",
           backgroundColor: "rgb(53, 162, 235, 0.4",
         },
@@ -61,7 +81,7 @@ const BarChart = () => {
       maintainAspectRatio: false,
       responsive: true,
     });
-  }, []);
+  }, [monthWiseRevenue]);
   return (
     <div className="w-full relative p-4 border rounded-lg bg-white  lg:h-[70vh] h-[50vh]">
       <Bar data={chartData} options={chartOptions} />

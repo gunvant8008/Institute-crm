@@ -94,7 +94,7 @@ const AddUser = () => {
   }
 
   return (
-    <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100 w-full">
+    <div className="gap-y-10 flex flex-col items-center w-full p-8 bg-gray-100">
       <h2 className="p-4 text-2xl text-center">Add User</h2>
 
       <form
@@ -104,13 +104,13 @@ const AddUser = () => {
         noValidate
       >
         <div className="grid grid-cols-2 gap-8">
-          <div className="gap-y-4 flex col-span-1 flex-col w-full">
+          <div className="gap-y-4 flex flex-col w-full col-span-1">
             <TextFieldWithLabel
               labelText="Id"
               inputType="number"
               placeholder="1"
               readOnly
-              className="text-gray-400 p-1 rounded-md"
+              className="p-1 text-gray-400 rounded-md"
             />
             <TextFieldWithLabel
               labelText="Full Name"
@@ -148,47 +148,47 @@ const AddUser = () => {
               inputProps={register("email")}
             />
           </div>
-          <div className="flex flex-col gap-y-4">
+          <div className="gap-y-4 flex flex-col">
             <h2 className="font-semibold text-gray-400">Subject Purchased</h2>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Maths
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("mathsPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Biology
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("biologyPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Physics
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("physicsPurchased")}
               />
             </label>
-            <label className="flex justify-between gap-x-4">
+            <label className="gap-x-4 flex justify-between">
               Chemistry
               <input
                 type="checkbox"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="focus:ring-blue-500 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                 {...register("chemistryPurchased")}
               />
             </label>
-            <div className="flex flex-col gap-y-4">
+            <div className="gap-y-4 flex flex-col">
               <h2 className="font-semibold text-gray-400">Payment Details</h2>
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Amount Paid
                 <input
                   type="number"
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   {...register("amountPaid", { valueAsNumber: true })}
                 />
               </label>
@@ -197,10 +197,10 @@ const AddUser = () => {
                   {errors.amountPaid.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Discount Given
                 <input
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   type="number"
                   {...register("discountGiven", { valueAsNumber: true })}
                 />
@@ -210,10 +210,10 @@ const AddUser = () => {
                   {errors.discountGiven.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Amount Due
                 <input
-                  className=" p-1 text-black rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+                  className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                   type="number"
                   {...register("amountDue", { valueAsNumber: true })}
                 />
@@ -223,7 +223,7 @@ const AddUser = () => {
                   {errors.amountDue.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Date Of Purchase
                 <input
                   type="date"
@@ -235,7 +235,7 @@ const AddUser = () => {
                   {errors.datePurchased.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Validity
                 <input
                   type="date"
@@ -247,7 +247,7 @@ const AddUser = () => {
                   {errors.validity.message}
                 </span>
               ) : null}
-              <label className="flex justify-between gap-x-4">
+              <label className="gap-x-4 flex justify-between">
                 Due Date
                 <input
                   type="date"
@@ -262,12 +262,12 @@ const AddUser = () => {
             </div>
           </div>
         </div>
-        <button className="p-2 font-semibold bg-yellow-200 rounded-md self-center">
+        <button className="self-center p-2 font-semibold bg-orange-200 rounded-md">
           Add User
         </button>
       </form>
       {/* <DevTool control={control} /> */}
-      <Link className="self-center p-2 bg-white rounded-md " href="/list">
+      <Link className=" self-center p-2 bg-white rounded-md" href="/list">
         Go Back
       </Link>
     </div>

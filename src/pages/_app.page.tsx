@@ -2,8 +2,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Sidebar from "@/components/Layout/Sidebar";
-import Header from "@/components/Layout/Header";
+import Sidebar from "@/features/user/components/Layout/Sidebar";
+import Header from "@/features/user/components/Layout/Header";
 
 const queryClient = new QueryClient();
 // REVIEW: void
