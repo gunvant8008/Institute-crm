@@ -27,7 +27,7 @@ export type TUser = {
   amountPaid: number;
   discountGiven: number;
   amountDue: number;
-  datePurchased: Date;
-  validity: Date;
-  dueDate: Date;
+  datePurchased: Date | string | undefined;
+  validity: Date | string | undefined;
+  dueDate: Date | string | undefined;
 };

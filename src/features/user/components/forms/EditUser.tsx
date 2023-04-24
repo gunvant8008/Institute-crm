@@ -31,9 +31,10 @@ const EditUserSchema = z.object({
   amountPaid: z.number().min(0),
   discountGiven: z.number().min(0),
   amountDue: z.number().min(0),
-  datePurchased: z.date(),
-  validity: z.date(),
-  dueDate: z.date(),
+  // REVIEW: solved date issue by changing zod validation from date to string for dates
+  datePurchased: z.string(),
+  validity: z.string(),
+  dueDate: z.string(),
 });
 type TEditUserSchema = z.infer<typeof EditUserSchema>;
 
@@ -90,9 +91,9 @@ const EditUser = ({ id }: { id: number }) => {
       amountPaid: data?.amountPaid,
       discountGiven: data?.discountGiven,
       amountDue: data?.amountDue,
-      datePurchased: data?.datePurchased.toString().substring(0, 10),
-      validity: data?.validity.toString().substring(0, 10),
-      dueDate: data?.dueDate.toString().substring(0, 10),
+      datePurchased: data?.datePurchased?.toString().substring(0, 10),
+      validity: data?.validity?.toString().substring(0, 10),
+      dueDate: data?.dueDate?.toString().substring(0, 10),
     },
   });
 
@@ -104,9 +105,9 @@ const EditUser = ({ id }: { id: number }) => {
     // REVIEW: SOLVED THE ISSUE OF DATEPICKER NOT SHOWING THE DATE
     reset({
       ...data,
-      datePurchased: data.datePurchased.toString().substring(0, 10),
-      validity: data.validity.toString().substring(0, 10),
-      dueDate: data.dueDate.toString().substring(0, 10),
+      datePurchased: data.datePurchased?.toString().substring(0, 10),
+      validity: data.validity?.toString().substring(0, 10),
+      dueDate: data.dueDate?.toString().substring(0, 10),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
