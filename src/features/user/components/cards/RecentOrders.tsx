@@ -23,7 +23,7 @@ const RecentOrders = () => {
                   <p className="text-sm text-gray-400">{user.instituteName}</p>
                 </div>
                 <p className="lg:flex md:hidden right-6 absolute text-sm">
-                  {new Date(user.datePurchased).toLocaleDateString("en-GB")}
+                  {user.datePurchased?.toLocaleString("en-GB")}
                 </p>
               </div>
             </Link>

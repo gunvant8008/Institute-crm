@@ -36,18 +36,18 @@ const UserDetails = ({ id }: { id: number }) => {
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-        <Link href="/list" className="p-2 bg-white font-bold rounded-md">
+        <Link href="/list" className="p-2 font-bold bg-white rounded-md">
           Go Back
         </Link>
 
-        <div className="flex justify-between w-full bg-white p-4 rounded-md">
+        <div className="flex justify-between w-full p-4 bg-white rounded-md">
           <h2 className="text-2xl font-semibold text-gray-400">
             USER ID- {user.id}
           </h2>
-          <div className="flex gap-x-2">
+          <div className="gap-x-2 flex">
             <Link
               href={`/edituser/${user.id}`}
-              className="p-2  bg-blue-200 rounded-md"
+              className="p-2 bg-blue-200 rounded-md"
             >
               Edit
             </Link>
@@ -63,24 +63,24 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             USER INFORMATION
           </h3>
-          <div className="p-4 flex flex-col space-y-2">
+          <div className="flex flex-col p-4 space-y-2">
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-semibold text-gray-500">
                 INSTITUTE NAME
               </p>
-              <span className="bg-white p-2 rounded-md font-thin shadow-md">
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.instituteName}
               </span>
             </div>
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-semibold text-gray-500">NAME</p>
-              <span className="bg-white p-2 rounded-md font-thin shadow-md">
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.fullName}
               </span>
             </div>
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-semibold text-gray-500">CITY</p>
-              <span className="bg-white p-2 rounded-md font-thin shadow-md">
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.city}
               </span>
             </div>
@@ -90,7 +90,7 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             SUBJECT PURCHASED
           </h3>
-          <div className="p-4 flex flex-col space-y-2">
+          <div className="flex flex-col p-4 space-y-2">
             <div className="flex space-x-8">
               <p className="text-sm font-semibold text-gray-500">
                 MATHS- {user.mathsPurchased ? "✅" : "❌"}
@@ -111,37 +111,37 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             PAYMENT STATUS
           </h3>
-          <div className="p-4 flex flex-col space-y-2">
+          <div className="flex flex-col p-4 space-y-2">
             <div className="flex space-x-8">
-              <p className="text-sm font-semibold text-gray-500 bg-green-100 p-1">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-green-100">
                 AMOUNT PAID- {user.amountPaid}
               </p>
-              <p className="text-sm font-semibold text-gray-500 bg-orange-100 p-1">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-orange-100">
                 DISCOUNT- {user.discountGiven}
               </p>
-              <p className="text-sm font-semibold text-gray-500 bg-red-100 p-1">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-red-100">
                 AMOUNT DUE- {user.amountDue ?? "❌"}
               </p>
-              <p className="text-sm font-semibold text-gray-500 bg-blue-200 p-1">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-blue-200">
                 PURCHASED DATE-{" "}
-                {new Date(user.datePurchased).toLocaleDateString("en-GB", {
+                {user.datePurchased?.toLocaleString("en-GB", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </p>
-              <p className="text-sm font-semibold text-gray-500 bg-gray-200 p-1">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-gray-200">
                 VALIDITY-{" "}
-                {new Date(user.validity).toLocaleDateString("en-GB", {
+                {user.validity?.toLocaleString("en-GB", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </p>
-              <p className="text-sm font-semibold text-gray-500 p-1 bg-red-300">
+              <p className="p-1 text-sm font-semibold text-gray-500 bg-red-300">
                 DUE DATE-{" "}
                 {user.amountDue
-                  ? new Date(user.validity).toLocaleDateString("en-GB", {
+                  ? user.dueDate?.toLocaleString("en-GB", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -157,16 +157,16 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             CONTACT INFORMATION
           </h3>
-          <div className="p-4 flex flex-col space-y-2">
+          <div className="flex flex-col p-4 space-y-2">
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-semibold text-gray-500">EMAIL</p>
-              <span className="bg-white p-2 rounded-md font-thin shadow-md">
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.email}
               </span>
             </div>
             <div className="flex flex-col space-y-2">
               <p className="text-sm font-semibold text-gray-500">PHONE</p>
-              <span className="bg-white p-2 rounded-md font-thin shadow-md">
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.phone}
               </span>
             </div>
