@@ -1,38 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# About Project
 
-## Getting Started
+## Description
 
-First, run the development server:
+- This is a simple and clean dashboard for a SAAS business. Admin can manage enquiries, users, plans, payments, and more.
+- Zod is used for data validation.
+- React Query is used for data fetching, optimistic updates, and caching.
+- React Hook Form is used for forms.
+- Mock Service Worker is used for mocking API calls.
+- Jest is used for unit testing.
+- Constantly adding new features and improving existing ones.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Technologies
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js
+- React Query
+- React Hook Form
+- Zod
+- Mock Service Worker
+- Jest
+- Tailwind CSS
+- TypeScript
+- react chartjs 2
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Here is the link to the live demo
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- [Live Demo](https://institute-crm.vercel.app/)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Here are some screenshots of the app
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Dashboard
 
-## Learn More
+![Dashboard](public/projectImages/SC01.png)
 
-To learn more about Next.js, take a look at the following resources:
+### Add User Page
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Add User](public/projectImages/SC02.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Users Page
 
-## Deploy on Vercel
+![Alt text](public/projectImages/SC03.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Orders Page
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![Alt text](public/projectImages/SC04.png)
+
+### User Details Page
+
+![Alt text](public/projectImages/SC05.png)
+
+### Update User Page
+
+![Alt text](public/projectImages/SC06.png)
