@@ -7,11 +7,11 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartType,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useQuery } from "@tanstack/react-query";
 import { getMonthWiseRevenue } from "@/features/user/axios/userApi";
+import Loading from "../basic/Loading";
 
 ChartJS.register(
   CategoryScale,
@@ -30,11 +30,10 @@ type TDatasets = {
 };
 
 const BarChart = () => {
-  const { data: monthWiseRevenue } = useQuery(
+  const { data: monthWiseRevenue, isLoading } = useQuery(
     ["monthWiseRevenue"],
     getMonthWiseRevenue,
   );
-  console.log(monthWiseRevenue);
   const datasets: TDatasets[] = [];
   const labels: string[] = [];
   const [chartData, setChartData] = useState({
@@ -82,6 +81,10 @@ const BarChart = () => {
       responsive: true,
     });
   }, [monthWiseRevenue]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="w-full relative p-4 border rounded-lg bg-white  lg:h-[70vh] h-[50vh]">
       <Bar data={chartData} options={chartOptions} />

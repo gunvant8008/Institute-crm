@@ -1,16 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { deleteUser, getUser } from "../../axios/userApi";
 import Loading from "../basic/Loading";
 
 const UserDetails = ({ id }: { id: number }) => {
-  const dateOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
   //   return <h2>{id}</h2>
   const router = useRouter();
 
@@ -124,28 +118,15 @@ const UserDetails = ({ id }: { id: number }) => {
               </p>
               <p className="p-1 text-sm font-semibold text-gray-500 bg-blue-200">
                 PURCHASED DATE-{" "}
-                {user.datePurchased?.toLocaleString("en-GB", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {user.datePurchased?.toLocaleString().substring(0, 10)}
               </p>
               <p className="p-1 text-sm font-semibold text-gray-500 bg-gray-200">
-                VALIDITY-{" "}
-                {user.validity?.toLocaleString("en-GB", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                VALIDITY- {user.validity?.toLocaleString().substring(0, 10)}
               </p>
               <p className="p-1 text-sm font-semibold text-gray-500 bg-red-300">
                 DUE DATE-{" "}
                 {user.amountDue
-                  ? user.dueDate?.toLocaleString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
+                  ? user.dueDate?.toLocaleString().substring(0, 10)
                   : "No Due Payment"}
               </p>
             </div>

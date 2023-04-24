@@ -3,9 +3,9 @@ import axios from "axios";
 
 const userApi = axios.create({
   // baseURL: "https://jsonplaceholder.typicode.com",
-  // baseURL: "http://localhost:3000/api/"
+  baseURL: "http://localhost:3000/api/",
   // baseURL: "http://127.0.0.1:3000/api/"
-  baseURL: "https://institute-crm.vercel.app/api/",
+  // baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getUsers = async (): Promise<TUser[]> => {
@@ -40,6 +40,12 @@ export const getThisMonthUsers = async (): Promise<TUser[]> => {
     .then((response) => response.data as TUser[]);
 };
 
+export const getLastMonthUsers = async (): Promise<TUser[]> => {
+  return await userApi
+    .get("/users-data/last-month")
+    .then((response) => response.data as TUser[]);
+};
+
 export const getYearToDateUsers = async (): Promise<TUser[]> => {
   return await userApi
     .get("/users-data/year-to-date")
@@ -57,6 +63,11 @@ export const getThisMonthRevenue = async (): Promise<number> => {
     .get("/revenue/this-month")
     .then((response) => response.data as number);
 };
+export const getLastMonthRevenue = async (): Promise<number> => {
+  return await userApi
+    .get("/revenue/last-month")
+    .then((response) => response.data as number);
+};
 export const getMonthWiseRevenue = async (): Promise<number[]> => {
   return await userApi
     .get("/revenue/month-wise")
@@ -65,6 +76,11 @@ export const getMonthWiseRevenue = async (): Promise<number[]> => {
 export const getYearToDateRevenue = async (): Promise<number> => {
   return await userApi
     .get("/revenue/year-to-date")
+    .then((response) => response.data as number);
+};
+export const getLastYearRevenue = async (): Promise<number> => {
+  return await userApi
+    .get("/revenue/last-year")
     .then((response) => response.data as number);
 };
 export default userApi;

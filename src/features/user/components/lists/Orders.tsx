@@ -1,7 +1,6 @@
 import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { data } from "../../../../data/data";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../axios/userApi";
 import Loading from "../basic/Loading";
@@ -19,7 +18,6 @@ const Orders = () => {
   if (users.length === 0) {
     return <h3>No data found!</h3>;
   }
-
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="p-4">

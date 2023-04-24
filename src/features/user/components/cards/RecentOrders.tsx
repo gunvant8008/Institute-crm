@@ -3,10 +3,16 @@ import { FaShoppingBag } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getRecentUsers } from "@/features/user/axios/userApi";
 import Link from "next/link";
+import Loading from "../basic/Loading";
 
 const RecentOrders = () => {
-  const { data: recentUsers } = useQuery(["recentUsers"], getRecentUsers);
-  console.log(recentUsers);
+  const { data: recentUsers, isLoading } = useQuery(
+    ["recentUsers"],
+    getRecentUsers,
+  );
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="w-full relative lg:h-[70vh] h-[50vh] m-auto p-4 border rounded-lg bg-white overflow-scroll">
       <h1>Recent Orders</h1>
