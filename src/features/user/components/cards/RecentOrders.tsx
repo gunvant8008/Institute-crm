@@ -19,7 +19,7 @@ const RecentOrders = () => {
                   <FaShoppingBag className="text-orange-800" />
                 </div>
                 <div className="pl-4">
-                  <p className="font-bold text-gray-800">${user.amountPaid}</p>
+                  <p className="font-bold text-gray-800">￡{user.amountPaid}</p>
                   <p className="text-sm text-gray-400">{user.instituteName}</p>
                 </div>
                 <p className="lg:flex md:hidden right-6 absolute text-sm">
