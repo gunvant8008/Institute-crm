@@ -51,7 +51,7 @@ const AddUser = () => {
       queryClient.setQueryData(["users"], (old: TUser[] | undefined) => {
         return newUser && old ? [...old, newUser] : old;
       });
-      await router.push("/list");
+      await router.push("/users");
       return { previousUsers };
     },
     onError: (context: { previousUsers: TUser[] }) => {

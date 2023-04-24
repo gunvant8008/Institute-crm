@@ -59,7 +59,7 @@ const EditUser = ({ id }: { id: number }) => {
           ? old?.map((item) => (item.id === user.id ? newUser : item))
           : old;
       });
-      await router.push("/list");
+      await router.push("/users");
       return { previousUsers };
     },
     onError: (context: { previousUsers: TUser[] }) => {
