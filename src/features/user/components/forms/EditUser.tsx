@@ -263,7 +263,7 @@ const EditUser = ({ id }: { id: number }) => {
                 <input
                   // value={data.datePurchased.substring(0, 10)}
                   type="date"
-                  {...register("datePurchased", { valueAsDate: true })}
+                  {...register("datePurchased")}
                 />
               </label>
               {errors.datePurchased ? (
@@ -276,7 +276,7 @@ const EditUser = ({ id }: { id: number }) => {
                 <input
                   // value={data.validity.substring(0, 10)}
                   type="date"
-                  {...register("validity", { valueAsDate: true })}
+                  {...register("validity")}
                 />
               </label>
               {errors.validity ? (
@@ -294,7 +294,7 @@ const EditUser = ({ id }: { id: number }) => {
                   //     : new Date(data.dueDate).toLocaleDateString()
                   // }
                   type="date"
-                  {...register("dueDate", { valueAsDate: true })}
+                  {...register("dueDate")}
                 />
               </label>
               {errors.dueDate ? (
