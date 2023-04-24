@@ -62,10 +62,10 @@ const Orders = () => {
                       </span>
                     </p>
                     <p className="md:flex hidden">
-                      {user.datePurchased?.toLocaleString()}
+                      {user.datePurchased?.toLocaleString().substring(0, 10)}
                     </p>
                     <div className="sm:flex items-center justify-between hidden">
-                      <p>{user.dueDate?.toLocaleString()}</p>
+                      <p>{user.dueDate?.toLocaleString().substring(0, 10)}</p>
                       <BsThreeDotsVertical />
                     </div>
                   </div>
