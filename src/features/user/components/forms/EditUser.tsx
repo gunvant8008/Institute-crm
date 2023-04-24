@@ -308,7 +308,7 @@ const EditUser = ({ id }: { id: number }) => {
         <button className="self-center p-1.5 bg-blue-300">Update User</button>
       </form>
       {/* <DevTool control={control} /> */}
-      <Link className=" self-center p-2 bg-white rounded-md" href="/list">
+      <Link className=" self-center p-2 bg-white rounded-md" href="/users">
         Go Back
       </Link>
     </div>

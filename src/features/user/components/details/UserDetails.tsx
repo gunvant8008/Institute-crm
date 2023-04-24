@@ -36,7 +36,7 @@ const UserDetails = ({ id }: { id: number }) => {
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-        <Link href="/list" className="p-2 font-bold bg-white rounded-md">
+        <Link href="/users" className="p-2 font-bold bg-white rounded-md">
           Go Back
         </Link>
 

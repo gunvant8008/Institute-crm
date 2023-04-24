@@ -267,7 +267,7 @@ const AddUser = () => {
         </button>
       </form>
       {/* <DevTool control={control} /> */}
-      <Link className=" self-center p-2 bg-white rounded-md" href="/list">
+      <Link className=" self-center p-2 bg-white rounded-md" href="/users">
         Go Back
       </Link>
     </div>
