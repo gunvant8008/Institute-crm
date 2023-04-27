@@ -1,20 +1,50 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllProducts, getUser } from "../../axios/userApi";
 import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
 import { Product } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 type SingleProductProps = {
   product: Product;
   register?: unknown;
+  unregister?: unknown;
+  setSelectedProducts?: unknown;
+  index: number;
 };
 
-export const SingleProduct = ({ product, register }: SingleProductProps) => {
+export const SingleProduct = ({
+  product,
+  register,
+  unregister,
+  setSelectedProducts,
+  index,
+}: SingleProductProps) => {
   const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    if (selected === false) {
+      unregister(`products.${index}.id`);
+      unregister(`products.${index}.productName`);
+      unregister(`products.${index}.productPrice`);
+      unregister(`products.${index}.validityInMonths`);
+      unregister(`products.${index}.discount`);
+      unregister(`products.${index}.validityFrom`);
+      unregister(`products.${index}.validityUntil`);
+    } else {
+      register(`products.${index}.id`);
+      register(`products.${index}.productName`);
+      register(`products.${index}.productPrice`);
+      register(`products.${index}.validityInMonths`);
+      register(`products.${index}.discount`);
+      register(`products.${index}.validityFrom`);
+      register(`products.${index}.validityUntil`);
+    }
+  }, [selected, unregister, index, register]);
+
   return (
     <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
       <div className="flex">
@@ -22,6 +52,15 @@ export const SingleProduct = ({ product, register }: SingleProductProps) => {
           type="checkbox"
           checked={selected}
           onChange={() => setSelected(!selected)}
+          //  onChange={() => {
+          //    if (selected === true) {
+          //      setSelected(false)
+          //      setSelectedProducts(prev => prev.filter(p => p.id !== product.id))
+          //    } else {
+          //      setSelected(true)
+          //      setSelectedProducts(prev => [...prev, product])
+          //    }
+          //  }}
           className="p-1 m-2"
         />
         <div className="p-3 bg-orange-200 rounded-lg">
@@ -31,13 +70,51 @@ export const SingleProduct = ({ product, register }: SingleProductProps) => {
           <p className="font-bold text-gray-800">
             ￡{product.productPrice?.toLocaleString()}
           </p>
+          <input
+            type="number"
+            className="hidden"
+            readOnly
+            defaultValue={product.productPrice}
+            {...(selected
+              ? register(`products.${index}.productPrice`, {
+                  valueAsNumber: true,
+                })
+              : null)}
+          />
           <p className="text-sm text-gray-500">Id:{product.id}</p>
+          <input
+            type="number"
+            className="hidden"
+            readOnly
+            defaultValue={product.id}
+            {...(selected
+              ? register(`products.${index}.id`, { valueAsNumber: true })
+              : null)}
+          />
         </div>
       </div>
       <p className="sm:text-left text-right text-gray-600">
         <span>{product.productName}</span>
       </p>
+      <input
+        type="text"
+        className="hidden"
+        readOnly
+        defaultValue={product.productName}
+        {...(selected ? register(`products.${index}.productName`) : null)}
+      />
       <p className="md:flex hidden">{product.validityInMonths}</p>
+      <input
+        type="number"
+        className="hidden"
+        readOnly
+        defaultValue={product.validityInMonths}
+        {...(selected
+          ? register(`products.${index}.validityInMonths`, {
+              valueAsNumber: true,
+            })
+          : null)}
+      />
       <div className="sm:flex items-center justify-between hidden">
         <input
           name="Discount"
@@ -45,16 +122,23 @@ export const SingleProduct = ({ product, register }: SingleProductProps) => {
           type="number"
           className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
           disabled={selected === false}
-          {...register("discount")}
+          {...(selected ? register(`products.${index}.discount`) : null)}
         />
       </div>
       <div className="">
         <input
-          name="validityFrom"
+          name="Validity From"
           type="date"
           className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
           disabled={selected === false}
-          {...register("validityFrom")}
+          {...(selected ? register(`products.${index}.validityFrom`) : null)}
+        />
+        <input
+          type="date"
+          className="hidden"
+          readOnly
+          defaultValue={product.id}
+          {...(selected ? register(`products.${index}.validityUntil`) : null)}
         />
       </div>
     </div>
@@ -62,13 +146,84 @@ export const SingleProduct = ({ product, register }: SingleProductProps) => {
 };
 
 const NewOrder = ({ id }: { id: number }) => {
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  console.log(selectedProducts);
   const router = useRouter();
   const queryClient = useQueryClient();
   const {
+    watch,
     register,
+    unregister,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      userId: id,
+      discount: 0,
+      paidAmount: 0,
+      dueAmount: 0,
+      dueDate: new Date().toISOString().split("T")[0],
+      orderDate: new Date().toISOString().split("T")[0],
+      products: [],
+      paymentMode: "",
+      paidBy: "",
+      receivingAccount: "",
+    },
+  });
+  const watchForm = watch();
+  console.log(watchForm);
+  function calculateTotalAmount() {
+    let totalAmount = 0;
+    if (!watchForm.products) return 0;
+    if (watchForm?.products?.length === 0) {
+      return 0;
+    }
+    watchForm.products.forEach((product) => {
+      totalAmount += product?.productPrice;
+    });
+    return totalAmount;
+  }
+  function calculateTotalDiscount() {
+    let totalDiscount = 0;
+    if (!watchForm.products) return 0;
+    if (watchForm?.products?.length === 0) {
+      return 0;
+    }
+    watchForm.products.forEach((product) => {
+      totalDiscount += parseInt(product?.discount as number);
+    });
+    return totalDiscount;
+  }
+  function calculatePayableAmount() {
+    let payableAmount = 0;
+    if (!watchForm.products) return 0;
+    if (watchForm?.products?.length === 0) {
+      return 0;
+    }
+    watchForm.products.forEach((product) => {
+      payableAmount += product?.productPrice - product?.discount;
+    });
+    return payableAmount;
+  }
+
+  function calculateDueAmount() {
+    let dueAmount = 0;
+    const payableAmount = calculatePayableAmount();
+    const paidAmount = watchForm.paidAmount;
+    dueAmount = payableAmount - paidAmount;
+    return dueAmount;
+  }
+  console.log(
+    calculateTotalAmount(),
+    calculatePayableAmount(),
+    calculateTotalDiscount(),
+  );
+  //   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+  //     {
+  //       control, // control props comes from useForm (optional: if you are using FormContext)
+  //       name: "products" // unique name for your Field Array
+  //     }
+  //   )
 
   const {
     isLoading,
@@ -199,10 +354,16 @@ const NewOrder = ({ id }: { id: number }) => {
             <span>Discount</span>
             <span>Start From</span>
           </div>
-          <ul>
-            {products?.map((product: Product) => (
+          <ul {...register("products")}>
+            {products?.map((product: Product, index) => (
               <li key={product.id}>
-                <SingleProduct register={register} product={product} />
+                <SingleProduct
+                  index={index}
+                  unregister={unregister}
+                  register={register}
+                  product={product}
+                  setSelectedProducts={setSelectedProducts}
+                />
               </li>
             ))}
           </ul>
@@ -213,21 +374,37 @@ const NewOrder = ({ id }: { id: number }) => {
           <div className="flex flex-col text-gray-600 divide-y-2">
             <div className="gap-y-3 flex flex-col py-4">
               <p>Payment Mode*</p>
-              <div className="flex gap-4" {...register("paymentMode")}>
+              <div className="flex gap-4">
                 <label className="flex gap-1">
-                  <input checked type="radio" {...register("paymentMode")} />
+                  <input
+                    type="radio"
+                    value="Online"
+                    {...register("paymentMode")}
+                  />
                   Online
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("paymentMode")} />
+                  <input
+                    type="radio"
+                    value="Wallet"
+                    {...register("paymentMode")}
+                  />
                   Wallet
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("paymentMode")} />
+                  <input
+                    type="radio"
+                    value="Cheque"
+                    {...register("paymentMode")}
+                  />
                   Cheque
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("paymentMode")} />
+                  <input
+                    type="radio"
+                    value="Cash"
+                    {...register("paymentMode")}
+                  />
                   Cash
                 </label>
               </div>
@@ -247,19 +424,35 @@ const NewOrder = ({ id }: { id: number }) => {
               <p>Receiving Account</p>
               <div className="flex gap-4">
                 <label className="flex gap-1">
-                  <input type="radio" {...register("receivingAccount")} />
+                  <input
+                    type="radio"
+                    value="Account 1"
+                    {...register("receivingAccount")}
+                  />
                   Account 1
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("receivingAccount")} />
+                  <input
+                    type="radio"
+                    value="Account 2"
+                    {...register("receivingAccount")}
+                  />
                   Account 2
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("receivingAccount")} />
+                  <input
+                    type="radio"
+                    value="Account 3"
+                    {...register("receivingAccount")}
+                  />
                   Account 3
                 </label>
                 <label className="flex gap-1">
-                  <input type="radio" {...register("receivingAccount")} />
+                  <input
+                    type="radio"
+                    value="Account 4"
+                    {...register("receivingAccount")}
+                  />
                   Account 4
                 </label>
               </div>
@@ -272,8 +465,10 @@ const NewOrder = ({ id }: { id: number }) => {
                 Total Amount
                 <input
                   type="number"
+                  value={calculateTotalAmount()}
+                  readOnly
                   className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                  {...register("totalAmount")}
+                  {...register("totalAmount", { valueAsNumber: true })}
                 />
               </label>
             </div>
@@ -282,8 +477,10 @@ const NewOrder = ({ id }: { id: number }) => {
                 Total Discount
                 <input
                   type="number"
+                  value={calculateTotalDiscount()}
+                  readOnly
                   className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                  {...register("totalDiscount")}
+                  {...register("totalDiscount", { valueAsNumber: true })}
                 />
               </label>
             </div>
@@ -291,9 +488,11 @@ const NewOrder = ({ id }: { id: number }) => {
               <label className="flex items-center justify-between gap-4">
                 payableAmount
                 <input
+                  value={calculatePayableAmount()}
+                  readOnly
                   type="number"
                   className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                  {...register("payableAmount")}
+                  {...register("payableAmount", { valueAsNumber: true })}
                 />
               </label>
             </div>
@@ -303,7 +502,7 @@ const NewOrder = ({ id }: { id: number }) => {
                 <input
                   type="text"
                   className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                  {...register("paidAmount")}
+                  {...register("paidAmount", { valueAsNumber: true })}
                 />
               </label>
             </div>
@@ -312,8 +511,9 @@ const NewOrder = ({ id }: { id: number }) => {
                 Due Amount
                 <input
                   type="text"
+                  value={calculateDueAmount()}
                   className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                  {...register("dueAmount")}
+                  {...register("dueAmount", { valueAsNumber: true })}
                 />
               </label>
             </div>
