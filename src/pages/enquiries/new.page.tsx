@@ -1,4 +1,4 @@
-import AddUser from "@/features/user/components/forms/AddUser";
+import AddUser from "@/features/user/components/forms/AddEnquiry";
 
 const NewPage = () => {
   return (

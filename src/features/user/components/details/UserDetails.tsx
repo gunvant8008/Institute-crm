@@ -27,21 +27,25 @@ const UserDetails = ({ id }: { id: number }) => {
   if (isLoading || deleteLoading) {
     return <Loading />;
   }
+  console.log(user);
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-        <Link href="/users" className="p-2 font-bold bg-white rounded-md">
-          Go Back
+        <Link href="/enquiries" className="p-2 font-bold bg-white rounded-md">
+          Go To Enquiries
         </Link>
 
         <div className="flex justify-between w-full p-4 bg-white rounded-md">
           <h2 className="text-2xl font-semibold text-gray-400">
             USER ID- {user.id}
+            <span className="block text-sm text-gray-500">
+              Status:{user.userStatus}
+            </span>
           </h2>
-          <div className="gap-x-2 flex">
+          <div className="gap-x-2 flex items-center">
             <Link
               href={`/edituser/${user.id}`}
-              className="p-2 bg-blue-200 rounded-md"
+              className="p-1.5 bg-blue-200 rounded-md"
             >
               Edit
             </Link>
@@ -57,8 +61,8 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             USER INFORMATION
           </h3>
-          <div className="flex flex-col p-4 space-y-2">
-            <div className="flex flex-col space-y-2">
+          <div className="flex flex-wrap items-center gap-8 p-4">
+            <div className="flex flex-col space-y-2 min-w-[18rem]">
               <p className="text-sm font-semibold text-gray-500">
                 INSTITUTE NAME
               </p>
@@ -66,71 +70,59 @@ const UserDetails = ({ id }: { id: number }) => {
                 {user.instituteName}
               </span>
             </div>
-            <div className="flex flex-col space-y-2">
-              <p className="text-sm font-semibold text-gray-500">NAME</p>
+            <div className="flex flex-col space-y-2 min-w-[18rem]">
+              <p className="text-sm font-semibold text-gray-500">OWNER NAME</p>
               <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.fullName}
+                {user.ownersName}
               </span>
             </div>
-            <div className="flex flex-col space-y-2">
-              <p className="text-sm font-semibold text-gray-500">CITY</p>
+            <div className="flex flex-col space-y-2 min-w-[18rem]">
+              <p className="text-sm font-semibold text-gray-500">
+                MANAGER NAME
+              </p>
               <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.city}
+                {user.managersName}
+              </span>
+            </div>
+            <div className="flex flex-col space-y-2 min-w-[18rem]">
+              <p className="text-sm font-semibold text-gray-500">DESCRIPTION</p>
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                {user.description}
               </span>
             </div>
           </div>
         </div>
         <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">
-            SUBJECT PURCHASED
-          </h3>
+          <h3 className="text-md font-semibold text-gray-400">STATUS</h3>
           <div className="flex flex-col p-4 space-y-2">
-            <div className="flex space-x-8">
-              <p className="text-sm font-semibold text-gray-500">
-                MATHS- {user.mathsPurchased ? "✅" : "❌"}
-              </p>
-              <p className="text-sm font-semibold text-gray-500">
-                BIOLOGY- {user.biologyPurchased ? "✅" : "❌"}
-              </p>
-              <p className="text-sm font-semibold text-gray-500">
-                PHYSICS- {user.physicsPurchased ? "✅" : "❌"}
-              </p>
-              <p className="text-sm font-semibold text-gray-500">
-                CHEMISTRY- {user.chemistryPurchased ? "✅" : "❌"}
-              </p>
+            <div className="flex flex-wrap items-center gap-8">
+              <div className="flex flex-col space-y-2 min-w-[18rem] ">
+                <p className="text-sm font-semibold text-gray-500">
+                  CURRENT STATUS
+                </p>
+                <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                  {user.userStatus}
+                </span>
+              </div>
+              <div className="flex flex-col min-w-[18rem] space-y-2">
+                <p className="text-sm font-semibold text-gray-500">LEAD TYPE</p>
+                <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                  {user.leadType}
+                </span>
+              </div>
+              <div className="flex flex-col min-w-[18rem] space-y-2">
+                <p className="text-sm font-semibold text-gray-500">
+                  LEAD SOURCE
+                </p>
+                <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                  {user.leadSource}
+                </span>
+              </div>
             </div>
           </div>
         </div>
         <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">
-            PAYMENT STATUS
-          </h3>
-          <div className="flex flex-col p-4 space-y-2">
-            <div className="flex space-x-8">
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-green-100">
-                AMOUNT PAID- {user.amountPaid}
-              </p>
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-orange-100">
-                DISCOUNT- {user.discountGiven}
-              </p>
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-red-100">
-                AMOUNT DUE- {user.amountDue ?? "❌"}
-              </p>
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-blue-200">
-                PURCHASED DATE-{" "}
-                {user.datePurchased?.toLocaleString().substring(0, 10)}
-              </p>
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-gray-200">
-                VALIDITY- {user.validity?.toLocaleString().substring(0, 10)}
-              </p>
-              <p className="p-1 text-sm font-semibold text-gray-500 bg-red-300">
-                DUE DATE-{" "}
-                {user.amountDue
-                  ? user.dueDate?.toLocaleString().substring(0, 10)
-                  : "No Due Payment"}
-              </p>
-            </div>
-          </div>
+          <h3 className="text-md font-semibold text-gray-400">PURCHASES</h3>
         </div>
 
         <span className="border-b-[1px] border-gray-300 w-full"></span>
@@ -138,17 +130,35 @@ const UserDetails = ({ id }: { id: number }) => {
           <h3 className="text-md font-semibold text-gray-400">
             CONTACT INFORMATION
           </h3>
-          <div className="flex flex-col p-4 space-y-2">
-            <div className="flex flex-col space-y-2">
+          <div className="flex flex-wrap items-center gap-10 p-4">
+            <div className="flex flex-col space-y-2 min-w-[18rem] ">
               <p className="text-sm font-semibold text-gray-500">EMAIL</p>
               <span className="p-2 font-thin bg-white rounded-md shadow-md">
                 {user.email}
               </span>
             </div>
-            <div className="flex flex-col space-y-2">
-              <p className="text-sm font-semibold text-gray-500">PHONE</p>
+            <div className="flex flex-col min-w-[18rem] space-y-2">
+              <p className="text-sm font-semibold text-gray-500">PHONE 1</p>
               <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.phone}
+                {user.phone1}
+              </span>
+            </div>
+            <div className="flex flex-col space-y-2 min-w-[18rem] ">
+              <p className="text-sm font-semibold text-gray-500">PHONE 2</p>
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                {user.phone2}
+              </span>
+            </div>
+            <div className="flex flex-col space-y-2 min-w-[18rem] ">
+              <p className="text-sm font-semibold text-gray-500">WEBSITE</p>
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                {user.website}
+              </span>
+            </div>
+            <div className="flex flex-col space-y-2 min-w-[18rem] ">
+              <p className="text-sm font-semibold text-gray-500">ADDRESS</p>
+              <span className="p-2 font-thin bg-white rounded-md shadow-md">
+                {user.address}
               </span>
             </div>
           </div>

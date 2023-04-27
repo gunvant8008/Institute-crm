@@ -1,10 +1,10 @@
+import ActiveClientsList from "@/features/user/components/lists/ActiveClientsList";
 import React from "react";
-import UsersList from "@/features/user/components/lists/UsersList";
 
 const ListPage = () => {
   return (
     <>
-      <UsersList />
+      <ActiveClientsList />
     </>
   );
 };
