@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { getAllProducts, getUser } from "../../axios/userApi";
@@ -6,13 +6,42 @@ import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
 import { Product } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UseFormRegister, FieldValues } from "react-hook-form";
+
+const NewOrderSchema = z.object({
+  userId: z.number(),
+  products: z.array(
+    z.object({
+      id: z.number(),
+      productName: z.string(),
+      productPrice: z.number(),
+      validityInMonths: z.number(),
+      discount: z.number(),
+      validityFrom: z.string(),
+      validityUntil: z.string(),
+    }),
+  ),
+  totalAmount: z.number(),
+  totalDiscount: z.number(),
+  payableAmount: z.number(),
+  paidAmount: z.number(),
+  dueAmount: z.number(),
+  dueDate: z.string(),
+  orderDate: z.string(),
+  paymentMode: z.string(),
+  paidBy: z.string(),
+  receivingAccount: z.string(),
+});
+
+type TNewOrderSchema = z.infer<typeof NewOrderSchema>;
 
 type SingleProductProps = {
   product: Product;
-  register?: unknown;
-  unregister?: unknown;
-  setSelectedProducts?: unknown;
+  register: UseFormRegister<FieldValues>;
+  unregister: UseFormRegister<FieldValues>;
   index: number;
 };
 
@@ -20,11 +49,9 @@ export const SingleProduct = ({
   product,
   register,
   unregister,
-  setSelectedProducts,
   index,
 }: SingleProductProps) => {
   const [selected, setSelected] = useState(false);
-
   useEffect(() => {
     if (selected === false) {
       unregister(`products.${index}.id`);
@@ -146,8 +173,6 @@ export const SingleProduct = ({
 };
 
 const NewOrder = ({ id }: { id: number }) => {
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  console.log(selectedProducts);
   const router = useRouter();
   const queryClient = useQueryClient();
   const {
@@ -156,10 +181,11 @@ const NewOrder = ({ id }: { id: number }) => {
     unregister,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<TNewOrderSchema>({
+    resolver: zodResolver(NewOrderSchema),
     defaultValues: {
       userId: id,
-      discount: 0,
+      totalDiscount: 0,
       paidAmount: 0,
       dueAmount: 0,
       dueDate: new Date().toISOString().split("T")[0],
@@ -171,7 +197,7 @@ const NewOrder = ({ id }: { id: number }) => {
     },
   });
   const watchForm = watch();
-  console.log(watchForm);
+
   function calculateTotalAmount() {
     let totalAmount = 0;
     if (!watchForm.products) return 0;
@@ -189,8 +215,9 @@ const NewOrder = ({ id }: { id: number }) => {
     if (watchForm?.products?.length === 0) {
       return 0;
     }
+    // REVIEW: Why do we need Number here
     watchForm.products.forEach((product) => {
-      totalDiscount += parseInt(product?.discount as number);
+      totalDiscount += Number(product?.discount);
     });
     return totalDiscount;
   }
@@ -205,7 +232,6 @@ const NewOrder = ({ id }: { id: number }) => {
     });
     return payableAmount;
   }
-
   function calculateDueAmount() {
     let dueAmount = 0;
     const payableAmount = calculatePayableAmount();
@@ -213,25 +239,21 @@ const NewOrder = ({ id }: { id: number }) => {
     dueAmount = payableAmount - paidAmount;
     return dueAmount;
   }
-  console.log(
-    calculateTotalAmount(),
-    calculatePayableAmount(),
-    calculateTotalDiscount(),
-  );
-  //   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-  //     {
-  //       control, // control props comes from useForm (optional: if you are using FormContext)
-  //       name: "products" // unique name for your Field Array
-  //     }
-  //   )
 
   const {
     isLoading,
     isError,
     data: userData,
   } = useQuery(["user", id.toString()], () => (id ? getUser(id) : null));
-
   const { data: products } = useQuery(["products"], () => getAllProducts());
+
+  // const { mutate } = useMutation(addNewOrder, {
+  //       onSuccess: async () => {
+  //         await queryClient.invalidateQueries("orders")
+  //          await router.push("/orders")
+  //          }
+  //          })
+
   if (isError) {
     return (
       <div className="flex items-center justify-center gap-4 mt-10">
@@ -246,8 +268,8 @@ const NewOrder = ({ id }: { id: number }) => {
   if (isLoading || !userData) {
     return <h2>Loading...</h2>;
   }
-
-  const onSubmit = (data) => {
+  console.log(watchForm);
+  const onSubmit = (data: TNewOrderSchema) => {
     console.log(data);
   };
 
@@ -266,7 +288,7 @@ const NewOrder = ({ id }: { id: number }) => {
               <TextFieldWithLabel
                 labelText="Id"
                 inputType="number"
-                //  placeholder={userData.id.toString()}
+                placeholder={userData.id.toString()}
                 defaultValue={userData.id.toString()}
                 readOnly
                 className="p-1 text-gray-400 rounded-md"
@@ -362,7 +384,6 @@ const NewOrder = ({ id }: { id: number }) => {
                   unregister={unregister}
                   register={register}
                   product={product}
-                  setSelectedProducts={setSelectedProducts}
                 />
               </li>
             ))}
