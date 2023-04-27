@@ -6,6 +6,7 @@ interface TextFieldWithLabelProps {
   className?: string;
   error?: string;
   inputProps?: unknown;
+  defaultValue?: string;
 }
 
 export const TextFieldWithLabel = ({
