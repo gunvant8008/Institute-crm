@@ -185,10 +185,8 @@ const NewOrder = ({ id }: { id: number }) => {
     resolver: zodResolver(NewOrderSchema),
     defaultValues: {
       userId: id,
-      totalDiscount: 0,
-      paidAmount: 0,
       dueAmount: 0,
-      dueDate: new Date().toISOString().split("T")[0],
+      dueDate: "",
       orderDate: new Date().toISOString().split("T")[0],
       products: [],
       paymentMode: "",

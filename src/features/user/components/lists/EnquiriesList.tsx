@@ -89,14 +89,14 @@ const EnquiriesList = () => {
                 <p className="md:flex hidden">{user.userStatus}</p>
                 <p>{user.address}</p>
                 <div className="sm:flex gap-x-10 items-center justify-between hidden">
-                  <div className="gap-x-2 flex">
+                  <div className="gap-x-2 flex items-center justify-between">
                     <Link
                       href={`/user/${user.id}`}
                       className="p-1.5  bg-gray-200 rounded-md"
                     >
                       View
                     </Link>
-                    <button
+                    {/* <button
                       className="p-1 bg-red-200 rounded-md"
                       onClick={() => deleteUserMutation.mutate(user.id)}
                     >
@@ -107,7 +107,7 @@ const EnquiriesList = () => {
                       className="p-1.5  bg-blue-200 rounded-md"
                     >
                       Edit
-                    </Link>
+                    </Link> */}
                     <Link
                       href={`/orders/new/${user.id}`}
                       className="p-1.5  bg-blue-200 rounded-md"

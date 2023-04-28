@@ -32,9 +32,10 @@ type TAddProductSchema = z.infer<typeof AddProductSchema>;
 type TModalProps = {
   buttonText: string;
   title: string;
+  className: string;
 };
 
-const AddProductModal = ({ buttonText, title }: TModalProps) => {
+const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
   const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
 
@@ -90,7 +91,10 @@ const AddProductModal = ({ buttonText, title }: TModalProps) => {
   return (
     <>
       <button
-        className="active:bg-green-400 focus:outline-none px-6 font-semibold text-black bg-green-200 rounded shadow outline-none"
+        className={
+          "active:bg-green-400 focus:outline-none px-6 font-semibold text-black bg-green-200 rounded shadow outline-none " +
+          className
+        }
         type="button"
         onClick={() => setShowModal(true)}
       >

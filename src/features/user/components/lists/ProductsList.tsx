@@ -44,7 +44,11 @@ const ProductsList = () => {
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
       <div className=" flex justify-between w-full">
         <h2 className="p-4 text-2xl">Products List</h2>
-        <AddProductModal buttonText="Add Product" title="Add Product" />
+        <AddProductModal
+          buttonText="Add Product"
+          title="Add Product"
+          className="p-2 m-2 bg-green-200 rounded-md shadow-md"
+        />
       </div>
       <div className="w-full p-4 overflow-y-auto bg-white border rounded-lg">
         <div className="md:grid-cols-4 sm:grid-cols-3 grid items-center justify-between grid-cols-2 p-2 my-3 font-semibold">
