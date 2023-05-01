@@ -22,7 +22,8 @@ export interface Product {
 }
 
 export interface ProductInOrder extends Product {
-  discount?: number;
+  isSelected: boolean;
+  discount: number | 0;
   validityFrom: string;
   validityUntil: string;
 }

@@ -106,28 +106,30 @@ let users: User[] = [
   },
 ];
 
-const orders: Order = [
+const orders: Order[] = [
   {
     id: 1,
     userId: 1,
     products: [
       {
         id: 1,
+        isSelected: true,
         productName: "Gyanam PCMB",
         productPrice: 40000,
         discount: 10000,
         productDescription: "Test paper generator for PCMB",
-        validityInMonths: "12 Months",
+        validityInMonths: 12,
         validityFrom: "2023-01-30",
         validityUntil: "2024-01-30",
       },
       {
         id: 2,
+        isSelected: true,
         productName: "Gyanam CRM",
         productPrice: 20000,
         discount: 0,
         productDescription: "Manage your leads and customers",
-        validityInMonths: "12 Months",
+        validityInMonths: 12,
         validityFrom: "2023-01-30",
         validityUntil: "2024-01-30",
       },
@@ -149,16 +151,18 @@ const orders: Order = [
     products: [
       {
         id: 1,
+        isSelected: true,
         productName: "Gyanam PCMB",
         productPrice: 40000,
         productDescription: "Test paper generator for PCMB",
-        validityInMonths: "12 Months",
+        validityInMonths: 12,
         validityFrom: "2023-01-30",
         validityUntil: "2024-01-30",
       },
     ],
     totalAmount: 40000,
     totalDiscount: 10000,
+    payableAmount: 30000,
     paidAmount: 20000,
     dueAmount: 10000,
     dueDate: "2023-06-30",
@@ -171,6 +175,7 @@ const orders: Order = [
 
 let lastUserId = users.length + 1;
 let lastProductId = products.length + 1;
+let lastOrderId = orders.length + 1;
 
 export const handlers = [
   // api for all enquiry users
@@ -291,78 +296,6 @@ export const handlers = [
     const recentUsers = users.slice(0, 15);
     return res(ctx.status(200), ctx.delay(200), ctx.json(recentUsers));
   }),
-  // api for this month's revenue
-  // rest.get("/api/revenue/this-month", (req, res, ctx) => {
-  //   const thisMonthUsers = users.filter(user => {
-  //     const date = new Date(user.addedOn)
-  //     const month = date.getMonth()
-  //     const year = date.getFullYear()
-  //     const today = new Date()
-  //     return month === today.getMonth() && year === today.getFullYear()
-  //   })
-  //   const revenue = thisMonthUsers.reduce((acc, user) => {
-  //     return acc + user.amountPaid
-  //   }, 0)
-  //   return res(ctx.status(200), ctx.delay(200), ctx.json(revenue))
-  // }),
-  // api for last month's revenue
-  // rest.get("/api/revenue/last-month", (req, res, ctx) => {
-  //   const lastMonthUsers = users.filter(user => {
-  //     const date = new Date(user.datePurchased)
-  //     const month = date.getMonth()
-  //     const year = date.getFullYear()
-  //     const today = new Date()
-  //     return month === today.getMonth() - 1 && year === today.getFullYear()
-  //   })
-  //   const revenue = lastMonthUsers.reduce((acc, user) => {
-  //     return acc + user.amountPaid
-  //   }, 0)
-  //   return res(ctx.status(200), ctx.delay(200), ctx.json(revenue))
-  // }),
-  // api for month wise revenue for full year
-  // rest.get("/api/revenue/month-wise", (req, res, ctx) => {
-  //   const monthWiseRevenue = []
-  //   for (let i = 0; i < 12; i++) {
-  //     const monthUsers = users.filter(user => {
-  //       const date = new Date(user.datePurchased)
-  //       const month = date.getMonth()
-  //       const year = date.getFullYear()
-  //       const today = new Date()
-  //       return month === i && year === today.getFullYear()
-  //     })
-  //     const revenue = monthUsers.reduce((acc, user) => {
-  //       return acc + user.amountPaid
-  //     }, 0)
-  //     monthWiseRevenue.push(revenue)
-  //   }
-  //   return res(ctx.status(200), ctx.delay(200), ctx.json(monthWiseRevenue))
-  // }),
-  // api for year to date revenue
-  // rest.get("/api/revenue/year-to-date", (req, res, ctx) => {
-  //   const yearToDateUsers = users.filter(user => {
-  //     const date = new Date(user.datePurchased)
-  //     const year = date.getFullYear()
-  //     const today = new Date()
-  //     return year === today.getFullYear()
-  //   })
-  //   const revenue = yearToDateUsers.reduce((acc, user) => {
-  //     return acc + user.amountPaid
-  //   }, 0)
-  //   return res(ctx.status(200), ctx.delay(200), ctx.json(revenue))
-  // }),
-  // // api for last year's revenue
-  // rest.get("/api/revenue/last-year", (req, res, ctx) => {
-  //   const lastYearUsers = users.filter(user => {
-  //     const date = new Date(user.datePurchased)
-  //     const year = date.getFullYear()
-  //     const today = new Date()
-  //     return year === today.getFullYear() - 1
-  //   })
-  //   const revenue = lastYearUsers.reduce((acc, user) => {
-  //     return acc + user.amountPaid
-  //   }, 0)
-  //   return res(ctx.status(200), ctx.delay(200), ctx.json(revenue))
-  // }),
   // api for all products
   rest.get("/api/products", (req, res, ctx) => {
     return res(ctx.status(200), ctx.delay(200), ctx.json(products));
@@ -412,5 +345,43 @@ export const handlers = [
     const id = Number(req.params.id);
     products = products.filter((product) => product.id !== id);
     return res(ctx.status(204));
+  }),
+  // api for all orders
+  rest.get("/api/orders", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.delay(200), ctx.json(orders));
+  }),
+  // api to get a single order
+  rest.get("/api/orders/:id", (req, res, ctx) => {
+    const id = Number(req.params.id);
+    const order = orders.find((order) => order.id === id);
+    if (!order) {
+      return res(
+        ctx.status(404),
+        ctx.delay(200),
+        ctx.json({ message: "Order not found" }),
+      );
+    }
+    return res(ctx.status(200), ctx.delay(200), ctx.json(order));
+  }),
+  // api to add a new order
+  rest.post("/api/orders/new", async (req, res, ctx) => {
+    const newOrder: Order = await req.json();
+    const { userId, products } = newOrder;
+    const user = users.find((user) => user.id === userId);
+    if (!user) {
+      return res(
+        ctx.status(404),
+        ctx.delay(200),
+        ctx.json({ message: "User not found" }),
+      );
+    }
+    user.userStatus = "ACTIVE";
+    newOrder.id = ++lastOrderId;
+    orders.unshift(newOrder);
+    return res(
+      ctx.status(201),
+      ctx.delay(500),
+      ctx.json({ message: "Order added successfully" }),
+    );
   }),
 ];
