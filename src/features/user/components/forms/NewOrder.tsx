@@ -10,44 +10,7 @@ import { UseFormSetValue, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useFieldArray } from "react-hook-form";
-
-// const NewOrderSchema = z.object({
-//   userId: z.number(),
-//   products: z.array(
-//     z
-//       .object({
-//         id: z.number(),
-//         isSelected: z.boolean(),
-//         productName: z.string(),
-//         productPrice: z.number(),
-//         validityInMonths: z.number(),
-//         //REVIEW: only want these optional when isSelected is false
-//         discount: z
-//         .number()
-//         .optional()
-//         .refine((val, data) => data.isSelected || val === undefined, {
-//           message: 'Discount must be provided when isSelected is true'
-//         }),
-//       validityFrom: z
-//         .string()
-//         .optional()
-//         .refine((val, data) => data.isSelected || val === undefined, {
-//           message: 'Validity From must be provided when isSelected is true'
-//         }),
-//         validityUntil: z.string()
-//       })
-//   ),
-//   totalAmount: z.number(),
-//   totalDiscount: z.number(),
-//   payableAmount: z.number(),
-//   paidAmount: z.number(),
-//   dueAmount: z.number(),
-//   dueDate: z.string(),
-//   orderDate: z.string(),
-//   paymentMode: z.string(),
-//   paidBy: z.string(),
-//   receivingAccount: z.string()
-// })
+import { error } from "console";
 
 const ProductSchema = z.object({
   id: z.number(),
@@ -58,6 +21,7 @@ const ProductSchema = z.object({
   discount: z
     .number()
     .optional()
+    // REVIEW:
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .refine((val, data) => !data?.isSelected || val !== undefined, {
       message: "Discount must be provided when Product is selected.",
@@ -127,31 +91,31 @@ const NewOrder = ({ id }: { id: number }) => {
     formState: { errors },
   } = useForm<TNewOrderSchema>({
     resolver: zodResolver(NewOrderSchema),
-    defaultValues: {
-      userId: id,
-      products: [
-        {
-          id: 1,
-          isSelected: false,
-          productName: "Gyanam PCMB",
-          productPrice: 40000,
-          validityInMonths: 12,
-          discount: 0,
-          validityFrom: "",
-          validityUntil: "",
-        },
-      ],
-      totalAmount: 0,
-      totalDiscount: 0,
-      payableAmount: 0,
-      paidAmount: 0,
-      dueAmount: 0,
-      dueDate: "",
-      orderDate: new Date().toISOString().split("T")[0],
-      paymentMode: "",
-      paidBy: "",
-      receivingAccount: "",
-    },
+    // defaultValues: {
+    //   userId: id,
+    //   products: [
+    //     {
+    //       id: 1,
+    //       isSelected: false,
+    //       productName: "Gyanam PCMB",
+    //       productPrice: 40000,
+    //       validityInMonths: 12,
+    //       discount: 0,
+    //       validityFrom: "",
+    //       validityUntil: ""
+    //     }
+    //   ],
+    //   totalAmount: 0,
+    //   totalDiscount: 0,
+    //   payableAmount: 0,
+    //   paidAmount: 0,
+    //   dueAmount: 0,
+    //   dueDate: "",
+    //   orderDate: new Date().toISOString().split("T")[0],
+    //   paymentMode: "",
+    //   paidBy: "",
+    //   receivingAccount: ""
+    // }
   });
 
   function getNumber(value: string | number) {
@@ -227,7 +191,7 @@ const NewOrder = ({ id }: { id: number }) => {
     console.log(data);
     mutate(data);
   };
-  console.log(getValues("products"));
+  console.log(errors);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -243,10 +207,15 @@ const NewOrder = ({ id }: { id: number }) => {
                     className="bg-gray-50 p-1 text-gray-400 rounded-md"
                     disabled
                     type="number"
-                    {...register("userId")}
+                    {...register("userId", { required: true })}
                     defaultValue={parseInt(id.toString())}
                   />
                 </label>
+                {errors.userId && (
+                  <span className="text-sm text-red-400">
+                    {errors.userId.message}
+                  </span>
+                )}
                 <TextFieldWithLabel
                   labelText="Institute Name"
                   inputType="text"
@@ -387,6 +356,7 @@ const NewOrder = ({ id }: { id: number }) => {
                       className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                       {...register(`products.${index}.discount`, {
                         valueAsNumber: true,
+                        required: true,
                       })}
                     />
 
@@ -394,7 +364,9 @@ const NewOrder = ({ id }: { id: number }) => {
                       type="date"
                       disabled={!getValues(`products.${index}.isSelected`)}
                       className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.validityFrom`)}
+                      {...register(`products.${index}.validityFrom`, {
+                        required: true,
+                      })}
                     />
                     <input
                       type="date"
@@ -419,7 +391,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Online"
-                      {...register("paymentMode")}
+                      {...register("paymentMode", { required: true })}
                     />
                     Online
                   </label>
@@ -427,7 +399,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Wallet"
-                      {...register("paymentMode")}
+                      {...register("paymentMode", { required: true })}
                     />
                     Wallet
                   </label>
@@ -435,7 +407,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Cheque"
-                      {...register("paymentMode")}
+                      {...register("paymentMode", { required: true })}
                     />
                     Cheque
                   </label>
@@ -443,7 +415,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Cash"
-                      {...register("paymentMode")}
+                      {...register("paymentMode", { required: true })}
                     />
                     Cash
                   </label>
@@ -455,7 +427,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   <input
                     type="text"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("paidBy")}
+                    {...register("paidBy", { required: true })}
                   />
                 </label>
               </div>
@@ -467,7 +439,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Account 1"
-                      {...register("receivingAccount")}
+                      {...register("receivingAccount", { required: true })}
                     />
                     Account 1
                   </label>
@@ -475,7 +447,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Account 2"
-                      {...register("receivingAccount")}
+                      {...register("receivingAccount", { required: true })}
                     />
                     Account 2
                   </label>
@@ -483,7 +455,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Account 3"
-                      {...register("receivingAccount")}
+                      {...register("receivingAccount", { required: true })}
                     />
                     Account 3
                   </label>
@@ -491,7 +463,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <input
                       type="radio"
                       value="Account 4"
-                      {...register("receivingAccount")}
+                      {...register("receivingAccount", { required: true })}
                     />
                     Account 4
                   </label>
@@ -543,7 +515,10 @@ const NewOrder = ({ id }: { id: number }) => {
                     // value={calculateOrderValues().paidAmount}
                     type="number"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("paidAmount", { valueAsNumber: true })}
+                    {...register("paidAmount", {
+                      valueAsNumber: true,
+                      required: true,
+                    })}
                   />
                 </label>
               </div>
@@ -565,7 +540,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   <input
                     type="date"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("dueDate")}
+                    {...register("dueDate", { required: true })}
                   />
                 </label>
               </div>
