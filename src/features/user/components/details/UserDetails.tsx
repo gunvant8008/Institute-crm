@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { deleteUser, getUser } from "../../axios/userApi";
+import { deleteUser, getUser, getUserOrders } from "../../axios/userApi";
 import Loading from "../basic/Loading";
+import { FaShoppingBag } from "react-icons/fa";
 
 const UserDetails = ({ id }: { id: number }) => {
   //   return <h2>{id}</h2>
@@ -14,20 +15,23 @@ const UserDetails = ({ id }: { id: number }) => {
     isError,
     data: user,
   } = useQuery(["user", id], () => (id ? getUser(id) : null));
+
+  const { data: userOrders } = useQuery(["userOrders", id], () =>
+    id ? getUserOrders(id) : null,
+  );
+  console.log(userOrders);
   const { mutate, isLoading: deleteLoading } = useMutation(deleteUser, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["users"]);
       await router.push("/users");
     },
   });
-
   if (isError) {
     return <h2>Something went wrong!</h2>;
   }
   if (isLoading || deleteLoading) {
     return <Loading />;
   }
-  console.log(user);
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
@@ -123,6 +127,66 @@ const UserDetails = ({ id }: { id: number }) => {
         </div>
         <div className="w-full">
           <h3 className="text-md font-semibold text-gray-400">PURCHASES</h3>
+          <div className="md:grid-cols-9 sm:grid-cols-3 grid items-center justify-between grid-cols-2 gap-4 p-2 my-3 font-semibold">
+            <span>Order No</span>
+            <span className="sm:text-left text-right">Products</span>
+            <span className="md:grid hidden">Total</span>
+            <span className="sm:grid hidden">Discount</span>
+            <span className="sm:grid hidden">Paid</span>
+            <span className="sm:grid hidden">Balance</span>
+            <span className="sm:grid hidden">Due Date</span>
+            <span className="sm:grid hidden">Method</span>
+            <span className="sm:grid hidden">Paid By</span>
+          </div>
+          <ul className="bg-gray-50 p-1.5 border">
+            {userOrders &&
+              userOrders.map((order) => (
+                <li key={order.id}>
+                  <div className="grid grid-cols-9 gap-8 text-sm">
+                    <div className="flex">
+                      <div className="pl-2">
+                        <FaShoppingBag className=" text-orange-800" />
+                        <p className="text-cyan-600 text-sm font-semibold cursor-pointer">
+                          Order Id: {order.id}
+                        </p>
+                        <p className=" text-xs text-gray-800">
+                          {order.orderDate}
+                        </p>
+                      </div>
+                    </div>
+                    <ul className="gap-y-2 flex flex-col">
+                      {order.products.map((product) => {
+                        if (product?.isSelected) {
+                          return (
+                            <li key={product.id} className="flex flex-col">
+                              <span className="font-semibold">
+                                {" "}
+                                {product.productName}
+                              </span>
+                              <span className=" text-xs text-gray-600">
+                                {" "}
+                                From: {product.validityFrom}
+                              </span>
+                              <span className=" text-xs text-gray-600">
+                                {" "}
+                                Until: {product.validityUntil}
+                              </span>
+                            </li>
+                          );
+                        }
+                      })}
+                    </ul>
+                    <p>￡{order.totalAmount}</p>
+                    <p>￡{order.totalDiscount}</p>
+                    <p>￡{order.paidAmount}</p>
+                    <p>￡{order.dueAmount}</p>
+                    <p>{order.dueDate}</p>
+                    <p>{order.paymentMode}</p>
+                    <p>{order.paidBy}</p>
+                  </div>
+                </li>
+              ))}
+          </ul>
         </div>
 
         <span className="border-b-[1px] border-gray-300 w-full"></span>

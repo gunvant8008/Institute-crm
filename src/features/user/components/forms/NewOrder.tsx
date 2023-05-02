@@ -1,31 +1,80 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getAllProducts, getUser } from "../../axios/userApi";
+import { addOrder, getAllProducts, getUser } from "../../axios/userApi";
 import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
-import { Product, ProductInOrder } from "../../types/userTypes";
+import { Order, Product, ProductInOrder } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
-import { useForm, useFormState } from "react-hook-form";
+import { UseFormSetValue, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UseFormRegister, FieldValues, useFieldArray } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
+import { FieldValues, useFieldArray } from "react-hook-form";
+
+// const NewOrderSchema = z.object({
+//   userId: z.number(),
+//   products: z.array(
+//     z
+//       .object({
+//         id: z.number(),
+//         isSelected: z.boolean(),
+//         productName: z.string(),
+//         productPrice: z.number(),
+//         validityInMonths: z.number(),
+//         //REVIEW: only want these optional when isSelected is false
+//         discount: z
+//         .number()
+//         .optional()
+//         .refine((val, data) => data.isSelected || val === undefined, {
+//           message: 'Discount must be provided when isSelected is true'
+//         }),
+//       validityFrom: z
+//         .string()
+//         .optional()
+//         .refine((val, data) => data.isSelected || val === undefined, {
+//           message: 'Validity From must be provided when isSelected is true'
+//         }),
+//         validityUntil: z.string()
+//       })
+//   ),
+//   totalAmount: z.number(),
+//   totalDiscount: z.number(),
+//   payableAmount: z.number(),
+//   paidAmount: z.number(),
+//   dueAmount: z.number(),
+//   dueDate: z.string(),
+//   orderDate: z.string(),
+//   paymentMode: z.string(),
+//   paidBy: z.string(),
+//   receivingAccount: z.string()
+// })
+
+const ProductSchema = z.object({
+  id: z.number(),
+  isSelected: z.boolean().optional(),
+  productName: z.string(),
+  productPrice: z.number(),
+  validityInMonths: z.number(),
+  discount: z
+    .number()
+    .optional()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    .refine((val, data) => !data?.isSelected || val !== undefined, {
+      message: "Discount must be provided when Product is selected.",
+    }),
+  validityFrom: z
+    .string()
+    .optional()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    .refine((val, data) => !data?.isSelected || val !== undefined, {
+      message: "Validity From must be provided when Product is selected.",
+    }),
+  validityUntil: z.string(),
+});
 
 const NewOrderSchema = z.object({
   userId: z.number(),
-  products: z.array(
-    z.object({
-      id: z.number(),
-      isSelected: z.boolean(),
-      productName: z.string(),
-      productPrice: z.number(),
-      validityInMonths: z.number(),
-      discount: z.number(),
-      validityFrom: z.string(),
-      validityUntil: z.string(),
-    }),
-  ),
+  products: z.array(ProductSchema),
   totalAmount: z.number(),
   totalDiscount: z.number(),
   payableAmount: z.number(),
@@ -41,6 +90,33 @@ const NewOrderSchema = z.object({
 type TNewOrderSchema = z.infer<typeof NewOrderSchema>;
 
 const NewOrder = ({ id }: { id: number }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation(addOrder, {
+    onMutate: async (order: Order) => {
+      await queryClient.cancelQueries(["orders"]);
+      const previousOrders = queryClient.getQueryData<Order[]>(["orders"]);
+      const newId = 0;
+      const newOrder = queryClient.setQueryData(["order", newId.toString()], {
+        ...order,
+        id: 0,
+      });
+      queryClient.setQueryData(["orders"], (old: Order[] | undefined) => {
+        return newOrder && old ? [newOrder, ...old] : old;
+      });
+      await router.push("/orders");
+      return { previousOrders };
+    },
+    onError: (context: { previousOrders: Order[] }) => {
+      queryClient.setQueryData(["orders"], context.previousOrders);
+      // await queryClient.invalidateQueries(["photos"])
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries(["orders"]);
+    },
+  });
+
   const {
     register,
     watch,
@@ -53,7 +129,18 @@ const NewOrder = ({ id }: { id: number }) => {
     resolver: zodResolver(NewOrderSchema),
     defaultValues: {
       userId: id,
-      products: [],
+      products: [
+        {
+          id: 1,
+          isSelected: false,
+          productName: "Gyanam PCMB",
+          productPrice: 40000,
+          validityInMonths: 12,
+          discount: 0,
+          validityFrom: "",
+          validityUntil: "",
+        },
+      ],
       totalAmount: 0,
       totalDiscount: 0,
       payableAmount: 0,
@@ -67,33 +154,50 @@ const NewOrder = ({ id }: { id: number }) => {
     },
   });
 
-  const productsFormState = getValues("products");
+  function getNumber(value: string | number) {
+    if (typeof value === "number") {
+      return value;
+    }
+    return parseInt(value);
+  }
+  // REVIEW: I had to write this watch fn in order to enable product by checkbox click
+  watch("products");
+  function recalculate(
+    products: ProductInOrder[],
+    setValue: UseFormSetValue<FieldValues>,
+  ) {
+    const totalAmount = products.reduce((acc, curr) => {
+      const value = curr.isSelected ? getNumber(curr.productPrice) : 0;
+      return acc + value;
+    }, 0);
+    const totalDiscount = products.reduce((acc, curr) => {
+      const value = curr.isSelected ? getNumber(curr.discount) : 0;
+      return acc + value;
+    }, 0);
+    const payableAmount = totalAmount - totalDiscount;
+    setValue("totalAmount", totalAmount);
+    setValue("totalDiscount", totalDiscount || 0);
+    setValue("payableAmount", payableAmount || 0);
+  }
 
-  function calculateOrderValues() {
-    if (!productsFormState || !productsFormState.length)
-      return {
-        totalAmount: 0,
-        totalDiscount: 0,
-        payableAmount: 0,
-        paidAmount: 0,
-        dueAmount: 0,
-      };
-    let totalAmount = parseInt(getValues("totalAmount").toString());
-    let totalDiscount = parseInt(getValues("totalDiscount").toString());
-    let payableAmount = parseInt(getValues("payableAmount").toString());
+  const { fields, replace } = useFieldArray({
+    control,
+    name: "products",
+  });
+  const paidAmount = getNumber(getValues("paidAmount"));
+  useEffect(() => {
+    const dueAmount = getNumber(getValues("payableAmount")) - paidAmount || 0;
+    setValue("dueAmount", dueAmount);
+  }, [paidAmount, setValue, getValues]);
 
-    const paidAmount = parseInt(getValues("paidAmount").toString());
-    let dueAmount = parseInt(getValues("dueAmount").toString());
-    productsFormState.forEach((product) => {
-      if (product.isSelected) {
-        totalAmount += parseInt(product.productPrice.toString());
-        totalDiscount += parseInt(product?.discount?.toString() || "0");
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      if (name?.startsWith("products.")) {
+        recalculate(getValues("products"), setValue);
       }
     });
-    payableAmount = totalAmount - totalDiscount;
-    dueAmount = payableAmount - paidAmount;
-    return { totalAmount, totalDiscount, payableAmount, paidAmount, dueAmount };
-  }
+    return () => subscription.unsubscribe();
+  }, [watch, getValues, setValue]);
   const {
     isLoading,
     isError,
@@ -101,11 +205,15 @@ const NewOrder = ({ id }: { id: number }) => {
   } = useQuery(["user", id.toString()], () => (id ? getUser(id) : null));
   const { data: products } = useQuery(["products"], () => getAllProducts());
 
+  useEffect(() => {
+    replace(products);
+  }, [products, replace]);
+
   if (isError) {
     return (
       <div className="flex items-center justify-center gap-4 mt-10">
         <p>Something went wrong!</p>
-        <Link className="self-center p-2 bg-teal-800" href="/list">
+        <Link className="self-center p-2 bg-teal-800" href="/enquiries">
           Try again{" "}
         </Link>
       </div>
@@ -117,9 +225,9 @@ const NewOrder = ({ id }: { id: number }) => {
   }
   const onSubmit = (data: TNewOrderSchema) => {
     console.log(data);
-    // mutate(data)
+    mutate(data);
   };
-
+  console.log(getValues("products"));
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -129,18 +237,22 @@ const NewOrder = ({ id }: { id: number }) => {
             {/* User detail section */}
             <div>
               <div className=" flex flex-wrap items-start gap-10">
-                <input
-                  className="p-1 text-gray-400 rounded-md"
-                  readOnly
-                  type="number"
-                  {...register("userId")}
-                  defaultValue={id}
-                />
+                <label className="flex flex-col">
+                  User ID
+                  <input
+                    className="bg-gray-50 p-1 text-gray-400 rounded-md"
+                    disabled
+                    type="number"
+                    {...register("userId")}
+                    defaultValue={parseInt(id.toString())}
+                  />
+                </label>
                 <TextFieldWithLabel
                   labelText="Institute Name"
                   inputType="text"
                   defaultValue={userData.instituteName}
                   readOnly
+                  className="p-1 text-gray-400 rounded-md"
                 />
                 <TextFieldWithLabel
                   labelText="Owner's Name"
@@ -209,7 +321,7 @@ const NewOrder = ({ id }: { id: number }) => {
             </div>
             {/* Products Section- coming from api */}
             <ul>
-              {products?.map((product: Product, index) => (
+              {fields?.map((product: Product, index) => (
                 <li key={product.id}>
                   <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
                     <div className="flex">
@@ -269,6 +381,7 @@ const NewOrder = ({ id }: { id: number }) => {
 
                     <input
                       placeholder="0"
+                      defaultValue={0}
                       disabled={!getValues(`products.${index}.isSelected`)}
                       type="number"
                       className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
@@ -281,9 +394,7 @@ const NewOrder = ({ id }: { id: number }) => {
                       type="date"
                       disabled={!getValues(`products.${index}.isSelected`)}
                       className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.validityFrom`, {
-                        valueAsNumber: true,
-                      })}
+                      {...register(`products.${index}.validityFrom`)}
                     />
                     <input
                       type="date"
@@ -394,7 +505,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   Total Amount
                   <input
                     type="number"
-                    value={calculateOrderValues().totalAmount}
+                    // value={calculateOrderValues().totalAmount}
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("totalAmount", { valueAsNumber: true })}
@@ -406,7 +517,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   Total Discount
                   <input
                     type="number"
-                    value={calculateOrderValues().totalDiscount}
+                    // value={calculateOrderValues().totalDiscount}
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("totalDiscount", { valueAsNumber: true })}
@@ -418,7 +529,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   payableAmount
                   <input
                     disabled
-                    value={calculateOrderValues().payableAmount}
+                    // value={calculateOrderValues().payableAmount}
                     type="number"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("payableAmount", { valueAsNumber: true })}
@@ -429,8 +540,8 @@ const NewOrder = ({ id }: { id: number }) => {
                 <label className="flex items-center justify-between gap-4">
                   Paid Amount
                   <input
-                    value={calculateOrderValues().paidAmount}
-                    type="text"
+                    // value={calculateOrderValues().paidAmount}
+                    type="number"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("paidAmount", { valueAsNumber: true })}
                   />
@@ -440,8 +551,8 @@ const NewOrder = ({ id }: { id: number }) => {
                 <label className="flex items-center justify-between gap-4">
                   Due Amount
                   <input
-                    type="text"
-                    value={calculateOrderValues().dueAmount}
+                    type="number"
+                    // value={calculateOrderValues().dueAmount}
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("dueAmount", { valueAsNumber: true })}
@@ -463,6 +574,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   Order Date
                   <input
                     type="date"
+                    disabled
                     defaultValue={new Date().toISOString().slice(0, 10)}
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("orderDate")}
@@ -471,12 +583,12 @@ const NewOrder = ({ id }: { id: number }) => {
               </div>
             </div>
           </div>
+          {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
           <button type="submit" className="p-2 bg-blue-200 rounded-md">
             Submit
           </button>
         </div>
       </form>
-      <DevTool control={control} />
     </>
   );
 };

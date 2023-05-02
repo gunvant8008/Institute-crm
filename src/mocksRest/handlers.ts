@@ -1,5 +1,10 @@
 import { rest } from "msw";
-import { Order, Product, User } from "@/features/user/types/userTypes";
+import {
+  Order,
+  Product,
+  ProductInOrder,
+  User,
+} from "@/features/user/types/userTypes";
 
 let products: Product[] = [
   {
@@ -152,6 +157,7 @@ const orders: Order[] = [
       {
         id: 1,
         isSelected: true,
+        discount: 10000,
         productName: "Gyanam PCMB",
         productPrice: 40000,
         productDescription: "Test paper generator for PCMB",
@@ -220,6 +226,20 @@ export const handlers = [
     const user = users.find((user) => user.id === id);
     if (user) {
       return res(ctx.status(200), ctx.delay(200), ctx.json(user));
+    } else {
+      return res(
+        ctx.status(404),
+        ctx.delay(200),
+        ctx.json({ message: "User not found" }),
+      );
+    }
+  }),
+  // api for a single ueer's orders
+  rest.get("/api/users/:id/orders", (req, res, ctx) => {
+    const id = parseInt(req.params.id.toString());
+    const userOrders = orders.filter((order) => order.userId === id);
+    if (userOrders) {
+      return res(ctx.status(200), ctx.delay(200), ctx.json(userOrders));
     } else {
       return res(
         ctx.status(404),
@@ -347,8 +367,24 @@ export const handlers = [
     return res(ctx.status(204));
   }),
   // api for all orders
+  // rest.get("/api/orders", (req, res, ctx) => {
+  //   return res(ctx.status(200), ctx.delay(200), ctx.json(orders))
+  // }),
+  //  api for all orders, each order have institute name and phone1 details
   rest.get("/api/orders", (req, res, ctx) => {
-    return res(ctx.status(200), ctx.delay(200), ctx.json(orders));
+    const ordersWithUserDetails = orders.map((order) => {
+      const user = users.find((user) => user.id === order.userId);
+      return {
+        ...order,
+        instituteName: user?.instituteName,
+        phone1: user?.phone1,
+      };
+    });
+    return res(
+      ctx.status(200),
+      ctx.delay(200),
+      ctx.json(ordersWithUserDetails),
+    );
   }),
   // api to get a single order
   rest.get("/api/orders/:id", (req, res, ctx) => {
@@ -368,6 +404,18 @@ export const handlers = [
     const newOrder: Order = await req.json();
     const { userId, products } = newOrder;
     const user = users.find((user) => user.id === userId);
+    // code to add validityUntil date in products, find the validity of the product, validity from date and add validity months into validityFrom to find validityUntil
+    const updatedProducts = products.map((product) => {
+      const { validityFrom, validityInMonths } = product;
+      const validityUntil = new Date(validityFrom);
+      if (!product.isSelected) return;
+      validityUntil.setMonth(validityUntil.getMonth() + validityInMonths);
+      return {
+        ...product,
+        validityUntil: validityUntil.toISOString().slice(0, 10),
+      };
+    });
+    newOrder.products = updatedProducts as ProductInOrder[];
     if (!user) {
       return res(
         ctx.status(404),
