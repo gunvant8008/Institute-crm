@@ -1,14 +1,4 @@
-import {
-  getLastMonthRevenue,
-  getLastMonthUsers,
-  getLastYearRevenue,
-  getThisMonthRevenue,
-  getThisMonthUsers,
-  getYearToDateRevenue,
-} from "@/features/user/axios/userApi";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import Loading from "../basic/Loading";
+import { User } from "../../types/userTypes";
 
 type DataCardProps = {
   title?: string;
@@ -22,7 +12,7 @@ export const DataCard = ({ title, value, percentage }: DataCardProps) => {
     <div className="flex justify-between w-full p-4 bg-white border rounded-lg">
       <div className="flex flex-col w-full pb-4">
         <p className="text-2xl font-bold">
-          {title === "Customers This Month" ? "" : "￡"}
+          {title === "Enquiries This Month" ? "" : "￡"}
           {value?.toLocaleString()}
         </p>
         <p className="text-gray-600">{title}</p>
@@ -38,36 +28,24 @@ export const DataCard = ({ title, value, percentage }: DataCardProps) => {
   );
 };
 
-const TopCards = () => {
-  const { data: thisMonthUsers, isLoading } = useQuery(
-    ["thisMonthUsers"],
-    getThisMonthUsers,
-  );
-  const { data: lastMonthUsers } = useQuery(
-    ["lastMonthUsers"],
-    getLastMonthUsers,
-  );
+type TopCardsProps = {
+  thisMonthEnquiries?: User[];
+  lastMonthEnquiries?: User[];
+  thisMonthRevenue?: number;
+  lastMonthRevenue?: number;
+  thisYearRevenue?: number;
+  lastYearRevenue?: number;
+};
 
-  const { data: thisMonthRevenue } = useQuery(
-    ["thisMonthRevenue"],
-    getThisMonthRevenue,
-  );
-  const { data: lastMonthRevenue } = useQuery(
-    ["lastMonthRevenue"],
-    getLastMonthRevenue,
-  );
-
-  const { data: yearToDateRevenue } = useQuery(
-    ["yearToDateRevenue"],
-    getYearToDateRevenue,
-  );
-
-  const { data: lastYearRevenue } = useQuery(
-    ["lastYearRevenue"],
-    getLastYearRevenue,
-  );
-
-  const monthPercentage = () => {
+const TopCards = ({
+  thisMonthEnquiries,
+  lastMonthEnquiries,
+  thisMonthRevenue,
+  lastMonthRevenue,
+  thisYearRevenue,
+  lastYearRevenue,
+}: TopCardsProps) => {
+  const monthRevenuePercentage = () => {
     if (thisMonthRevenue && lastMonthRevenue) {
       return +(
         ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) *
@@ -77,53 +55,53 @@ const TopCards = () => {
       return 0;
     }
   };
-  const yearPercentage = () => {
-    if (yearToDateRevenue && lastYearRevenue) {
+  const yearRevenuePercentage = () => {
+    if (thisYearRevenue && lastYearRevenue) {
       return +(
-        ((yearToDateRevenue - lastYearRevenue) / lastYearRevenue) *
+        ((thisYearRevenue - lastYearRevenue) / lastYearRevenue) *
         100
       ).toFixed(0);
     } else {
       return 0;
     }
   };
-  const userPercentage = () => {
-    if (thisMonthUsers && lastMonthUsers) {
+  const monthEnquiryPercentage = () => {
+    if (thisMonthEnquiries?.length && lastMonthEnquiries?.length) {
       return +(
-        ((thisMonthUsers.length - lastMonthUsers.length) /
-          lastMonthUsers.length) *
+        ((thisMonthEnquiries?.length - lastMonthEnquiries?.length) /
+          lastMonthEnquiries?.length) *
         100
       ).toFixed(0);
     } else {
       return 0;
     }
   };
-  if (isLoading) {
-    return <Loading />;
-  }
+
   return (
     <div className="lg:grid-cols-5 grid gap-4 p-4">
       <div className="lg:col-span-2 col-span-1">
         <DataCard
           title="This Month"
           value={thisMonthRevenue}
-          percentage={monthPercentage()}
+          percentage={monthRevenuePercentage()}
         />
       </div>
       <div className="lg:col-span-2 col-span-1">
         <DataCard
           title="YTD Revenue"
-          value={yearToDateRevenue}
-          percentage={yearPercentage()}
+          value={thisYearRevenue}
+          percentage={yearRevenuePercentage()}
         />
       </div>
       <div className="">
         <DataCard
-          title="Customers This Month"
-          value={thisMonthUsers?.length}
-          percentage={userPercentage()}
+          title="Enquiries This Month"
+          value={thisMonthEnquiries?.length}
+          percentage={monthEnquiryPercentage()}
         />
       </div>
+
+      <h2>top cards</h2>
     </div>
   );
 };

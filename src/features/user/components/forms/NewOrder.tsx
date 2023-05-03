@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { addOrder, getAllProducts, getUser } from "../../axios/userApi";
 import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
@@ -10,7 +10,6 @@ import { UseFormSetValue, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useFieldArray } from "react-hook-form";
-import { error } from "console";
 
 const ProductSchema = z.object({
   id: z.number(),
@@ -91,31 +90,31 @@ const NewOrder = ({ id }: { id: number }) => {
     formState: { errors },
   } = useForm<TNewOrderSchema>({
     resolver: zodResolver(NewOrderSchema),
-    // defaultValues: {
-    //   userId: id,
-    //   products: [
-    //     {
-    //       id: 1,
-    //       isSelected: false,
-    //       productName: "Gyanam PCMB",
-    //       productPrice: 40000,
-    //       validityInMonths: 12,
-    //       discount: 0,
-    //       validityFrom: "",
-    //       validityUntil: ""
-    //     }
-    //   ],
-    //   totalAmount: 0,
-    //   totalDiscount: 0,
-    //   payableAmount: 0,
-    //   paidAmount: 0,
-    //   dueAmount: 0,
-    //   dueDate: "",
-    //   orderDate: new Date().toISOString().split("T")[0],
-    //   paymentMode: "",
-    //   paidBy: "",
-    //   receivingAccount: ""
-    // }
+    defaultValues: {
+      userId: id,
+      // products: [
+      //   {
+      //     id: 1,
+      //     isSelected: false,
+      //     productName: "Gyanam PCMB",
+      //     productPrice: 40000,
+      //     validityInMonths: 12,
+      //     discount: 0,
+      //     validityFrom: "",
+      //     validityUntil: ""
+      //   }
+      // ],
+      // totalAmount: 0,
+      // totalDiscount: 0,
+      // payableAmount: 0,
+      // paidAmount: 0,
+      // dueAmount: 0,
+      // dueDate: "",
+      orderDate: new Date().toISOString().split("T")[0],
+      // paymentMode: "",
+      // paidBy: "",
+      // receivingAccount: ""
+    },
   });
 
   function getNumber(value: string | number) {
@@ -140,22 +139,26 @@ const NewOrder = ({ id }: { id: number }) => {
     }, 0);
     const payableAmount = totalAmount - totalDiscount;
     setValue("totalAmount", totalAmount);
-    setValue("totalDiscount", totalDiscount || 0);
-    setValue("payableAmount", payableAmount || 0);
+    setValue("totalDiscount", totalDiscount);
+    setValue("payableAmount", payableAmount);
   }
 
   const { fields, replace } = useFieldArray({
     control,
     name: "products",
   });
+
+  // useEffect to update Due Amount
+  watch("paidAmount");
   const paidAmount = getNumber(getValues("paidAmount"));
   useEffect(() => {
-    const dueAmount = getNumber(getValues("payableAmount")) - paidAmount || 0;
+    const dueAmount = getNumber(getValues("payableAmount")) - paidAmount;
     setValue("dueAmount", dueAmount);
   }, [paidAmount, setValue, getValues]);
 
+  // useEffect to update Payable Amount
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value, { name }) => {
       if (name?.startsWith("products.")) {
         recalculate(getValues("products"), setValue);
       }
@@ -188,10 +191,8 @@ const NewOrder = ({ id }: { id: number }) => {
     return <h2>Loading...</h2>;
   }
   const onSubmit = (data: TNewOrderSchema) => {
-    console.log(data);
     mutate(data);
   };
-  console.log(errors);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -201,21 +202,26 @@ const NewOrder = ({ id }: { id: number }) => {
             {/* User detail section */}
             <div>
               <div className=" flex flex-wrap items-start gap-10">
-                <label className="flex flex-col">
-                  User ID
-                  <input
-                    className="bg-gray-50 p-1 text-gray-400 rounded-md"
-                    disabled
-                    type="number"
-                    {...register("userId", { required: true })}
-                    defaultValue={parseInt(id.toString())}
-                  />
-                </label>
-                {errors.userId && (
-                  <span className="text-sm text-red-400">
-                    {errors.userId.message}
-                  </span>
-                )}
+                <div>
+                  <label className="flex flex-col">
+                    User ID
+                    <input
+                      className="bg-gray-50 p-1 text-gray-400 rounded-md"
+                      disabled
+                      type="number"
+                      // defaultValue={parseInt(id.toString())}
+                      {...register("userId", {
+                        valueAsNumber: true,
+                        required: true,
+                      })}
+                    />
+                  </label>
+                  {errors.userId && (
+                    <span className="block text-sm text-red-400">
+                      {errors.userId.message}
+                    </span>
+                  )}
+                </div>
                 <TextFieldWithLabel
                   labelText="Institute Name"
                   inputType="text"
@@ -350,7 +356,6 @@ const NewOrder = ({ id }: { id: number }) => {
 
                     <input
                       placeholder="0"
-                      defaultValue={0}
                       disabled={!getValues(`products.${index}.isSelected`)}
                       type="number"
                       className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
@@ -420,6 +425,11 @@ const NewOrder = ({ id }: { id: number }) => {
                     Cash
                   </label>
                 </div>
+                {errors.paymentMode && (
+                  <span className="block text-sm text-red-400">
+                    {errors.paymentMode.message}
+                  </span>
+                )}
               </div>
               <div className=" py-4">
                 <label className="flex items-center gap-4">
@@ -430,6 +440,11 @@ const NewOrder = ({ id }: { id: number }) => {
                     {...register("paidBy", { required: true })}
                   />
                 </label>
+                {errors.paidBy && (
+                  <span className="block text-sm text-red-400">
+                    {errors.paidBy.message}
+                  </span>
+                )}
               </div>
 
               <div className="gap-y-3 flex flex-col py-4">
@@ -468,6 +483,11 @@ const NewOrder = ({ id }: { id: number }) => {
                     Account 4
                   </label>
                 </div>
+                {errors.receivingAccount && (
+                  <span className="block text-sm text-red-400">
+                    {errors.receivingAccount.message}
+                  </span>
+                )}
               </div>
             </div>
             {/* Right section */}
@@ -477,43 +497,58 @@ const NewOrder = ({ id }: { id: number }) => {
                   Total Amount
                   <input
                     type="number"
-                    // value={calculateOrderValues().totalAmount}
+                    placeholder="0"
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("totalAmount", { valueAsNumber: true })}
                   />
                 </label>
+                {errors.totalAmount && (
+                  <span className="block text-sm text-red-400">
+                    {errors.totalAmount.message}
+                  </span>
+                )}
               </div>
               <div className=" py-4">
                 <label className="flex items-center justify-between gap-4">
                   Total Discount
                   <input
                     type="number"
-                    // value={calculateOrderValues().totalDiscount}
+                    placeholder="0"
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("totalDiscount", { valueAsNumber: true })}
                   />
                 </label>
+                {errors.totalDiscount && (
+                  <span className="block text-sm text-red-400">
+                    {errors.totalDiscount.message}
+                  </span>
+                )}
               </div>
               <div className=" py-4">
                 <label className="flex items-center justify-between gap-4">
-                  payableAmount
+                  Payable Amount
                   <input
                     disabled
-                    // value={calculateOrderValues().payableAmount}
+                    placeholder="0"
                     type="number"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("payableAmount", { valueAsNumber: true })}
                   />
                 </label>
+                {errors.payableAmount && (
+                  <span className="block text-sm text-red-400">
+                    {errors.payableAmount.message}
+                  </span>
+                )}
               </div>
               <div className=" py-4">
                 <label className="flex items-center justify-between gap-4">
                   Paid Amount
                   <input
-                    // value={calculateOrderValues().paidAmount}
                     type="number"
+                    placeholder="0"
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("paidAmount", {
                       valueAsNumber: true,
@@ -521,13 +556,18 @@ const NewOrder = ({ id }: { id: number }) => {
                     })}
                   />
                 </label>
+                {errors.paidAmount && (
+                  <span className="block text-sm text-red-400">
+                    {errors.paidAmount.message}
+                  </span>
+                )}
               </div>
               <div className=" py-4">
                 <label className="flex items-center justify-between gap-4">
                   Due Amount
                   <input
                     type="number"
-                    // value={calculateOrderValues().dueAmount}
+                    placeholder="0"
                     disabled
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("dueAmount", { valueAsNumber: true })}
@@ -550,7 +590,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   <input
                     type="date"
                     disabled
-                    defaultValue={new Date().toISOString().slice(0, 10)}
+                    // defaultValue={new Date().toISOString().slice(0, 10)}
                     className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
                     {...register("orderDate")}
                   />

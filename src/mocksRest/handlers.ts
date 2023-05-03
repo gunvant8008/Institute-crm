@@ -278,44 +278,44 @@ export const handlers = [
     });
     return res(ctx.status(200), ctx.delay(200), ctx.json(updatedUser));
   }),
-  // api for this month created users
-  // REVIEW: this api returns 404 if we use "users" rather than "users-data"
-  rest.get("/api/users-data/this-month", async (req, res, ctx) => {
-    const thisMonthUsers = users.filter((user) => {
-      const date = new Date(user.addedOn);
-      const month = date.getMonth();
-      const year = date.getFullYear();
-      const today = new Date();
-      return month === today.getMonth() && year === today.getFullYear();
-    });
-    return res(ctx.status(200), ctx.delay(200), ctx.json(thisMonthUsers));
-  }),
-  // api for last month created users
-  rest.get("/api/users-data/last-month", (req, res, ctx) => {
-    const lastMonthUsers = users.filter((user) => {
-      const date = new Date(user.addedOn);
-      const month = date.getMonth();
-      const year = date.getFullYear();
-      const today = new Date();
-      return month === today.getMonth() - 1 && year === today.getFullYear();
-    });
-    return res(ctx.status(200), ctx.delay(200), ctx.json(lastMonthUsers));
-  }),
-  // api for year to date created users
-  rest.get("/api/users-data/year-to-date", (req, res, ctx) => {
-    const yearToDateUsers = users.filter((user) => {
-      const date = new Date(user.addedOn);
-      const year = date.getFullYear();
-      const today = new Date();
-      return year === today.getFullYear();
-    });
-    return res(ctx.status(200), ctx.delay(200), ctx.json(yearToDateUsers));
-  }),
-  // api for most recent 15 users
-  rest.get("/api/users-data/recent", (req, res, ctx) => {
-    const recentUsers = users.slice(0, 15);
-    return res(ctx.status(200), ctx.delay(200), ctx.json(recentUsers));
-  }),
+  // // api for this month created users
+  // // REVIEW: this api returns 404 if we use "users" rather than "users-data"
+  // rest.get("/api/users-data/this-month", async (req, res, ctx) => {
+  //   const thisMonthUsers = users.filter((user) => {
+  //     const date = new Date(user.addedOn);
+  //     const month = date.getMonth();
+  //     const year = date.getFullYear();
+  //     const today = new Date();
+  //     return month === today.getMonth() && year === today.getFullYear();
+  //   });
+  //   return res(ctx.status(200), ctx.delay(200), ctx.json(thisMonthUsers));
+  // }),
+  // // api for last month created users
+  // rest.get("/api/users-data/last-month", (req, res, ctx) => {
+  //   const lastMonthUsers = users.filter((user) => {
+  //     const date = new Date(user.addedOn);
+  //     const month = date.getMonth();
+  //     const year = date.getFullYear();
+  //     const today = new Date();
+  //     return month === today.getMonth() - 1 && year === today.getFullYear();
+  //   });
+  //   return res(ctx.status(200), ctx.delay(200), ctx.json(lastMonthUsers));
+  // }),
+  // // api for year to date created users
+  // rest.get("/api/users-data/year-to-date", (req, res, ctx) => {
+  //   const yearToDateUsers = users.filter((user) => {
+  //     const date = new Date(user.addedOn);
+  //     const year = date.getFullYear();
+  //     const today = new Date();
+  //     return year === today.getFullYear();
+  //   });
+  //   return res(ctx.status(200), ctx.delay(200), ctx.json(yearToDateUsers));
+  // }),
+  // // api for most recent 15 users
+  // rest.get("/api/users-data/recent", (req, res, ctx) => {
+  //   const recentUsers = users.slice(0, 15);
+  //   return res(ctx.status(200), ctx.delay(200), ctx.json(recentUsers));
+  // }),
   // api for all products
   rest.get("/api/products", (req, res, ctx) => {
     return res(ctx.status(200), ctx.delay(200), ctx.json(products));
@@ -430,6 +430,97 @@ export const handlers = [
       ctx.status(201),
       ctx.delay(500),
       ctx.json({ message: "Order added successfully" }),
+    );
+  }),
+
+  // ==================== apis for dashboard data ====================
+  // api which returns this months enquires, last month enquiries, this month added active users, last month added active users, this month revenue, last month revenue, this year revenue, last year revenue, last 15 orders & month wise revenue for the current year
+  rest.get("/api/dashboard-data", (req, res, ctx) => {
+    const thisMonthEnquiries = users.filter((user) => {
+      if (user.userStatus === "ENQUIRY") {
+        const date = new Date(user.addedOn);
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        return date.getMonth() === month && date.getFullYear() === year;
+      }
+    });
+    const lastMonthEnquiries = users.filter((user) => {
+      if (user.userStatus === "ENQUIRY") {
+        const date = new Date(user.addedOn);
+        const today = new Date();
+        const month = today.getMonth() - 1;
+        const year = today.getFullYear();
+        return date.getMonth() === month && date.getFullYear() === year;
+      }
+    });
+    const thisMonthRevenue = orders.reduce((acc, order) => {
+      const date = new Date(order.orderDate);
+      const today = new Date();
+      const month = today.getMonth();
+      const year = today.getFullYear();
+      if (date.getMonth() === month && date.getFullYear() === year) {
+        return acc + order.paidAmount;
+      }
+      return acc;
+    }, 0);
+    const lastMonthRevenue = orders.reduce((acc, order) => {
+      const date = new Date(order.orderDate);
+      const today = new Date();
+      const month = today.getMonth() - 1;
+      const year = today.getFullYear();
+      if (date.getMonth() === month && date.getFullYear() === year) {
+        return acc + order.paidAmount;
+      }
+      return acc;
+    }, 0);
+    const thisYearRevenue = orders.reduce((acc, order) => {
+      const date = new Date(order.orderDate);
+      const today = new Date();
+      const year = today.getFullYear();
+      if (date.getFullYear() === year) {
+        return acc + order.paidAmount;
+      }
+      return acc;
+    }, 0);
+    const lastYearRevenue = orders.reduce((acc, order) => {
+      const date = new Date(order.orderDate);
+      const today = new Date();
+      const year = today.getFullYear() - 1;
+      if (date.getFullYear() === year) {
+        return acc + order.paidAmount;
+      }
+      return acc;
+    }, 0);
+    const last15Orders = orders.slice(0, 15);
+
+    const monthWiseRevenue = [];
+    for (let i = 0; i < 12; i++) {
+      const month = i;
+      const year = new Date().getFullYear();
+      const monthOrders = orders.filter((order) => {
+        const date = new Date(order.orderDate);
+        return date.getMonth() === month && date.getFullYear() === year;
+      });
+      const monthRevenue = monthOrders.reduce((acc, order) => {
+        return acc + order.paidAmount;
+      }, 0);
+      monthWiseRevenue.push(monthRevenue);
+    }
+
+    return res(
+      ctx.status(200),
+      ctx.delay(200),
+      ctx.json({
+        thisMonthEnquiries,
+        lastMonthEnquiries,
+        thisMonthRevenue,
+        lastMonthRevenue,
+        thisYearRevenue,
+        lastYearRevenue,
+        last15Orders,
+        monthWiseRevenue,
+      }),
     );
   }),
 ];

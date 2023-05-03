@@ -23,7 +23,7 @@ export interface Product {
 
 export interface ProductInOrder extends Product {
   isSelected: boolean;
-  discount: number | 0;
+  discount: number;
   validityFrom: string;
   validityUntil: string;
 }
@@ -60,4 +60,15 @@ export interface Order {
   paymentMode: string;
   paidBy?: string;
   receivingAccount?: string;
+}
+
+export interface DashboardData {
+  thisMonthEnquiries: User[];
+  lastMonthEnquiries: User[];
+  thisMonthRevenue: number;
+  lastMonthRevenue: number;
+  thisYearRevenue: number;
+  lastYearRevenue: number;
+  monthWiseRevenue: number[];
+  last15Orders: Order[];
 }

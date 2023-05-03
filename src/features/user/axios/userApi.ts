@@ -1,4 +1,4 @@
-import { Order, Product, User } from "../types/userTypes";
+import { DashboardData, Order, Product, User } from "../types/userTypes";
 import axios from "axios";
 
 const userApi = axios.create({
@@ -143,6 +143,14 @@ export const getAllOrders = async (): Promise<Order[]> => {
 // api to add new order
 export const addOrder = async (order: Omit<Order, "id">): Promise<Order> => {
   return await userApi.post("/orders/new", order);
+};
+
+// ==================== API FOR DASHBOARD DATA ====================
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+export const getDashboardData = async (): Promise<DashboardData> => {
+  return await userApi
+    .get("/dashboard-data")
+    .then((response) => response.data as DashboardData);
 };
 
 export default userApi;
