@@ -1,5 +1,5 @@
-import { deleteUser, getEnquiries } from "@/features/user/axios/userApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getEnquiries } from "@/features/user/axios/userApi";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 import { User } from "@/features/user/types/userTypes";
@@ -7,29 +7,13 @@ import { BsPersonFill } from "react-icons/bs";
 import Loading from "@/features/user/components/basic/Loading";
 
 const EnquiriesList = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const {
     isLoading,
     isError,
     data: enquiries,
   } = useQuery(["enquiries"], getEnquiries);
-  const deleteUserMutation = useMutation(deleteUser, {
-    onMutate: async (userId) => {
-      await queryClient.cancelQueries(["enquiries"]);
-      const previousEnquiries = queryClient.getQueryData<User[]>(["enquiries"]);
-      // REVIEW: Typescript error here
-      queryClient.setQueryData(["enquiries"], (old: User[] | undefined) => {
-        return old?.filter((user) => user.id !== userId);
-      });
-      return { previousEnquiries };
-    },
-    onError: (_error, _heroId, context) => {
-      queryClient.setQueryData(["enquiries"], context?.previousEnquiries);
-    },
-    onSettled: async () => {
-      await queryClient.invalidateQueries(["enquiries"]);
-    },
-  });
+
   if (isLoading) {
     return <Loading />;
   }
@@ -61,10 +45,6 @@ const EnquiriesList = () => {
         <ul>
           {enquiries.map(
             (user: User) => (
-              // while (index < 10) {
-              //   // just be careful doing this if you have loads of data.
-              //   // the cache will become gigantic!
-              // queryClient.setQueryData(["user", user.id.toString()], user);
               <li
                 key={user.id}
                 className="bg-gray-50 hover:bg-gray-100 grid items-center justify-between grid-cols-6 gap-4 p-2 my-3 rounded-lg"
@@ -96,18 +76,6 @@ const EnquiriesList = () => {
                     >
                       View
                     </Link>
-                    {/* <button
-                      className="p-1 bg-red-200 rounded-md"
-                      onClick={() => deleteUserMutation.mutate(user.id)}
-                    >
-                      Delete
-                    </button>
-                    <Link
-                      href={`/edituser/${user.id}`}
-                      className="p-1.5  bg-blue-200 rounded-md"
-                    >
-                      Edit
-                    </Link> */}
                     <Link
                       href={`/orders/new/${user.id}`}
                       className="p-1.5  bg-blue-200 rounded-md"

@@ -47,9 +47,12 @@ const OrdersList = () => {
                     <FaShoppingBag className="text-orange-800" />
                   </div>
                   <div className="pl-4">
-                    <p className="text-cyan-600 text-sm font-semibold cursor-pointer">
+                    <Link
+                      href={`/orders/${order.id}`}
+                      className="text-cyan-600 text-sm font-semibold cursor-pointer"
+                    >
                       Order Id: {order.id}
-                    </p>
+                    </Link>
                     <p className=" text-xs text-gray-800">{order.orderDate}</p>
                   </div>
                 </div>

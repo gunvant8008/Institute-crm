@@ -1,18 +1,3 @@
-// type TSubjectPurchased = {
-//   maths: boolean;
-//   biology: boolean;
-//   chemistry: boolean;
-//   physics: boolean;
-// };
-// type TPaymentStatus = {
-//   amountPaid: number;
-//   discountGiven: number;
-//   amountDue: number;
-//   datePurchased: Date;
-//   validity: Date;
-//   dueDate: Date;
-// };
-
 export interface Product {
   id: number;
   productName: string;
@@ -22,10 +7,29 @@ export interface Product {
 }
 
 export interface ProductInOrder extends Product {
-  isSelected: boolean;
-  discount: number;
-  validityFrom: string;
-  validityUntil: string;
+  isSelected?: boolean;
+  discount?: number;
+  validityFrom?: string;
+  validityUntil?: string;
+}
+export interface Order {
+  id: number;
+  userId: number;
+  products: ProductInOrder[];
+  totalAmount: number;
+  totalDiscount: number;
+  payableAmount: number;
+  paidAmount: number;
+  dueAmount: number;
+  dueDate?: string;
+  orderDate: string;
+  paymentMode: string;
+  paidBy?: string;
+  receivingAccount?: string;
+}
+export interface OrderList extends Order {
+  instituteName: string;
+  phone1: string;
 }
 
 export interface User {
@@ -44,22 +48,6 @@ export interface User {
   // THIS IS NOT COMING FROM USER FORM
   addedOn: string;
   userStatus: string;
-}
-
-export interface Order {
-  id: number;
-  userId: number;
-  products: ProductInOrder[];
-  totalAmount: number;
-  totalDiscount: number;
-  payableAmount: number;
-  paidAmount: number;
-  dueAmount: number;
-  dueDate?: string;
-  orderDate: string;
-  paymentMode: string;
-  paidBy?: string;
-  receivingAccount?: string;
 }
 
 export interface DashboardData {

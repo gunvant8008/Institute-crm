@@ -6,7 +6,6 @@ import Loading from "../basic/Loading";
 import { FaShoppingBag } from "react-icons/fa";
 
 const UserDetails = ({ id }: { id: number }) => {
-  //   return <h2>{id}</h2>
   const router = useRouter();
 
   const queryClient = useQueryClient();

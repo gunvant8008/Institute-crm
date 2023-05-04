@@ -6,38 +6,50 @@ import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
 import { Order, Product, ProductInOrder } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
-import { UseFormSetValue, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useFieldArray } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 
-const ProductSchema = z.object({
-  id: z.number(),
-  isSelected: z.boolean().optional(),
-  productName: z.string(),
-  productPrice: z.number(),
-  validityInMonths: z.number(),
-  discount: z
-    .number()
-    .optional()
-    // REVIEW:
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    .refine((val, data) => !data?.isSelected || val !== undefined, {
-      message: "Discount must be provided when Product is selected.",
-    }),
-  validityFrom: z
-    .string()
-    .optional()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    .refine((val, data) => !data?.isSelected || val !== undefined, {
-      message: "Validity From must be provided when Product is selected.",
-    }),
-  validityUntil: z.string(),
-});
+const ProductSchema = z
+  .object({
+    id: z.number(),
+    isSelected: z.boolean().optional(),
+    productName: z.string(),
+    productPrice: z.number(),
+    validityInMonths: z.number(),
+    discount: z.number().optional(),
+    validityFrom: z.string().optional(),
+    validityUntil: z.string().optional(),
+  })
+  .refine(
+    (product) => product.isSelected !== true || product.discount !== undefined,
+    {
+      message: "Discount is required for selected products",
+    },
+  )
+  .refine(
+    (product) =>
+      product.isSelected !== true || product.validityFrom !== undefined,
+    {
+      message: "Validity From is required for selected products",
+    },
+  )
+  .refine(
+    (product) =>
+      product.isSelected !== true || product.validityUntil !== undefined,
+    {
+      message: "Validity Until is required for selected products",
+    },
+  );
 
 const NewOrderSchema = z.object({
   userId: z.number(),
-  products: z.array(ProductSchema),
+  products: z
+    .array(ProductSchema)
+    .refine((arr) => arr.some((product) => product.isSelected), {
+      message: "At least one product must be selected",
+    }),
   totalAmount: z.number(),
   totalDiscount: z.number(),
   payableAmount: z.number(),
@@ -127,14 +139,18 @@ const NewOrder = ({ id }: { id: number }) => {
   watch("products");
   function recalculate(
     products: ProductInOrder[],
-    setValue: UseFormSetValue<FieldValues>,
+    setValue: (
+      fieldName: "totalAmount" | "totalDiscount" | "payableAmount",
+      value: number,
+    ) => void,
   ) {
     const totalAmount = products.reduce((acc, curr) => {
       const value = curr.isSelected ? getNumber(curr.productPrice) : 0;
       return acc + value;
     }, 0);
     const totalDiscount = products.reduce((acc, curr) => {
-      const value = curr.isSelected ? getNumber(curr.discount) : 0;
+      // REVIEW: as for TS error
+      const value = curr.isSelected ? getNumber(curr?.discount as number) : 0;
       return acc + value;
     }, 0);
     const payableAmount = totalAmount - totalDiscount;
@@ -173,7 +189,8 @@ const NewOrder = ({ id }: { id: number }) => {
   const { data: products } = useQuery(["products"], () => getAllProducts());
 
   useEffect(() => {
-    replace(products);
+    // REVIEW: as to solve TS error
+    replace(products as ProductInOrder[]);
   }, [products, replace]);
 
   if (isError) {
@@ -191,7 +208,8 @@ const NewOrder = ({ id }: { id: number }) => {
     return <h2>Loading...</h2>;
   }
   const onSubmit = (data: TNewOrderSchema) => {
-    mutate(data);
+    // REVIEW: as to solve TS error
+    mutate(data as Order);
   };
   return (
     <>
@@ -373,6 +391,7 @@ const NewOrder = ({ id }: { id: number }) => {
                         required: true,
                       })}
                     />
+
                     <input
                       type="date"
                       className="hidden"
@@ -381,9 +400,19 @@ const NewOrder = ({ id }: { id: number }) => {
                       {...register(`products.${index}.validityUntil`)}
                     />
                   </div>
+                  {errors?.products && errors?.products[index]?.message && (
+                    <span className="block text-sm text-red-400">
+                      {errors?.products[index]?.message}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
+            {errors.products && (
+              <span className="block text-sm text-red-400">
+                {errors.products.message}
+              </span>
+            )}
           </div>
           {/* order details section */}
           <div className="flex flex-wrap justify-between w-full px-20">

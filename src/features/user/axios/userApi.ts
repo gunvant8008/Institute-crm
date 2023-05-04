@@ -1,4 +1,10 @@
-import { DashboardData, Order, Product, User } from "../types/userTypes";
+import {
+  DashboardData,
+  Order,
+  OrderList,
+  Product,
+  User,
+} from "../types/userTypes";
 import axios from "axios";
 
 const userApi = axios.create({
@@ -134,10 +140,16 @@ export const deleteProduct = async (id: number) => {
 // ==================== API FOR ORDERS ====================
 
 // api for all orders
-export const getAllOrders = async (): Promise<Order[]> => {
+export const getAllOrders = async (): Promise<OrderList[]> => {
   return await userApi
     .get("/orders")
-    .then((response) => response.data as Order[]);
+    .then((response) => response.data as OrderList[]);
+};
+// api for a single order
+export const getOrder = async (id: number): Promise<Order | undefined> => {
+  return await userApi
+    .get(`/orders/${id}`)
+    .then((response) => response.data as Order);
 };
 
 // api to add new order
