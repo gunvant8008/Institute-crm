@@ -2,11 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React from "react";
 import { getOrder } from "../../axios/userApi";
-import { Product, ProductInOrder } from "../../types/userTypes";
+import { ProductInOrder } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
 
 export const OrderDetails = ({ id }: { id: number }) => {
-  const router = useRouter();
   const {
     data: order,
     isLoading,

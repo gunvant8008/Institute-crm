@@ -180,6 +180,7 @@ const NewOrder = ({ id }: { id: number }) => {
       }
     });
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch, getValues, setValue]);
   const {
     isLoading,
