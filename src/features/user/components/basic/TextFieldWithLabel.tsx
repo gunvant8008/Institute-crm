@@ -6,19 +6,7 @@ interface TextFieldWithLabelProps {
   className?: string;
   error?: string;
   inputProps?: unknown;
-  //   {
-  //     onChange?: (ev: unknown) => unknown
-  //     onBlur?: (ev: unknown) => unknown
-  //     ref?: RefCallback<HTMLInputElement>
-  //     name?: "string"
-  //     min?: string | number
-  //     max?: string | number
-  //     maxLength?: number
-  //     minLength?: number
-  //     pattern?: string
-  //     required?: boolean
-  //     disabled?: boolean
-  //   }
+  defaultValue?: string;
 }
 
 export const TextFieldWithLabel = ({
@@ -32,9 +20,8 @@ export const TextFieldWithLabel = ({
     <label className="flex flex-col gap-1">
       {labelText}
       <input
-        className=" p-1 text-black w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-gray-400  "
+        className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 w-full p-1 text-black rounded-md"
         type={inputType ?? "text"}
-        // {...register("albumId", { required: "Album Id is required" })}
         {...(inputProps ?? {})}
         {...rest}
       />

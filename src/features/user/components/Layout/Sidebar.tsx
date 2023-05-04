@@ -3,6 +3,7 @@ import Link from "next/link";
 import { RxDashboard } from "react-icons/rx";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FiSettings, FiUserPlus, FiUsers } from "react-icons/fi";
+import { ImUsers } from "react-icons/im";
 import { Tooltip } from "../basic/Tooltip";
 import { SiGriddotai } from "react-icons/si";
 
@@ -29,17 +30,24 @@ const Sidebar = ({ children }: SidebarProps) => {
               </div>
             </Tooltip>
           </Link>
-          <Link href="/new">
-            <Tooltip message="Add User">
+          <Link href="/enquiries/new">
+            <Tooltip message="Add Enquiry">
               <div className="hover:bg-gray-200 inline-block p-3 bg-gray-100 rounded-lg cursor-pointer">
                 <FiUserPlus size={20} />
               </div>
             </Tooltip>
           </Link>
-          <Link href="/users">
-            <Tooltip message="All Users">
+          <Link href="/enquiries">
+            <Tooltip message="Enquiries">
               <div className="hover:bg-gray-200 inline-block p-3 bg-gray-100 rounded-lg cursor-pointer">
                 <FiUsers size={20} />
+              </div>
+            </Tooltip>
+          </Link>
+          <Link href="/clients">
+            <Tooltip message="Clients">
+              <div className="hover:bg-gray-200 inline-block p-3 bg-gray-100 rounded-lg cursor-pointer">
+                <ImUsers size={20} />
               </div>
             </Tooltip>
           </Link>
@@ -50,7 +58,7 @@ const Sidebar = ({ children }: SidebarProps) => {
               </div>
             </Tooltip>
           </Link>
-          <Link href="/">
+          <Link href="/settings">
             <Tooltip message="Settings">
               <div className="hover:bg-gray-200 inline-block p-3 bg-gray-100 rounded-lg cursor-pointer">
                 <FiSettings size={20} />

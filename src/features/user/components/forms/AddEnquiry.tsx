@@ -1,16 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getUser, updateUser } from "@/features/user/axios/userApi";
-import { User } from "../../types/userTypes";
-import { useEffect } from "react";
+import { addEnquiry } from "@/features/user/axios/userApi";
+import { User } from "@/features/user/types/userTypes";
 // import { DevTool } from "@hookform/devtools"
 
-const EditUserSchema = z.object({
+const AddEnquirySchema = z.object({
   instituteName: z
     .string()
     .min(5, { message: "Institute Name must contain at least 5 character(s)" })
@@ -38,77 +37,57 @@ const EditUserSchema = z.object({
   leadType: z.string().optional(),
   leadSource: z.string().optional(),
 });
-type TEditUserSchema = z.infer<typeof EditUserSchema>;
+type TAddEnquirySchema = z.infer<typeof AddEnquirySchema>;
 
-const EditUser = ({ id }: { id: number }) => {
+const AddEnquiry = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  const {
-    isLoading,
-    isError,
-    data: userData,
-  } = useQuery(["user", id.toString()], () => (id ? getUser(id) : null));
-
-  const { mutate } = useMutation(updateUser, {
-    onMutate: async (user: User) => {
-      await queryClient.cancelQueries(["users"]);
-      const previousUsers = queryClient.getQueryData<User[]>(["users"]);
-      const newUser = queryClient.setQueryData(
-        ["user", user.id.toString()],
-        user,
-      );
-      queryClient.setQueryData(["users"], (old: User[] | undefined) => {
-        return newUser
-          ? old?.map((item) => (item.id === user.id ? newUser : item))
-          : old;
+  const { mutate, isError } = useMutation(addEnquiry, {
+    onMutate: async (user: TAddEnquirySchema) => {
+      await queryClient.cancelQueries(["enquiries"]);
+      const previousEnquiries = queryClient.getQueryData<User[]>(["enquiries"]);
+      const newId = 0;
+      const newUser = queryClient.setQueryData(["enquiry", newId.toString()], {
+        ...user,
+        id: 0,
+        addedOn: new Date().toISOString().split("T")[0],
+        userStatus: "ENQUIRY",
+      });
+      queryClient.setQueryData(["enquiries"], (old: User[] | undefined) => {
+        return newUser && old ? [newUser, ...old] : old;
       });
       await router.push("/enquiries");
-      return { previousUsers };
+      return { previousEnquiries };
     },
-    onError: (context: { previousUsers: User[] }) => {
-      queryClient.setQueryData(["users"], context.previousUsers);
+    onError: (context: { previousEnquiries: User[] }) => {
+      queryClient.setQueryData(["enquiries"], context.previousEnquiries);
+      // await queryClient.invalidateQueries(["photos"])
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries(["users"]);
+      await queryClient.invalidateQueries(["enquiries"]);
     },
   });
 
   const {
     // control,
-    reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TEditUserSchema>({
-    resolver: zodResolver(EditUserSchema),
-    defaultValues: {
-      instituteName: userData?.instituteName,
-      ownersName: userData?.ownersName,
-      managersName: userData?.managersName,
-      address: userData?.address,
-      phone1: userData?.phone1,
-      phone2: userData?.phone2,
-      email: userData?.email,
-      website: userData?.website,
-      description: userData?.description,
-      leadType: userData?.leadType,
-      leadSource: userData?.leadSource,
-    },
+  } = useForm<TAddEnquirySchema>({
+    resolver: zodResolver(AddEnquirySchema),
+    //  defaultValues: {
+    //    albumId: 1,
+    //    title: "New Photo Title",
+    //    url: "Enter URL",
+    //    thumbnailUrl: "Enter Thumbnail URL"
+    //  }
   });
 
-  // REVIEW: IS THIS THE BEST WAY TO DO THIS? resetting the data on hard refresh
-  useEffect(() => {
-    if (!userData) return;
-    reset(userData);
-  }, [userData, reset]);
-
-  const onSubmit = (data: TEditUserSchema) => {
+  const onSubmit = (data: TAddEnquirySchema) => {
     mutate({
-      id,
+      addedOn: new Date().toISOString().split("T")[0],
+      userStatus: "ENQUIRY",
       ...data,
-      addedOn: userData?.addedOn as string,
-      userStatus: userData?.userStatus as string,
     });
   };
 
@@ -116,22 +95,19 @@ const EditUser = ({ id }: { id: number }) => {
     return (
       <div className="flex items-center justify-center gap-4 mt-10">
         <p>Something went wrong!</p>
-        <Link className="self-center p-2 bg-teal-800" href="/list">
+        <Link className="self-center p-2 bg-teal-200" href="/list">
           Try again{" "}
         </Link>
       </div>
     );
   }
-  if (isLoading || !userData) {
-    return <h2>Loading...</h2>;
-  }
 
-  // console.log(new Date(data.dueDate.substring(0, 10)))
   return (
     <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-      <h2 className="p-4 text-2xl text-center">Update User</h2>
+      <h2 className="p-4 text-2xl text-center">Add Enquiry</h2>
+
       <form
-        className=" bg-gray-200 p-8 rounded-xl shadow-lg flex flex-col gap-4 w-[70vw]"
+        className=" rounded-xl flex flex-col max-w-5xl gap-4 p-8 bg-gray-200 shadow-lg"
         // REVIEW: Typescript error removed after adding void
         onSubmit={handleSubmit(onSubmit)}
         noValidate
@@ -244,7 +220,9 @@ const EditUser = ({ id }: { id: number }) => {
             </div>
           </div>
         </div>
-        <button className="self-center p-1.5 bg-blue-300">Update User</button>
+        <button className="self-center p-2 font-semibold bg-orange-200 rounded-md">
+          Add Enquiry
+        </button>
       </form>
       {/* <DevTool control={control} /> */}
       <Link className=" self-center p-2 bg-white rounded-md" href="/enquiries">
@@ -254,4 +232,4 @@ const EditUser = ({ id }: { id: number }) => {
   );
 };
 
-export default EditUser;
+export default AddEnquiry;
