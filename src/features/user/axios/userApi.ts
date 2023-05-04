@@ -9,9 +9,9 @@ import axios from "axios";
 
 const userApi = axios.create({
   // baseURL: "https://jsonplaceholder.typicode.com",
-  baseURL: "http://localhost:3000/api/",
+  // baseURL: "http://localhost:3000/api/",
   // baseURL: "http://127.0.0.1:3000/api/"
-  // baseURL: "https://institute-crm.vercel.app/api/",
+  baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getEnquiries = async (): Promise<User[]> => {

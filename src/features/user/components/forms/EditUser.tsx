@@ -126,7 +126,6 @@ const EditUser = ({ id }: { id: number }) => {
     return <h2>Loading...</h2>;
   }
 
-  // console.log(new Date(data.dueDate.substring(0, 10)))
   return (
     <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
       <h2 className="p-4 text-2xl text-center">Update User</h2>

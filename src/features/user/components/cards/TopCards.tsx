@@ -1,5 +1,3 @@
-import { User } from "../../types/userTypes";
-
 type DataCardProps = {
   title?: string;
   value?: number;

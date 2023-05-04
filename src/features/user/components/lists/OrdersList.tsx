@@ -1,6 +1,5 @@
 import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { useQuery } from "@tanstack/react-query";
 import { getAllOrders } from "../../axios/userApi";
 import Loading from "../basic/Loading";
@@ -12,8 +11,6 @@ const OrdersList = () => {
     isError,
     data: orders,
   } = useQuery(["orders"], getAllOrders);
-
-  console.log(orders);
 
   if (isLoading) {
     return <Loading />;

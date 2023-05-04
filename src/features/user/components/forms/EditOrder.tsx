@@ -218,7 +218,6 @@ const EditOrder = ({ id }: { id: number }) => {
       ...data,
     });
   };
-  console.log(errors);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

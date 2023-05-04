@@ -85,7 +85,6 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
 
   const onSubmit = (data: TAddProductSchema) => {
     mutate(data);
-    // console.log(data)
   };
 
   return (
