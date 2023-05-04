@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { addOrder, getAllProducts, getUser } from "../../axios/userApi";
+import {
+  getAllProducts,
+  getOrder,
+  getUser,
+  updateOrder,
+} from "../../axios/userApi";
 import Link from "next/link";
 import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
 import { Order, Product, ProductInOrder } from "../../types/userTypes";
@@ -43,7 +48,7 @@ const ProductSchema = z
     },
   );
 
-const NewOrderSchema = z.object({
+const EditOrderSchema = z.object({
   userId: z.number(),
   products: z
     .array(ProductSchema)
@@ -62,30 +67,36 @@ const NewOrderSchema = z.object({
   receivingAccount: z.string(),
 });
 
-type TNewOrderSchema = z.infer<typeof NewOrderSchema>;
+type TEditOrderSchema = z.infer<typeof EditOrderSchema>;
 
-const NewOrder = ({ id }: { id: number }) => {
+const EditOrder = ({ id }: { id: number }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(addOrder, {
+  const {
+    isLoading,
+    isError,
+    data: orderData,
+  } = useQuery(["order", id.toString()], () => (id ? getOrder(id) : null));
+
+  const { mutate } = useMutation(updateOrder, {
     onMutate: async (order: Order) => {
       await queryClient.cancelQueries(["orders"]);
       const previousOrders = queryClient.getQueryData<Order[]>(["orders"]);
-      const newId = 0;
-      const newOrder = queryClient.setQueryData(["order", newId.toString()], {
-        ...order,
-        id: 0,
-      });
+      const newOrder = queryClient.setQueryData(
+        ["order", order.id.toString()],
+        order,
+      );
       queryClient.setQueryData(["orders"], (old: Order[] | undefined) => {
-        return newOrder && old ? [newOrder, ...old] : old;
+        return newOrder
+          ? old?.map((item) => (item.id === order.id ? newOrder : item))
+          : old;
       });
-      await router.push("/orders");
+      await router.push(`/orders/${order.id}`);
       return { previousOrders };
     },
     onError: (context: { previousOrders: Order[] }) => {
       queryClient.setQueryData(["orders"], context.previousOrders);
-      // await queryClient.invalidateQueries(["photos"])
     },
     onSettled: async () => {
       await queryClient.invalidateQueries(["orders"]);
@@ -95,39 +106,34 @@ const NewOrder = ({ id }: { id: number }) => {
   const {
     register,
     watch,
+    reset,
     control,
     getValues,
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<TNewOrderSchema>({
-    resolver: zodResolver(NewOrderSchema),
+  } = useForm<TEditOrderSchema>({
+    resolver: zodResolver(EditOrderSchema),
     defaultValues: {
       userId: id,
-      // products: [
-      //   {
-      //     id: 1,
-      //     isSelected: false,
-      //     productName: "Gyanam PCMB",
-      //     productPrice: 40000,
-      //     validityInMonths: 12,
-      //     discount: 0,
-      //     validityFrom: "",
-      //     validityUntil: ""
-      //   }
-      // ],
-      // totalAmount: 0,
-      // totalDiscount: 0,
-      // payableAmount: 0,
-      // paidAmount: 0,
-      // dueAmount: 0,
-      // dueDate: "",
-      orderDate: new Date().toISOString().split("T")[0],
-      // paymentMode: "",
-      // paidBy: "",
-      // receivingAccount: ""
+      products: orderData?.products || [],
+      totalAmount: orderData?.totalAmount || 0,
+      totalDiscount: orderData?.totalDiscount || 0,
+      payableAmount: orderData?.payableAmount || 0,
+      paidAmount: orderData?.paidAmount || 0,
+      dueAmount: orderData?.dueAmount || 0,
+      dueDate: orderData?.dueDate || "",
+      orderDate: orderData?.orderDate || "",
+      paymentMode: orderData?.paymentMode || "",
+      paidBy: orderData?.paidBy || "",
+      receivingAccount: orderData?.receivingAccount || "",
     },
   });
+
+  useEffect(() => {
+    if (!orderData) return;
+    reset(orderData);
+  }, [orderData, reset]);
 
   function getNumber(value: string | number) {
     if (typeof value === "number") {
@@ -182,11 +188,9 @@ const NewOrder = ({ id }: { id: number }) => {
     return () => subscription.unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch, getValues, setValue]);
-  const {
-    isLoading,
-    isError,
-    data: userData,
-  } = useQuery(["user", id.toString()], () => (id ? getUser(id) : null));
+  const { data: userData } = useQuery(["user", id.toString()], () =>
+    id ? getUser(id) : null,
+  );
   const { data: products } = useQuery(["products"], () => getAllProducts());
 
   useEffect(() => {
@@ -208,9 +212,12 @@ const NewOrder = ({ id }: { id: number }) => {
   if (isLoading || !userData) {
     return <h2>Loading...</h2>;
   }
-  const onSubmit = (data: TNewOrderSchema) => {
+  const onSubmit = (data: TEditOrderSchema) => {
     // REVIEW: as to solve TS error
-    mutate(data as Order);
+    mutate({
+      id,
+      ...data,
+    });
   };
   return (
     <>
@@ -637,4 +644,4 @@ const NewOrder = ({ id }: { id: number }) => {
     </>
   );
 };
-export default NewOrder;
+export default EditOrder;

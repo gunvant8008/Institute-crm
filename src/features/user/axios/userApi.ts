@@ -151,10 +151,17 @@ export const getOrder = async (id: number): Promise<Order | undefined> => {
     .get(`/orders/${id}`)
     .then((response) => response.data as Order);
 };
-
 // api to add new order
 export const addOrder = async (order: Omit<Order, "id">): Promise<Order> => {
   return await userApi.post("/orders/new", order);
+};
+// api to update an order
+export const updateOrder = async (order: Order): Promise<Order> => {
+  return await userApi.patch(`/orders/${order.id}`, order);
+};
+// api to delete an order
+export const deleteOrder = async (id: number) => {
+  return await userApi.delete(`/orders/${id}`);
 };
 
 // ==================== API FOR DASHBOARD DATA ====================

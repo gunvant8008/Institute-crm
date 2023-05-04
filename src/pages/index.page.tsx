@@ -12,6 +12,8 @@ export default function Home() {
       <TopCards
         thisMonthEnquiries={data?.thisMonthEnquiries}
         lastMonthEnquiries={data?.lastMonthEnquiries}
+        thisMonthActiveUsers={data?.thisMonthActiveUsers}
+        lastMonthActiveUsers={data?.lastMonthActiveUsers}
         thisMonthRevenue={data?.thisMonthRevenue}
         lastMonthRevenue={data?.lastMonthRevenue}
         thisYearRevenue={data?.thisYearRevenue}

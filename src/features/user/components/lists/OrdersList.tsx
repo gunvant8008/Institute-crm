@@ -82,7 +82,12 @@ const OrdersList = () => {
                   {order.dueAmount > 0 ? order.dueDate : "N/A"}
                 </p>
                 <div className="sm:flex items-center justify-between hidden">
-                  <BsThreeDotsVertical />
+                  <Link
+                    href={`/orders/edit/${order.id}`}
+                    className="p-1.5  bg-blue-200 rounded-md"
+                  >
+                    Pay Balance
+                  </Link>
                 </div>
               </div>
             </li>

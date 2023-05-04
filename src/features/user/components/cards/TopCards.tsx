@@ -12,7 +12,9 @@ export const DataCard = ({ title, value, percentage }: DataCardProps) => {
     <div className="flex justify-between w-full p-4 bg-white border rounded-lg">
       <div className="flex flex-col w-full pb-4">
         <p className="text-2xl font-bold">
-          {title === "Enquiries This Month" ? "" : "￡"}
+          {title === "Enquiries This Month" || title === "Members This Month"
+            ? ""
+            : "￡"}
           {value?.toLocaleString()}
         </p>
         <p className="text-gray-600">{title}</p>
@@ -29,8 +31,10 @@ export const DataCard = ({ title, value, percentage }: DataCardProps) => {
 };
 
 type TopCardsProps = {
-  thisMonthEnquiries?: User[];
-  lastMonthEnquiries?: User[];
+  thisMonthEnquiries?: number;
+  lastMonthEnquiries?: number;
+  thisMonthActiveUsers?: number;
+  lastMonthActiveUsers?: number;
   thisMonthRevenue?: number;
   lastMonthRevenue?: number;
   thisYearRevenue?: number;
@@ -44,6 +48,8 @@ const TopCards = ({
   lastMonthRevenue,
   thisYearRevenue,
   lastYearRevenue,
+  thisMonthActiveUsers,
+  lastMonthActiveUsers,
 }: TopCardsProps) => {
   const monthRevenuePercentage = () => {
     if (thisMonthRevenue && lastMonthRevenue) {
@@ -66,10 +72,19 @@ const TopCards = ({
     }
   };
   const monthEnquiryPercentage = () => {
-    if (thisMonthEnquiries?.length && lastMonthEnquiries?.length) {
+    if (thisMonthEnquiries && lastMonthEnquiries) {
       return +(
-        ((thisMonthEnquiries?.length - lastMonthEnquiries?.length) /
-          lastMonthEnquiries?.length) *
+        ((thisMonthEnquiries - lastMonthEnquiries) / lastMonthEnquiries) *
+        100
+      ).toFixed(0);
+    } else {
+      return 0;
+    }
+  };
+  const monthActiveUsersPercentage = () => {
+    if (thisMonthActiveUsers && lastMonthActiveUsers) {
+      return +(
+        ((thisMonthActiveUsers - lastMonthActiveUsers) / lastMonthActiveUsers) *
         100
       ).toFixed(0);
     } else {
@@ -78,7 +93,7 @@ const TopCards = ({
   };
 
   return (
-    <div className="lg:grid-cols-5 grid gap-4 p-4">
+    <div className="lg:grid-cols-5 grid gap-4 px-4 pt-4">
       <div className="lg:col-span-2 col-span-1">
         <DataCard
           title="This Month"
@@ -86,22 +101,27 @@ const TopCards = ({
           percentage={monthRevenuePercentage()}
         />
       </div>
-      <div className="lg:col-span-2 col-span-1">
+      <div className="col-span-1">
         <DataCard
           title="YTD Revenue"
           value={thisYearRevenue}
           percentage={yearRevenuePercentage()}
         />
       </div>
-      <div className="">
+      <div className="col-span-1">
         <DataCard
           title="Enquiries This Month"
-          value={thisMonthEnquiries?.length}
+          value={thisMonthEnquiries}
           percentage={monthEnquiryPercentage()}
         />
       </div>
-
-      <h2>top cards</h2>
+      <div className="col-span-1">
+        <DataCard
+          title="Members This Month"
+          value={thisMonthActiveUsers}
+          percentage={monthActiveUsersPercentage()}
+        />
+      </div>
     </div>
   );
 };

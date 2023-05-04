@@ -18,7 +18,6 @@ const UserDetails = ({ id }: { id: number }) => {
   const { data: userOrders } = useQuery(["userOrders", id], () =>
     id ? getUserOrders(id) : null,
   );
-  console.log(userOrders);
   const { mutate, isLoading: deleteLoading } = useMutation(deleteUser, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["users"]);
@@ -145,9 +144,12 @@ const UserDetails = ({ id }: { id: number }) => {
                     <div className="flex">
                       <div className="pl-2">
                         <FaShoppingBag className=" text-orange-800" />
-                        <p className="text-cyan-600 text-sm font-semibold cursor-pointer">
+                        <Link
+                          href={`/orders/${order.id}`}
+                          className="text-cyan-600 text-sm font-semibold cursor-pointer"
+                        >
                           Order Id: {order.id}
-                        </p>
+                        </Link>
                         <p className=" text-xs text-gray-800">
                           {order.orderDate}
                         </p>

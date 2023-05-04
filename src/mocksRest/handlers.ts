@@ -111,7 +111,7 @@ let users: User[] = [
   },
 ];
 
-const orders: Order[] = [
+let orders: Order[] = [
   {
     id: 1,
     userId: 1,
@@ -432,6 +432,28 @@ export const handlers = [
       ctx.json({ message: "Order added successfully" }),
     );
   }),
+  // api to update an order
+  rest.patch("/api/orders/:id", async (req, res, ctx) => {
+    const id = Number(req.params.id);
+    const updatedOrder: Order = await req.json();
+    orders = orders.map((order) => {
+      if (order.id === id) {
+        return updatedOrder;
+      }
+      return order;
+    });
+    return res(
+      ctx.status(200),
+      ctx.delay(500),
+      ctx.json({ message: "Order updated successfully" }),
+    );
+  }),
+  // api to delete an order
+  rest.delete("/api/orders/:id", async (req, res, ctx) => {
+    const id = Number(req.params.id);
+    orders = orders.filter((order) => order.id !== id);
+    return res(ctx.status(204));
+  }),
 
   // ==================== apis for dashboard data ====================
   // api which returns this months enquires, last month enquiries, this month added active users, last month added active users, this month revenue, last month revenue, this year revenue, last year revenue, last 15 orders & month wise revenue for the current year
@@ -447,6 +469,24 @@ export const handlers = [
     });
     const lastMonthEnquiries = users.filter((user) => {
       if (user.userStatus === "ENQUIRY") {
+        const date = new Date(user.addedOn);
+        const today = new Date();
+        const month = today.getMonth() - 1;
+        const year = today.getFullYear();
+        return date.getMonth() === month && date.getFullYear() === year;
+      }
+    });
+    const thisMonthActiveUsers = users.filter((user) => {
+      if (user.userStatus === "ACTIVE") {
+        const date = new Date(user.addedOn);
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+        return date.getMonth() === month && date.getFullYear() === year;
+      }
+    });
+    const lastMonthActiveUsers = users.filter((user) => {
+      if (user.userStatus === "ACTIVE") {
         const date = new Date(user.addedOn);
         const today = new Date();
         const month = today.getMonth() - 1;
@@ -492,7 +532,15 @@ export const handlers = [
       }
       return acc;
     }, 0);
-    const last15Orders = orders.slice(0, 15);
+    // last 15 orders should have institute name and phone1 details
+    const last15Orders = orders.slice(0, 15).map((order) => {
+      const user = users.find((user) => user.id === order.userId);
+      return {
+        ...order,
+        instituteName: user?.instituteName,
+        phone1: user?.phone1,
+      };
+    });
 
     const monthWiseRevenue = [];
     for (let i = 0; i < 12; i++) {
@@ -512,8 +560,10 @@ export const handlers = [
       ctx.status(200),
       ctx.delay(200),
       ctx.json({
-        thisMonthEnquiries,
-        lastMonthEnquiries,
+        thisMonthEnquiries: thisMonthEnquiries.length,
+        lastMonthEnquiries: lastMonthEnquiries.length,
+        thisMonthActiveUsers: thisMonthActiveUsers.length,
+        lastMonthActiveUsers: lastMonthActiveUsers.length,
         thisMonthRevenue,
         lastMonthRevenue,
         thisYearRevenue,

@@ -51,12 +51,14 @@ export interface User {
 }
 
 export interface DashboardData {
-  thisMonthEnquiries: User[];
-  lastMonthEnquiries: User[];
+  thisMonthEnquiries: number;
+  lastMonthEnquiries: number;
+  thisMonthActiveUsers: number;
+  lastMonthActiveUsers: number;
   thisMonthRevenue: number;
   lastMonthRevenue: number;
   thisYearRevenue: number;
   lastYearRevenue: number;
   monthWiseRevenue: number[];
-  last15Orders: Order[];
+  last15Orders: OrderList[];
 }

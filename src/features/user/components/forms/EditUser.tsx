@@ -99,17 +99,7 @@ const EditUser = ({ id }: { id: number }) => {
 
   // REVIEW: IS THIS THE BEST WAY TO DO THIS? resetting the data on hard refresh
   useEffect(() => {
-    if (!userData) {
-      return;
-    }
-    // // REVIEW: SOLVED THE ISSUE OF DATEPICKER NOT SHOWING THE DATE
-    // reset({
-    //   ...data,
-    //   datePurchased: data.datePurchased?.toString().substring(0, 10),
-    //   validity: data.validity?.toString().substring(0, 10),
-    //   dueDate: data.dueDate?.toString().substring(0, 10),
-    // });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!userData) return;
     reset(userData);
   }, [userData, reset]);
 
