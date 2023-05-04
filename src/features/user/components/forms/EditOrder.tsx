@@ -92,7 +92,7 @@ const EditOrder = ({ id }: { id: number }) => {
           ? old?.map((item) => (item.id === order.id ? newOrder : item))
           : old;
       });
-      await router.push(`/orders/${order.id}`);
+      await router.push(`/`);
       return { previousOrders };
     },
     onError: (context: { previousOrders: Order[] }) => {
@@ -116,7 +116,7 @@ const EditOrder = ({ id }: { id: number }) => {
     resolver: zodResolver(EditOrderSchema),
     defaultValues: {
       userId: id,
-      products: orderData?.products || [],
+      products: orderData?.products,
       totalAmount: orderData?.totalAmount || 0,
       totalDiscount: orderData?.totalDiscount || 0,
       payableAmount: orderData?.payableAmount || 0,
@@ -134,7 +134,6 @@ const EditOrder = ({ id }: { id: number }) => {
     if (!orderData) return;
     reset(orderData);
   }, [orderData, reset]);
-
   function getNumber(value: string | number) {
     if (typeof value === "number") {
       return value;
@@ -219,11 +218,12 @@ const EditOrder = ({ id }: { id: number }) => {
       ...data,
     });
   };
+  console.log(errors);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-          <h2 className="p-4 text-2xl text-center">New Order</h2>
+          <h2 className="p-4 text-2xl text-center">Update Order</h2>
           <div className=" bg-gray-200 p-8 rounded-xl shadow-lg flex flex-col gap-4 w-[70vw]">
             {/* User detail section */}
             <div>
@@ -322,7 +322,7 @@ const EditOrder = ({ id }: { id: number }) => {
             </div>
             {/* Products Section- coming from api */}
             <ul>
-              {fields?.map((product: Product, index) => (
+              {fields?.map((product: ProductInOrder, index) => (
                 <li key={product.id}>
                   <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
                     <div className="flex">

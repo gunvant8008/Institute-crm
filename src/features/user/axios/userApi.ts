@@ -9,9 +9,9 @@ import axios from "axios";
 
 const userApi = axios.create({
   // baseURL: "https://jsonplaceholder.typicode.com",
-  // baseURL: "http://localhost:3000/api/",
+  baseURL: "http://localhost:3000/api/",
   // baseURL: "http://127.0.0.1:3000/api/"
-  baseURL: "https://institute-crm.vercel.app/api/",
+  // baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getEnquiries = async (): Promise<User[]> => {
@@ -90,31 +90,31 @@ export const getRecentUsers = async (): Promise<User[]> => {
     .then((response) => response.data as User[]);
 };
 
-export const getThisMonthRevenue = async (): Promise<number> => {
-  return await userApi
-    .get("/revenue/this-month")
-    .then((response) => response.data as number);
-};
-export const getLastMonthRevenue = async (): Promise<number> => {
-  return await userApi
-    .get("/revenue/last-month")
-    .then((response) => response.data as number);
-};
-export const getMonthWiseRevenue = async (): Promise<number[]> => {
-  return await userApi
-    .get("/revenue/month-wise")
-    .then((response) => response.data as number[]);
-};
-export const getYearToDateRevenue = async (): Promise<number> => {
-  return await userApi
-    .get("/revenue/year-to-date")
-    .then((response) => response.data as number);
-};
-export const getLastYearRevenue = async (): Promise<number> => {
-  return await userApi
-    .get("/revenue/last-year")
-    .then((response) => response.data as number);
-};
+// export const getThisMonthRevenue = async (): Promise<number> => {
+//   return await userApi
+//     .get("/revenue/this-month")
+//     .then((response) => response.data as number);
+// };
+// export const getLastMonthRevenue = async (): Promise<number> => {
+//   return await userApi
+//     .get("/revenue/last-month")
+//     .then((response) => response.data as number);
+// };
+// export const getMonthWiseRevenue = async (): Promise<number[]> => {
+//   return await userApi
+//     .get("/revenue/month-wise")
+//     .then((response) => response.data as number[]);
+// };
+// export const getYearToDateRevenue = async (): Promise<number> => {
+//   return await userApi
+//     .get("/revenue/year-to-date")
+//     .then((response) => response.data as number);
+// };
+// export const getLastYearRevenue = async (): Promise<number> => {
+//   return await userApi
+//     .get("/revenue/last-year")
+//     .then((response) => response.data as number);
+// };
 export const getAllProducts = async (): Promise<Product[]> => {
   return await userApi
     .get("/products")

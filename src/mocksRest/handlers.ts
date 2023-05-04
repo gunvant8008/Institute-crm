@@ -406,16 +406,21 @@ export const handlers = [
     const user = users.find((user) => user.id === userId);
     // code to add validityUntil date in products, find the validity of the product, validity from date and add validity months into validityFrom to find validityUntil
     const updatedProducts = products.map((product) => {
+      if (!product.isSelected) return;
+      if (product === null) return;
+      if (product === undefined) return;
       const { validityFrom, validityInMonths } = product;
       const validityUntil = new Date(validityFrom as string);
-      if (!product.isSelected) return;
       validityUntil.setMonth(validityUntil.getMonth() + validityInMonths);
       return {
         ...product,
         validityUntil: validityUntil.toISOString().slice(0, 10),
       };
     });
-    newOrder.products = updatedProducts as ProductInOrder[];
+    const filteredUpdatedProducts = updatedProducts.filter(
+      (product) => !!product,
+    );
+    newOrder.products = filteredUpdatedProducts as ProductInOrder[];
     if (!user) {
       return res(
         ctx.status(404),
