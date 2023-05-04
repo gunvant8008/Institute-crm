@@ -407,7 +407,7 @@ export const handlers = [
     // code to add validityUntil date in products, find the validity of the product, validity from date and add validity months into validityFrom to find validityUntil
     const updatedProducts = products.map((product) => {
       const { validityFrom, validityInMonths } = product;
-      const validityUntil = new Date(validityFrom);
+      const validityUntil = new Date(validityFrom as string);
       if (!product.isSelected) return;
       validityUntil.setMonth(validityUntil.getMonth() + validityInMonths);
       return {
