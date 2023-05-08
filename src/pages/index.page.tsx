@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const { data } = useQuery(["dashboard-data"], getDashboardData);
-  // const {last15Orders, thisMonthEnquiries, lastMonthEnquiries, thisMonthRevenue, lastMonthRevenue} = data || undefined
   return (
     <main className="min-h-screen bg-gray-100">
       <TopCards

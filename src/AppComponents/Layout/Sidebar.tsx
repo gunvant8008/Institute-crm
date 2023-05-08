@@ -14,7 +14,7 @@ type SidebarProps = {
 const Sidebar = ({ children }: SidebarProps) => {
   return (
     <div className="flex">
-      <div className="fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between">
+      <div className="fixed w-20 min-h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between">
         <div className="gap-y-5 flex flex-col items-center">
           <Link href="/">
             <div className="inline-block p-3 text-white bg-orange-800 rounded-lg">
