@@ -12,7 +12,7 @@ import { NewOrderSchema } from "@/features/orders/zod/orderSchemas";
 import { Product, ProductInOrder } from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
 import { addOrder } from "../../axios/ordersApi";
-import UserInfo from "@/features/user/components/cards/userInfo";
+import UserInfo from "@/features/user/components/cards/UserInfo";
 
 const NewOrder = ({ id }: { id: number }) => {
   const router = useRouter();
