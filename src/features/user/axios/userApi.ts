@@ -3,8 +3,11 @@ import { User } from "../types/userTypes";
 import axios from "axios";
 
 const userApi = axios.create({
-  // baseURL: "http://localhost:3000/api/",
-  baseURL: "https://institute-crm.vercel.app/api/",
+  baseURL:
+    process.env.NEXT_PUBLIC_DEV_MODE === "enabled"
+      ? "http://localhost:3000/api/"
+      : "https://institute-crm.vercel.app/api/",
+  // baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getEnquiries = async (): Promise<User[]> => {
