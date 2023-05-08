@@ -2,33 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Product } from "../../types/userTypes";
-import { getProduct, updateProduct } from "../../axios/userApi";
-
-const EditProductSchema = z.object({
-  productName: z
-    .string()
-    .min(5, {
-      message: "Product name must be grater than or equal to 5 characters.",
-    })
-    .max(100),
-  productPrice: z.number().min(0),
-  productDescription: z
-    .string()
-    .min(5, {
-      message:
-        "Product description must be grater than or equal to 5 characters.",
-    })
-    .max(100),
-  validityInMonths: z
-    .number()
-    .min(1, {
-      message: "Product validity must be the multiple of 1 month.",
-    })
-    .max(100),
-});
-type TEditProductSchema = z.infer<typeof EditProductSchema>;
+import {
+  Product,
+  TEditProductSchema,
+} from "@/features/product/types/productTypes";
+import { EditProductSchema } from "@/features/product/zod/productSchemas";
+import { getProduct, updateProduct } from "../../axios/productApi";
 
 type TModalProps = {
   buttonText: string;

@@ -2,15 +2,11 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Sidebar from "@/features/user/components/Layout/Sidebar";
-import Header from "@/features/user/components/Layout/Header";
+import Sidebar from "@/AppComponents/Layout/Sidebar";
+import Header from "@/AppComponents/Layout/Header";
 
 const queryClient = new QueryClient();
-// REVIEW: void
 if (process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
-  // void import("../mocksRest").then(({ setupMocks }) => {
-  //   void setupMocks();
-  // });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
   const { setupMocks } = require("../mocksRest");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call

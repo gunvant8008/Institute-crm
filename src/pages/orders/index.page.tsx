@@ -1,4 +1,4 @@
-import OrdersList from "@/features/user/components/lists/OrdersList";
+import OrdersList from "@/features/orders/components/lists/OrdersList";
 import React from "react";
 
 const OrdersPage = () => {

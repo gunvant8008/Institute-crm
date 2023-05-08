@@ -1,4 +1,4 @@
-import NewOrder from "@/features/user/components/forms/NewOrder";
+import NewOrder from "@/features/orders/components/forms/NewOrder";
 import { useRouter } from "next/router";
 import React from "react";
 

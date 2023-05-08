@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { User } from "@/features/user/types/userTypes";
 import { BsPersonFill } from "react-icons/bs";
-import Loading from "@/features/user/components/basic/Loading";
+import Loading from "@/AppComponents/basic/Loading";
 
 const InactiveClientsList = () => {
   const queryClient = useQueryClient();
@@ -19,7 +19,6 @@ const InactiveClientsList = () => {
       const previousInactiveClients = queryClient.getQueryData<User[]>([
         "inactiveClients",
       ]);
-      // REVIEW: Typescript error here
       queryClient.setQueryData(
         ["inactiveClients"],
         (old: User[] | undefined) => {
@@ -75,69 +74,66 @@ const InactiveClientsList = () => {
         </Link>
       </div>
       <div className="w-full p-4 overflow-y-auto bg-white border rounded-lg">
-        <div className="grid items-center justify-between grid-cols-6 p-2 my-3 font-semibold cursor-pointer">
+        <div className="lg:grid-cols-6 grid items-center justify-between grid-cols-3 p-2 my-3 font-semibold cursor-pointer">
           <span className=" col-span-2">Institute</span>
-          <span>Contact</span>
-          <span>Status</span>
-          <span>Address</span>
+          <span className="lg:block hidden">Contact</span>
+          <span className="lg:block hidden">Status</span>
+          <span className="lg:block hidden">Address</span>
           <span>Actions</span>
         </div>
         <ul>
-          {inactiveClients.map(
-            (user: User) => (
-              // while (index < 10) {
-              //   // just be careful doing this if you have loads of data.
-              //   // the cache will become gigantic!
-              // queryClient.setQueryData(["user", user.id.toString()], user);
-              <li
-                key={user.id}
-                className="bg-gray-50 hover:bg-gray-100 grid items-center justify-between grid-cols-6 gap-4 p-2 my-3 rounded-lg"
-              >
-                <div className="flex items-center col-span-2">
-                  <div className="p-3 bg-orange-200 rounded-lg">
-                    <BsPersonFill className="text-orange-800" />
-                  </div>
-                  <p className="pl-4">
-                    {user.instituteName}{" "}
-                    <span className="block text-sm text-gray-500">
-                      Manager:{user.managersName}
-                    </span>
-                  </p>
+          {inactiveClients.map((user: User) => (
+            // while (index < 10) {
+            //   // just be careful doing this if you have loads of data.
+            //   // the cache will become gigantic!
+            // queryClient.setQueryData(["user", user.id.toString()], user);
+            <li
+              key={user.id}
+              className="bg-gray-50 hover:bg-gray-100 lg:grid-cols-6 grid items-center justify-between grid-cols-3 p-2 my-3 cursor-pointer"
+            >
+              <div className="flex items-center col-span-2">
+                <div className="p-3 bg-orange-200 rounded-lg">
+                  <BsPersonFill className="text-orange-800" />
                 </div>
-                <p className="sm:text-left text-right text-gray-600">
-                  {user.email}
+                <p className="pl-4">
+                  {user.instituteName}{" "}
                   <span className="block text-sm text-gray-500">
-                    Phone:{user.phone1}
+                    Manager:{user.managersName}
                   </span>
                 </p>
-                <p className="md:flex hidden">{user.userStatus}</p>
-                <p>{user.address}</p>
-                <div className="sm:flex gap-x-10 items-center justify-between hidden">
-                  <div className="gap-x-2 flex">
-                    <Link
-                      href={`/user/${user.id}`}
-                      className="p-1.5  bg-gray-200 rounded-md"
-                    >
-                      View
-                    </Link>
-                    <button
-                      className="p-1 bg-red-200 rounded-md"
-                      onClick={() => deleteUserMutation.mutate(user.id)}
-                    >
-                      Delete
-                    </button>
-                    <Link
-                      href={`/edituser/${user.id}`}
-                      className="p-1.5  bg-blue-200 rounded-md"
-                    >
-                      Edit
-                    </Link>
-                  </div>
+              </div>
+              <p className="lg:text-left lg:block hidden text-right text-gray-600">
+                {user.email}
+                <span className="block text-sm text-gray-500">
+                  Phone:{user.phone1}
+                </span>
+              </p>
+              <p className="lg:flex hidden">{user.userStatus}</p>
+              <p className="lg:block hidden">{user.address}</p>
+              <div className="gap-x-10 flex items-center justify-between">
+                <div className="gap-x-2 flex">
+                  <Link
+                    href={`/user/${user.id}`}
+                    className="p-1.5  bg-gray-200 rounded-md"
+                  >
+                    View
+                  </Link>
+                  <button
+                    className="p-1 bg-red-200 rounded-md"
+                    onClick={() => deleteUserMutation.mutate(user.id)}
+                  >
+                    Delete
+                  </button>
+                  <Link
+                    href={`/edituser/${user.id}`}
+                    className="p-1.5  bg-blue-200 rounded-md"
+                  >
+                    Edit
+                  </Link>
                 </div>
-              </li>
-            ),
-            // }
-          )}
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

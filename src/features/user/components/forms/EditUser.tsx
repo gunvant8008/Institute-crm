@@ -2,43 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
-import * as z from "zod";
+import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser, updateUser } from "@/features/user/axios/userApi";
-import { User } from "../../types/userTypes";
+import { TEditUserSchema, User } from "../../types/userTypes";
 import { useEffect } from "react";
+import { EditUserSchema } from "../../zod/userSchemas";
 // import { DevTool } from "@hookform/devtools"
-
-const EditUserSchema = z.object({
-  instituteName: z
-    .string()
-    .min(5, { message: "Institute Name must contain at least 5 character(s)" })
-    .max(100),
-  ownersName: z
-    .string()
-    .min(4, { message: "Name must be greater than or equal to 4" })
-    .max(50)
-    .optional(),
-  managersName: z
-    .string()
-    .min(4, { message: "Name must be greater than or equal to 4" })
-    .max(50)
-    .optional(),
-  address: z
-    .string()
-    .min(5, { message: "Address must contain at least 5 character(s)" })
-    .max(100),
-  phone1: z.string().min(10).max(10),
-  phone2: z.string().min(10).max(10).optional(),
-
-  email: z.string().email(),
-  website: z.string().optional(),
-  description: z.string().optional(),
-  leadType: z.string().optional(),
-  leadSource: z.string().optional(),
-});
-type TEditUserSchema = z.infer<typeof EditUserSchema>;
 
 const EditUser = ({ id }: { id: number }) => {
   const router = useRouter();

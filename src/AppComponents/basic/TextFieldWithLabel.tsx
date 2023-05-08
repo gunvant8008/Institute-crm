@@ -14,13 +14,15 @@ export const TextFieldWithLabel = ({
   inputType,
   error,
   inputProps,
+  className,
   ...rest
 }: TextFieldWithLabelProps) => {
   return (
     <label className="flex flex-col gap-1">
       {labelText}
       <input
-        className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 w-full p-1 text-black rounded-md"
+        className={`focus:ring focus:ring-opacity-75 focus:ring-gray-400 w-full p-1 text-black rounded-md  + 
+        ${className ?? ""}`}
         type={inputType ?? "text"}
         {...(inputProps ?? {})}
         {...rest}

@@ -1,11 +1,10 @@
 import React from "react";
-import { FaProductHunt } from "react-icons/fa";
-import { deleteProduct, getAllProducts } from "../../axios/userApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Loading from "../basic/Loading";
 import AddProductModal from "../forms/AddProductModal";
-import { Product } from "../../types/userTypes";
-import EditProductModal from "../forms/EditProductModal";
+import { deleteProduct, getAllProducts } from "../../axios/productApi";
+import { Product } from "../../types/productTypes";
+import Loading from "@/AppComponents/basic/Loading";
+import SingleProduct from "../cards/Product";
 
 const ProductsList = () => {
   const queryClient = useQueryClient();
@@ -60,39 +59,7 @@ const ProductsList = () => {
         <ul>
           {products.map((product: Product) => (
             <li key={product.id}>
-              <div className="bg-gray-50 hover:bg-gray-100 md:grid-cols-4 sm:grid-cols-3 grid items-center justify-between grid-cols-2 p-2 my-3 rounded-lg">
-                <div className="flex">
-                  <div className="p-3 bg-orange-200 rounded-lg">
-                    <FaProductHunt className="text-orange-800" />
-                  </div>
-                  <div className="pl-4">
-                    <p className="font-bold text-gray-800">
-                      ￡{product.productPrice?.toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-500">Id:{product.id}</p>
-                  </div>
-                </div>
-                <p className="sm:text-left text-right text-gray-600">
-                  <span>{product.productName}</span>
-                </p>
-                <p className="md:flex hidden">{product.productDescription}</p>
-                <div className="sm:flex items-center justify-between hidden">
-                  {product.validityInMonths}
-                  <div className="gap-x-2 flex">
-                    <EditProductModal
-                      buttonText="Edit"
-                      title="Edit Product"
-                      id={product.id}
-                    />
-                    <button
-                      className="bg-red-200 p-1.5 rounded-md"
-                      onClick={() => mutate(product.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <SingleProduct product={product} mutate={mutate} />
             </li>
           ))}
         </ul>
