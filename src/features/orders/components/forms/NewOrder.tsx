@@ -1,68 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { addOrder, getAllProducts, getUser } from "../../axios/userApi";
+import { getUser } from "../../../user/axios/userApi";
 import Link from "next/link";
-import { TextFieldWithLabel } from "../basic/TextFieldWithLabel";
-import { Order, Product, ProductInOrder } from "../../types/userTypes";
 import { FaProductHunt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray } from "react-hook-form";
-
-const ProductSchema = z
-  .object({
-    id: z.number(),
-    isSelected: z.boolean().optional(),
-    productName: z.string(),
-    productPrice: z.number(),
-    validityInMonths: z.number(),
-    discount: z.number().optional(),
-    validityFrom: z.string().optional(),
-    validityUntil: z.string().optional(),
-  })
-  .refine(
-    (product) => product.isSelected !== true || product.discount !== undefined,
-    {
-      message: "Discount is required for selected products",
-    },
-  )
-  .refine(
-    (product) =>
-      product.isSelected !== true || product.validityFrom !== undefined,
-    {
-      message: "Start From is required for selected products",
-    },
-  )
-  .refine(
-    (product) =>
-      product.isSelected !== true || product.validityUntil !== undefined,
-    {
-      message: "Validity Until is required for selected products",
-    },
-  );
-
-const NewOrderSchema = z.object({
-  userId: z.number(),
-  products: z
-    .array(ProductSchema)
-    .refine((arr) => arr.some((product) => product.isSelected), {
-      message: "At least one product must be selected",
-    }),
-  totalAmount: z.number(),
-  totalDiscount: z.number(),
-  payableAmount: z.number(),
-  paidAmount: z.number(),
-  dueAmount: z.number(),
-  dueDate: z.string(),
-  orderDate: z.string(),
-  paymentMode: z.string(),
-  paidBy: z.string(),
-  receivingAccount: z.string(),
-});
-
-type TNewOrderSchema = z.infer<typeof NewOrderSchema>;
+import { Order, TNewOrderSchema } from "@/features/orders/types/orderTypes";
+import { NewOrderSchema } from "@/features/orders/zod/orderSchemas";
+import { Product, ProductInOrder } from "@/features/product/types/productTypes";
+import { getAllProducts } from "@/features/product/axios/productApi";
+import { addOrder } from "../../axios/ordersApi";
+import UserInfo from "@/features/user/components/cards/UserInfo";
 
 const NewOrder = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -219,89 +169,14 @@ const NewOrder = ({ id }: { id: number }) => {
           <h2 className="p-4 text-2xl text-center">New Order</h2>
           <div className=" bg-gray-200 p-8 rounded-xl shadow-lg flex flex-col gap-4 w-[70vw]">
             {/* User detail section */}
-            <div>
-              <div className=" flex flex-wrap items-start gap-10">
-                <div>
-                  <label className="flex flex-col">
-                    User ID
-                    <input
-                      className="bg-gray-50 p-1 text-gray-400 rounded-md"
-                      disabled
-                      type="number"
-                      // defaultValue={parseInt(id.toString())}
-                      {...register("userId", {
-                        valueAsNumber: true,
-                        required: true,
-                      })}
-                    />
-                  </label>
-                  {errors.userId && (
-                    <span className="block text-sm text-red-400">
-                      {errors.userId.message}
-                    </span>
-                  )}
-                </div>
-                <TextFieldWithLabel
-                  labelText="Institute Name"
-                  inputType="text"
-                  defaultValue={userData.instituteName}
-                  readOnly
-                  className="p-1 text-gray-400 rounded-md"
-                />
-                <TextFieldWithLabel
-                  labelText="Owner's Name"
-                  inputType="text"
-                  placeholder={userData.ownersName}
-                  readOnly
-                />
-                <TextFieldWithLabel
-                  labelText="Manager's Name"
-                  inputType="text"
-                  placeholder={userData.managersName}
-                  readOnly
-                />
-
-                <TextFieldWithLabel
-                  labelText="Phone"
-                  inputType="number"
-                  placeholder={userData.phone1}
-                  readOnly
-                />
-                <TextFieldWithLabel
-                  labelText="Email"
-                  inputType="email"
-                  placeholder={userData.email}
-                  readOnly
-                />
-
-                <div className="flex items-start w-full gap-10">
-                  <label
-                    htmlFor="countries"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Lead Type
-                    <input
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                      placeholder={userData.leadType}
-                      readOnly
-                    ></input>
-                  </label>
-                  <label
-                    htmlFor="countries"
-                    className="block mb-2 text-sm font-medium text-gray-900"
-                  >
-                    Lead Source
-                    <input
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                      placeholder={userData.leadSource}
-                      readOnly
-                    ></input>
-                  </label>
-                </div>
-              </div>
-            </div>
+            <UserInfo
+              userData={userData}
+              error={errors.userId?.message as string}
+              inputProps={register("userId", {
+                valueAsNumber: true,
+                required: true,
+              })}
+            />
           </div>
           {/* Add products section */}
           <div className="flex flex-col w-full gap-4 p-8">

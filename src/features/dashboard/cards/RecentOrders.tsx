@@ -1,7 +1,7 @@
 import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import Link from "next/link";
-import { OrderList } from "../../types/userTypes";
+import { OrderList } from "@/features/orders/types/orderTypes";
 
 type RecentOrdersProps = {
   recentOrders: OrderList[] | undefined;

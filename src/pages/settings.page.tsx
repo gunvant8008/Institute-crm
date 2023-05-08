@@ -1,4 +1,4 @@
-import ProductsList from "@/features/user/components/lists/ProductsList";
+import ProductsList from "@/features/product/components/lists/ProductsList";
 import React from "react";
 
 const Settings = () => {

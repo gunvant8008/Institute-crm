@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { deleteUser, getUser, getUserOrders } from "../../axios/userApi";
-import Loading from "../basic/Loading";
-import { FaShoppingBag } from "react-icons/fa";
+import Loading from "@/AppComponents/basic/Loading";
+import UserContactInfo from "../cards/UserContactInfo";
+import OrderInfo from "@/features/orders/components/cards/OrderInfo";
 
 const UserDetails = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const UserDetails = ({ id }: { id: number }) => {
   const { mutate, isLoading: deleteLoading } = useMutation(deleteUser, {
     onSuccess: async () => {
       await queryClient.invalidateQueries(["users"]);
-      await router.push("/users");
+      await router.push("/enquiries");
     },
   });
   if (isError) {
@@ -140,94 +141,14 @@ const UserDetails = ({ id }: { id: number }) => {
             {userOrders &&
               userOrders.map((order) => (
                 <li key={order.id}>
-                  <div className="grid grid-cols-9 gap-8 text-sm">
-                    <div className="flex">
-                      <div className="pl-2">
-                        <FaShoppingBag className=" text-orange-800" />
-                        <Link
-                          href={`/orders/${order.id}`}
-                          className="text-cyan-600 text-sm font-semibold cursor-pointer"
-                        >
-                          Order Id: {order.id}
-                        </Link>
-                        <p className=" text-xs text-gray-800">
-                          {order.orderDate}
-                        </p>
-                      </div>
-                    </div>
-                    <ul className="gap-y-2 flex flex-col">
-                      {order.products.map((product) => {
-                        if (product?.isSelected) {
-                          return (
-                            <li key={product.id} className="flex flex-col">
-                              <span className="font-semibold">
-                                {" "}
-                                {product.productName}
-                              </span>
-                              <span className=" text-xs text-gray-600">
-                                {" "}
-                                From: {product.validityFrom}
-                              </span>
-                              <span className=" text-xs text-gray-600">
-                                {" "}
-                                Until: {product.validityUntil}
-                              </span>
-                            </li>
-                          );
-                        }
-                      })}
-                    </ul>
-                    <p>￡{order.totalAmount}</p>
-                    <p>￡{order.totalDiscount}</p>
-                    <p>￡{order.paidAmount}</p>
-                    <p>￡{order.dueAmount}</p>
-                    <p>{order.dueDate}</p>
-                    <p>{order.paymentMode}</p>
-                    <p>{order.paidBy}</p>
-                  </div>
+                  <OrderInfo order={order} />
                 </li>
               ))}
           </ul>
         </div>
 
         <span className="border-b-[1px] border-gray-300 w-full"></span>
-        <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">
-            CONTACT INFORMATION
-          </h3>
-          <div className="flex flex-wrap items-center gap-10 p-4">
-            <div className="flex flex-col space-y-2 min-w-[18rem] ">
-              <p className="text-sm font-semibold text-gray-500">EMAIL</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.email}
-              </span>
-            </div>
-            <div className="flex flex-col min-w-[18rem] space-y-2">
-              <p className="text-sm font-semibold text-gray-500">PHONE 1</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.phone1}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem] ">
-              <p className="text-sm font-semibold text-gray-500">PHONE 2</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.phone2}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem] ">
-              <p className="text-sm font-semibold text-gray-500">WEBSITE</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.website}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem] ">
-              <p className="text-sm font-semibold text-gray-500">ADDRESS</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.address}
-              </span>
-            </div>
-          </div>
-        </div>
+        <UserContactInfo user={user} />
       </div>
     );
 

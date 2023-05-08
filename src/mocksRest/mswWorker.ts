@@ -1,5 +1,13 @@
 import { setupWorker } from "msw";
 
-import { handlers } from "./handlers";
+import { productHandlers } from "./handlers/productHandlers";
+import { orderHandlers } from "./handlers/orderHandlers";
+import { userHandlers } from "./handlers/userHandlers";
+import { dashboardHandlers } from "./handlers/dashboardHandlers";
 
-export const mswWorker = setupWorker(...handlers);
+export const mswWorker = setupWorker(
+  ...productHandlers,
+  ...orderHandlers,
+  ...userHandlers,
+  ...dashboardHandlers,
+);

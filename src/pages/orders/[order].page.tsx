@@ -1,4 +1,4 @@
-import { OrderDetails } from "@/features/user/components/details/OrderDetails";
+import { OrderDetails } from "@/features/orders/components/details/OrderDetails";
 import { useRouter } from "next/router";
 
 const OrderDetailsPage = () => {

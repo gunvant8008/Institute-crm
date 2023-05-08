@@ -1,7 +1,7 @@
-import { getDashboardData } from "@/features/user/axios/userApi";
-import BarChart from "@/features/user/components/cards/BarChart";
-import RecentOrders from "@/features/user/components/cards/RecentOrders";
-import TopCards from "@/features/user/components/cards/TopCards";
+import { getDashboardData } from "@/features/dashboard/axios/dashboardApi";
+import BarChart from "@/features/dashboard/cards/BarChart";
+import RecentOrders from "@/features/dashboard/cards/RecentOrders";
+import TopCards from "@/features/dashboard/cards/TopCards";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
