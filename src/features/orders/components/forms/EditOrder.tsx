@@ -12,7 +12,7 @@ import { getOrder, updateOrder } from "@/features/orders/axios/ordersApi";
 import { EditOrderSchema } from "@/features/orders/zod/orderSchemas";
 import { ProductInOrder } from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
-import UserInfo from "@/features/user/components/cards/userInfo";
+import UserInfo from "@/features/user/components/cards/UserInfo";
 
 const EditOrder = ({ id }: { id: number }) => {
   const router = useRouter();

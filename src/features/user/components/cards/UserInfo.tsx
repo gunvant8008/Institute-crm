@@ -8,7 +8,7 @@ type userInfoProps = {
   inputProps?: unknown;
 };
 
-const userInfo = ({ userData, error, inputProps }: userInfoProps) => {
+const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
   return (
     <div>
       <div className=" flex flex-wrap items-start gap-10">
@@ -88,4 +88,4 @@ const userInfo = ({ userData, error, inputProps }: userInfoProps) => {
   );
 };
 
-export default userInfo;
+export default UserInfo;
