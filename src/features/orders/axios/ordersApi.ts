@@ -2,8 +2,8 @@ import axios from "axios";
 import { Order, OrderList } from "../types/orderTypes";
 
 const ordersApi = axios.create({
-  baseURL: "http://localhost:3000/api/",
-  // baseURL: "https://institute-crm.vercel.app/api/",
+  // baseURL: "http://localhost:3000/api/",
+  baseURL: "https://institute-crm.vercel.app/api/",
 });
 // api for all orders
 export const getAllOrders = async (): Promise<OrderList[]> => {

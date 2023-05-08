@@ -2,8 +2,8 @@ import axios from "axios";
 import { Product } from "../types/productTypes";
 
 const productApi = axios.create({
-  baseURL: "http://localhost:3000/api/",
-  // baseURL: "https://institute-crm.vercel.app/api/",
+  // baseURL: "http://localhost:3000/api/",
+  baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getAllProducts = async (): Promise<Product[]> => {

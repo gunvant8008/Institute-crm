@@ -2,8 +2,8 @@ import axios from "axios";
 import { DashboardData } from "../types/dashboardTypes";
 
 const dashbardApi = axios.create({
-  baseURL: "http://localhost:3000/api/",
-  // baseURL: "https://institute-crm.vercel.app/api/",
+  // baseURL: "http://localhost:3000/api/",
+  baseURL: "https://institute-crm.vercel.app/api/",
 });
 
 export const getDashboardData = async (): Promise<DashboardData> => {
