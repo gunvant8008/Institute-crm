@@ -5,7 +5,6 @@ import { FaProductHunt } from "react-icons/fa";
 type ProductInfoProps = {
   product: ProductInOrder;
 };
-
 const ProductInfo = ({ product }: ProductInfoProps) => {
   return (
     <div className="gap-x-8 grid grid-cols-6 p-4">
