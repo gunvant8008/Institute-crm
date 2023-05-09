@@ -42,9 +42,13 @@ const TermsAndConditions = () => {
         </p>
       </div>
       <div className="flex items-center justify-center w-full">
-        <button className="hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 w-96 md:w-full py-5 text-base font-medium leading-4 text-white bg-gray-800">
+        <a
+          href="www.igyanam.com"
+          target="_blank"
+          className="hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 w-96 md:w-full py-5 pl-4 text-base font-medium leading-4 text-white bg-gray-800"
+        >
           Read Full Terms and Conditions On Website
-        </button>
+        </a>
       </div>
     </div>
   );
