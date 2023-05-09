@@ -37,4 +37,11 @@ module.exports = {
     // added this rule to solve this issue in details page- Invalid type "string | string[] | undefined" of template literal expression.
     // "@typescript-eslint/restrict-template-expressions": "error"
   },
+  ignorePatterns: [
+    ".eslintrc.js",
+    "next.config.js",
+    "jest.config.js",
+    "tailwind.config.js",
+    "postcss.config.js",
+  ],
 };

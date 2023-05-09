@@ -1,13 +1,13 @@
 import "@testing-library/jest-dom";
 
 // // src/setupTests.js
-// import { server } from "./mocks/server";
+// import { mswServer } from "./mocksRest/mswServer"
 // // Establish API mocking before all tests.
-// beforeAll(() => server.listen());
+// beforeAll(() => mswServer.listen())
 
 // // Reset any request handlers that we may add during the tests,
 // // so they don't affect other tests.
-// afterEach(() => server.resetHandlers());
+// afterEach(() => mswServer.resetHandlers());
 
 // // Clean up after the tests are finished.
-// afterAll(() => server.close());
+// afterAll(() => mswServer.close());
