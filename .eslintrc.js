@@ -43,5 +43,6 @@ module.exports = {
     "jest.config.js",
     "tailwind.config.js",
     "postcss.config.js",
+    "jest.config.mjs",
   ],
 };
