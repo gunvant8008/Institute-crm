@@ -2,10 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Product,
-  TAddProductSchema,
-} from "@/features/product/types/productTypes";
+import { Product, TAddProduct } from "@/features/product/types/productTypes";
 import { AddProductSchema } from "@/features/product/zod/productSchemas";
 import { addProduct } from "../../axios/productApi";
 
@@ -20,7 +17,7 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(addProduct, {
-    onMutate: async (product: TAddProductSchema) => {
+    onMutate: async (product: TAddProduct) => {
       await queryClient.cancelQueries(["products"]);
       const previousProducts = queryClient.getQueryData<Product[]>([
         "products",
@@ -55,7 +52,7 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TAddProductSchema>({
+  } = useForm<TAddProduct>({
     resolver: zodResolver(AddProductSchema),
   });
 
@@ -63,7 +60,7 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
     reset();
   }, [reset, showModal]);
 
-  const onSubmit = (data: TAddProductSchema) => {
+  const onSubmit = (data: TAddProduct) => {
     mutate(data);
   };
 

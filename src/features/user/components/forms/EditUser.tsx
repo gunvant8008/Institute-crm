@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser, updateUser } from "@/features/user/axios/userApi";
-import { TEditUserSchema, User } from "../../types/userTypes";
+import { TEditUser, User } from "../../types/userTypes";
 import { useEffect } from "react";
-import { EditUserSchema } from "../../zod/userSchemas";
+import { UserSchema } from "../../zod/userSchemas";
 // import { DevTool } from "@hookform/devtools"
 
 const EditUser = ({ id }: { id: number }) => {
@@ -50,8 +50,8 @@ const EditUser = ({ id }: { id: number }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TEditUserSchema>({
-    resolver: zodResolver(EditUserSchema),
+  } = useForm<TEditUser>({
+    resolver: zodResolver(UserSchema),
     defaultValues: {
       instituteName: userData?.instituteName,
       ownersName: userData?.ownersName,
@@ -73,7 +73,7 @@ const EditUser = ({ id }: { id: number }) => {
     reset(userData);
   }, [userData, reset]);
 
-  const onSubmit = (data: TEditUserSchema) => {
+  const onSubmit = (data: TEditUser) => {
     mutate({
       id,
       ...data,

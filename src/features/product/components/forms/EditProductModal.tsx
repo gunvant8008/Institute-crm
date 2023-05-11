@@ -2,10 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Product,
-  TEditProductSchema,
-} from "@/features/product/types/productTypes";
+import { Product, TEditProduct } from "@/features/product/types/productTypes";
 import { EditProductSchema } from "@/features/product/zod/productSchemas";
 import { getProduct, updateProduct } from "../../axios/productApi";
 
@@ -58,7 +55,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TEditProductSchema>({
+  } = useForm<TEditProduct>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: data ? data : undefined,
   });
@@ -68,7 +65,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
     reset(data);
   }, [reset, showModal, data]);
 
-  const onSubmit = (data: TEditProductSchema) => {
+  const onSubmit = (data: Omit<TEditProduct, "id">) => {
     mutate({
       id,
       ...data,

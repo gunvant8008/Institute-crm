@@ -1,3 +1,5 @@
+import { TopCardsData } from "../types/dashboardTypes";
+
 type DataCardProps = {
   title?: string;
   value?: number;
@@ -28,17 +30,6 @@ export const DataCard = ({ title, value, percentage }: DataCardProps) => {
   );
 };
 
-type TopCardsProps = {
-  thisMonthEnquiries?: number;
-  lastMonthEnquiries?: number;
-  thisMonthActiveUsers?: number;
-  lastMonthActiveUsers?: number;
-  thisMonthRevenue?: number;
-  lastMonthRevenue?: number;
-  thisYearRevenue?: number;
-  lastYearRevenue?: number;
-};
-
 const TopCards = ({
   thisMonthEnquiries,
   lastMonthEnquiries,
@@ -48,7 +39,7 @@ const TopCards = ({
   lastYearRevenue,
   thisMonthActiveUsers,
   lastMonthActiveUsers,
-}: TopCardsProps) => {
+}: TopCardsData) => {
   const monthRevenuePercentage = () => {
     if (thisMonthRevenue && lastMonthRevenue) {
       return +(

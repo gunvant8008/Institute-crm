@@ -9,7 +9,7 @@ const productApi = axios.create({
   // baseURL: "https://institute-crm.vercel.app/api/",
 });
 
-export const getAllProducts = async (): Promise<Product[]> => {
+export const getAllProducts = async () => {
   return await productApi
     .get("/products")
     .then((response) => response.data as Product[]);
@@ -19,12 +19,12 @@ export const addProduct = async (
 ): Promise<Product> => {
   return await productApi.post("/products/new", product);
 };
-export const getProduct = async (id: number): Promise<Product | undefined> => {
+export const getProduct = async (id: number) => {
   return await productApi
     .get(`/products/${id}`)
     .then((response) => response.data as Product);
 };
-export const updateProduct = async (product: Product): Promise<Product> => {
+export const updateProduct = async (product: Product) => {
   return await productApi.patch(`/products/${product.id}`, product);
 };
 export const deleteProduct = async (id: number) => {

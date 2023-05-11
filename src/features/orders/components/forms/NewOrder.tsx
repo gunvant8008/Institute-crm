@@ -7,9 +7,12 @@ import { FaProductHunt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray } from "react-hook-form";
-import { Order, TNewOrderSchema } from "@/features/orders/types/orderTypes";
-import { NewOrderSchema } from "@/features/orders/zod/orderSchemas";
-import { Product, ProductInOrder } from "@/features/product/types/productTypes";
+import { Order, TNewOrder } from "@/features/orders/types/orderTypes";
+import { OrderSchema } from "@/features/orders/zod/orderSchemas";
+import {
+  Product,
+  TProductInOrder,
+} from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
 import { addOrder } from "../../axios/ordersApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
@@ -50,8 +53,8 @@ const NewOrder = ({ id }: { id: number }) => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<TNewOrderSchema>({
-    resolver: zodResolver(NewOrderSchema),
+  } = useForm<TNewOrder>({
+    resolver: zodResolver(OrderSchema),
     defaultValues: {
       userId: id,
       // products: [
@@ -88,7 +91,7 @@ const NewOrder = ({ id }: { id: number }) => {
   // REVIEW: I had to write this watch fn in order to enable product by checkbox click
   watch("products");
   function recalculate(
-    products: ProductInOrder[],
+    products: TProductInOrder[],
     setValue: (
       fieldName: "totalAmount" | "totalDiscount" | "payableAmount",
       value: number,
@@ -141,7 +144,7 @@ const NewOrder = ({ id }: { id: number }) => {
 
   useEffect(() => {
     // REVIEW: as to solve TS error
-    replace(products as ProductInOrder[]);
+    replace(products as TProductInOrder[]);
   }, [products, replace]);
 
   if (isError) {
@@ -158,7 +161,7 @@ const NewOrder = ({ id }: { id: number }) => {
   if (isLoading || !userData) {
     return <h2>Loading...</h2>;
   }
-  const onSubmit = (data: TNewOrderSchema) => {
+  const onSubmit = (data: TNewOrder) => {
     // REVIEW: as to solve TS error
     mutate(data as Order);
   };

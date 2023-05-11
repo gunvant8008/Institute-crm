@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { Order } from "@/features/orders/types/orderTypes";
-import { ProductInOrder } from "@/features/product/types/productTypes";
+import { TProductInOrder } from "@/features/product/types/productTypes";
 import { users } from "./userHandlers";
 
 export let orders: Order[] = [
@@ -123,7 +123,7 @@ export const orderHandlers = [
     const filteredUpdatedProducts = updatedProducts.filter(
       (product) => !!product,
     );
-    newOrder.products = filteredUpdatedProducts as ProductInOrder[];
+    newOrder.products = filteredUpdatedProducts as TProductInOrder[];
     if (!user) {
       return res(
         ctx.status(404),

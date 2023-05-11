@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { getUser } from "../../../user/axios/userApi";
 import { getOrder } from "../../axios/ordersApi";
 import Loading from "@/AppComponents/basic/Loading";
-import { ProductInOrder } from "@/features/product/types/productTypes";
+import { TProductInOrder } from "@/features/product/types/productTypes";
 import ProductInfo from "@/features/product/components/cards/ProductInfo";
 import TermsAndConditions from "../cards/TermsAndConditions";
 import jsPDF from "jspdf";
@@ -151,7 +151,7 @@ export const OrderDetails = ({ id }: { id: number }) => {
                 </div>
 
                 <ul className="flex flex-col w-full gap-8 py-8">
-                  {order?.products?.map((product: ProductInOrder) => {
+                  {order?.products?.map((product: TProductInOrder) => {
                     if (product?.isSelected)
                       return (
                         <li

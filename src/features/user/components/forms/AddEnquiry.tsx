@@ -6,15 +6,15 @@ import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addEnquiry } from "@/features/user/axios/userApi";
-import { TAddEnquirySchema, User } from "@/features/user/types/userTypes";
-import { AddEnquirySchema } from "../../zod/userSchemas";
+import { TAddEnquiry, User } from "@/features/user/types/userTypes";
+import { UserSchema } from "../../zod/userSchemas";
 // import { DevTool } from "@hookform/devtools"
 
 const AddEnquiry = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutate, isError } = useMutation(addEnquiry, {
-    onMutate: async (user: TAddEnquirySchema) => {
+    onMutate: async (user: TAddEnquiry) => {
       await queryClient.cancelQueries(["enquiries"]);
       const previousEnquiries = queryClient.getQueryData<User[]>(["enquiries"]);
       const newId = 0;
@@ -44,8 +44,8 @@ const AddEnquiry = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TAddEnquirySchema>({
-    resolver: zodResolver(AddEnquirySchema),
+  } = useForm<TAddEnquiry>({
+    resolver: zodResolver(UserSchema),
     //  defaultValues: {
     //    albumId: 1,
     //    title: "New Photo Title",
@@ -54,7 +54,7 @@ const AddEnquiry = () => {
     //  }
   });
 
-  const onSubmit = (data: TAddEnquirySchema) => {
+  const onSubmit = (data: TAddEnquiry) => {
     mutate({
       addedOn: new Date().toISOString().split("T")[0],
       userStatus: "ENQUIRY",

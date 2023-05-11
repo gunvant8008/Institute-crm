@@ -9,23 +9,23 @@ const ordersApi = axios.create({
   // baseURL: "https://institute-crm.vercel.app/api/",
 });
 // api for all orders
-export const getAllOrders = async (): Promise<OrderList[]> => {
+export const getAllOrders = async () => {
   return await ordersApi
     .get("/orders")
     .then((response) => response.data as OrderList[]);
 };
 // api for a single order
-export const getOrder = async (id: number): Promise<Order | undefined> => {
+export const getOrder = async (id: number) => {
   return await ordersApi
     .get(`/orders/${id}`)
     .then((response) => response.data as Order);
 };
 // api to add new order
-export const addOrder = async (order: Omit<Order, "id">): Promise<Order> => {
+export const addOrder = async (order: Omit<Order, "id">) => {
   return await ordersApi.post("/orders/new", order);
 };
 // api to update an order
-export const updateOrder = async (order: Order): Promise<Order> => {
+export const updateOrder = async (order: Order) => {
   return await ordersApi.patch(`/orders/${order.id}`, order);
 };
 // api to delete an order

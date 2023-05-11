@@ -7,10 +7,10 @@ import { FaProductHunt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray } from "react-hook-form";
-import { Order, TEditOrderSchema } from "@/features/orders/types/orderTypes";
+import { Order, TEditOrder } from "@/features/orders/types/orderTypes";
 import { getOrder, updateOrder } from "@/features/orders/axios/ordersApi";
-import { EditOrderSchema } from "@/features/orders/zod/orderSchemas";
-import { ProductInOrder } from "@/features/product/types/productTypes";
+import { OrderSchema } from "@/features/orders/zod/orderSchemas";
+import { TProductInOrder } from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
 
@@ -57,8 +57,8 @@ const EditOrder = ({ id }: { id: number }) => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<TEditOrderSchema>({
-    resolver: zodResolver(EditOrderSchema),
+  } = useForm<TEditOrder>({
+    resolver: zodResolver(OrderSchema),
     defaultValues: {
       userId: id,
       products: orderData?.products,
@@ -88,7 +88,7 @@ const EditOrder = ({ id }: { id: number }) => {
   // REVIEW: I had to write this watch fn in order to enable product by checkbox click
   watch("products");
   function recalculate(
-    products: ProductInOrder[],
+    products: TProductInOrder[],
     setValue: (
       fieldName: "totalAmount" | "totalDiscount" | "payableAmount",
       value: number,
@@ -139,7 +139,7 @@ const EditOrder = ({ id }: { id: number }) => {
 
   useEffect(() => {
     // REVIEW: as to solve TS error
-    replace(products as ProductInOrder[]);
+    replace(products as TProductInOrder[]);
   }, [products, replace]);
 
   if (isError) {
@@ -156,7 +156,7 @@ const EditOrder = ({ id }: { id: number }) => {
   if (isLoading || !userData) {
     return <h2>Loading...</h2>;
   }
-  const onSubmit = (data: TEditOrderSchema) => {
+  const onSubmit = (data: TEditOrder) => {
     // REVIEW: as to solve TS error
     mutate({
       id,
@@ -191,7 +191,7 @@ const EditOrder = ({ id }: { id: number }) => {
             </div>
             {/* Products Section- coming from api */}
             <ul>
-              {fields?.map((product: ProductInOrder, index) => (
+              {fields?.map((product: TProductInOrder, index) => (
                 <li key={product.id}>
                   <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
                     <div className="flex">

@@ -1,8 +1,9 @@
 import * as z from "zod";
-import { AddProductSchema, EditProductSchema } from "../zod/productSchemas";
-
-export type TAddProductSchema = z.infer<typeof AddProductSchema>;
-export type TEditProductSchema = z.infer<typeof EditProductSchema>;
+import {
+  AddProductSchema,
+  EditProductSchema,
+  ProductInOrderSchema,
+} from "../zod/productSchemas";
 
 export interface Product {
   id: number;
@@ -11,10 +12,6 @@ export interface Product {
   productDescription?: string;
   validityInMonths: number;
 }
-
-export interface ProductInOrder extends Product {
-  isSelected?: boolean;
-  discount?: number;
-  validityFrom?: string;
-  validityUntil?: string;
-}
+export type TAddProduct = z.infer<typeof AddProductSchema>;
+export type TEditProduct = z.infer<typeof EditProductSchema>;
+export type TProductInOrder = z.infer<typeof ProductInOrderSchema>;
