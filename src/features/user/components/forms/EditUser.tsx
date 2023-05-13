@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
+import { TextFieldWithLabel } from "@/AppComponents/basic/InputWithLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUser, updateUser } from "@/features/user/axios/userApi";
 import { TEditUser, User } from "../../types/userTypes";

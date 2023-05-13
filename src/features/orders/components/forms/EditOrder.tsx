@@ -13,6 +13,7 @@ import { OrderSchema } from "@/features/orders/zod/orderSchemas";
 import { TProductInOrder } from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 
 const EditOrder = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -182,7 +183,8 @@ const EditOrder = ({ id }: { id: number }) => {
           {/* Add products section */}
           <div className="flex flex-col w-full gap-4 p-8">
             <h2 className="text-2xl text-gray-600">Add Products/Services</h2>
-            <div className="grid grid-cols-5 font-semibold">
+            <div className="grid grid-cols-6 font-semibold">
+              <span>Add/Remove</span>
               <span>Price</span>
               <span>Name</span>
               <span>Validity</span>
@@ -195,86 +197,85 @@ const EditOrder = ({ id }: { id: number }) => {
                 <li key={product.id}>
                   <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
                     <div className="flex">
-                      <input
-                        type="checkbox"
-                        {...register(`products.${index}.isSelected`)}
-                        className="p-1 m-2"
+                      <InputWithLabel
+                        labelText=""
+                        inputType="checkbox"
+                        inputProps={register(`products.${index}.isSelected`)}
+                        className="scale-[200%] mr-24 w-8 h-8"
                       />
                       <div className="p-3 bg-orange-200 rounded-lg">
                         <FaProductHunt className="text-orange-800" />
                       </div>
                       <div className="pl-4">
-                        <label className="flex font-bold text-gray-800">
-                          ￡
-                          <input
-                            type="number"
-                            className=" w-13 font-bold text-gray-800"
-                            readOnly
-                            defaultValue={product.productPrice}
-                            {...register(`products.${index}.productPrice`, {
+                        <InputWithLabel
+                          labelText="￡"
+                          flexDirection="row"
+                          inputType="number"
+                          disabled={true}
+                          defaultValue={product.productPrice}
+                          inputProps={register(
+                            `products.${index}.productPrice`,
+                            {
                               valueAsNumber: true,
-                            })}
-                          />
-                        </label>
-                        <label className=" w-fit text-sm text-gray-500">
-                          Id:
-                          <input
-                            type="number"
-                            className="w-4 text-sm text-gray-500"
-                            readOnly
-                            defaultValue={product.id}
-                            {...register(`products.${index}.id`, {
-                              valueAsNumber: true,
-                            })}
-                          />
-                        </label>
+                            },
+                          )}
+                          className="w-13 font-bold text-gray-800"
+                        />
+
+                        <InputWithLabel
+                          labelText="Id:"
+                          inputType="number"
+                          disabled={true}
+                          defaultValue={product.id}
+                          inputProps={register(`products.${index}.id`, {
+                            valueAsNumber: true,
+                          })}
+                        />
                       </div>
                     </div>
 
-                    <input
-                      type="text"
-                      className="text-gray-600"
-                      readOnly
-                      value={product.productName}
-                      {...register(`products.${index}.productName`)}
+                    <InputWithLabel
+                      labelText=""
+                      inputType="text"
+                      disabled={true}
+                      defaultValue={product.productName}
+                      inputProps={register(`products.${index}.productName`)}
+                    />
+                    <InputWithLabel
+                      labelText=""
+                      inputType="number"
+                      disabled={true}
+                      inputProps={register(
+                        `products.${index}.validityInMonths`,
+                        {
+                          valueAsNumber: true,
+                        },
+                      )}
                     />
 
-                    <input
-                      type="number"
-                      className="text-gray-600"
-                      readOnly
-                      value={product.validityInMonths}
-                      {...register(`products.${index}.validityInMonths`, {
-                        valueAsNumber: true,
-                      })}
-                    />
-
-                    <input
+                    <InputWithLabel
+                      labelText=""
+                      inputType="number"
                       placeholder="0"
                       disabled={!getValues(`products.${index}.isSelected`)}
-                      type="number"
-                      className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.discount`, {
+                      inputProps={register(`products.${index}.discount`, {
                         valueAsNumber: true,
                         required: true,
                       })}
                     />
-
-                    <input
-                      type="date"
+                    <InputWithLabel
+                      labelText=""
+                      inputType="date"
                       disabled={!getValues(`products.${index}.isSelected`)}
-                      className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.validityFrom`, {
-                        required: true,
-                      })}
+                      inputProps={register(`products.${index}.validityFrom`)}
                     />
-
-                    <input
-                      type="date"
+                    <InputWithLabel
+                      labelText=""
+                      inputType="date"
                       className="hidden"
-                      readOnly
-                      value={new Date().toISOString().slice(0, 10)}
-                      {...register(`products.${index}.validityUntil`)}
+                      defaultValue={new Date().toISOString().split("T")[0]}
+                      disabled={!getValues(`products.${index}.isSelected`)}
+                      inputProps={register(`products.${index}.validityUntil`)}
                     />
                   </div>
                   {errors?.products && errors?.products[index]?.message && (

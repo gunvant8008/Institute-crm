@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addEnquiry } from "@/features/user/axios/userApi";
@@ -85,70 +85,70 @@ const AddEnquiry = () => {
       >
         <div>
           <div className=" flex flex-wrap items-start gap-10">
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Id"
               inputType="number"
               placeholder="Id"
               readOnly
               className="p-1 text-gray-400 rounded-md"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Institute Name"
               inputType="text"
               placeholder="Institute Name"
               error={errors.instituteName?.message as string}
               inputProps={register("instituteName")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Owner's Name"
               inputType="text"
               placeholder="Enter Owner's Name"
               error={errors.ownersName?.message as string}
               inputProps={register("ownersName")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Manager's Name"
               inputType="text"
               placeholder="Enter Manager's Name"
               error={errors.managersName?.message as string}
               inputProps={register("managersName")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Address"
               inputType="text"
               placeholder="Enter Address"
               error={errors.address?.message as string}
               inputProps={register("address")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Phone"
               inputType="number"
               placeholder="Phone 1"
               error={errors.phone1?.message as string}
               inputProps={register("phone1")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Alternate Phone"
               inputType="number"
               placeholder="phone 2"
               error={errors.phone2?.message as string}
               inputProps={register("phone2")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Email"
               inputType="email"
               placeholder="Enter Email"
               error={errors.email?.message as string}
               inputProps={register("email")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Website"
               inputType="text"
               placeholder="Enter Website"
               error={errors.website?.message as string}
               inputProps={register("website")}
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Description"
               inputType="text"
               placeholder="Enter Description"

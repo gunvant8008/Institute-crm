@@ -16,6 +16,7 @@ import {
 import { getAllProducts } from "@/features/product/axios/productApi";
 import { addOrder } from "../../axios/ordersApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 
 const NewOrder = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -57,28 +58,7 @@ const NewOrder = ({ id }: { id: number }) => {
     resolver: zodResolver(OrderSchema),
     defaultValues: {
       userId: id,
-      // products: [
-      //   {
-      //     id: 1,
-      //     isSelected: false,
-      //     productName: "Gyanam PCMB",
-      //     productPrice: 40000,
-      //     validityInMonths: 12,
-      //     discount: 0,
-      //     validityFrom: "",
-      //     validityUntil: ""
-      //   }
-      // ],
-      // totalAmount: 0,
-      // totalDiscount: 0,
-      // payableAmount: 0,
-      // paidAmount: 0,
-      // dueAmount: 0,
-      // dueDate: "",
       orderDate: new Date().toISOString().split("T")[0],
-      // paymentMode: "",
-      // paidBy: "",
-      // receivingAccount: ""
     },
   });
 
@@ -162,7 +142,6 @@ const NewOrder = ({ id }: { id: number }) => {
     return <h2>Loading...</h2>;
   }
   const onSubmit = (data: TNewOrder) => {
-    // REVIEW: as to solve TS error
     mutate(data as Order);
   };
   return (
@@ -184,7 +163,8 @@ const NewOrder = ({ id }: { id: number }) => {
           {/* Add products section */}
           <div className="flex flex-col w-full gap-4 p-8">
             <h2 className="text-2xl text-gray-600">Add Products/Services</h2>
-            <div className="grid grid-cols-5 font-semibold">
+            <div className="grid grid-cols-6 font-semibold">
+              <span>Add/Remove</span>
               <span>Price</span>
               <span>Name</span>
               <span>Validity</span>
@@ -195,88 +175,83 @@ const NewOrder = ({ id }: { id: number }) => {
             <ul>
               {fields?.map((product: Product, index) => (
                 <li key={product.id}>
-                  <div className="bg-gray-50 hover:bg-gray-100 grid grid-cols-5 p-2 my-3 rounded-lg">
-                    <div className="flex">
-                      <input
-                        type="checkbox"
-                        {...register(`products.${index}.isSelected`)}
-                        className="p-1 m-2"
-                      />
-                      <div className="p-3 bg-orange-200 rounded-lg">
+                  <div className="bg-gray-50 grid grid-cols-6 p-2 my-3 rounded-lg">
+                    <InputWithLabel
+                      labelText=""
+                      inputType="checkbox"
+                      inputProps={register(`products.${index}.isSelected`)}
+                      className="scale-[200%] mr-24 w-8 h-8"
+                    />
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 p-3 bg-orange-200 rounded-lg">
                         <FaProductHunt className="text-orange-800" />
                       </div>
                       <div className="pl-4">
-                        <label className="flex font-bold text-gray-800">
-                          ￡
-                          <input
-                            type="number"
-                            className=" w-13 font-bold text-gray-800"
-                            readOnly
-                            defaultValue={product.productPrice}
-                            {...register(`products.${index}.productPrice`, {
+                        <InputWithLabel
+                          labelText="￡"
+                          flexDirection="row"
+                          inputType="number"
+                          disabled={true}
+                          inputProps={register(
+                            `products.${index}.productPrice`,
+                            {
                               valueAsNumber: true,
-                            })}
-                          />
-                        </label>
-                        <label className=" w-fit text-sm text-gray-500">
-                          Id:
-                          <input
-                            type="number"
-                            className="w-4 text-sm text-gray-500"
-                            readOnly
-                            defaultValue={product.id}
-                            {...register(`products.${index}.id`, {
-                              valueAsNumber: true,
-                            })}
-                          />
-                        </label>
+                            },
+                          )}
+                          className="w-13 font-bold text-gray-800"
+                        />
+                        <InputWithLabel
+                          labelText="Id:"
+                          inputType="number"
+                          disabled={true}
+                          defaultValue={product.id}
+                          inputProps={register(`products.${index}.id`, {
+                            valueAsNumber: true,
+                          })}
+                        />
                       </div>
                     </div>
-
-                    <input
-                      type="text"
-                      className="text-gray-600"
-                      readOnly
-                      value={product.productName}
-                      {...register(`products.${index}.productName`)}
+                    <InputWithLabel
+                      labelText=""
+                      inputType="text"
+                      disabled={true}
+                      defaultValue={product.productName}
+                      inputProps={register(`products.${index}.productName`)}
                     />
-
-                    <input
-                      type="number"
-                      className="text-gray-600"
-                      readOnly
-                      value={product.validityInMonths}
-                      {...register(`products.${index}.validityInMonths`, {
-                        valueAsNumber: true,
-                      })}
+                    <InputWithLabel
+                      labelText=""
+                      inputType="number"
+                      disabled={true}
+                      inputProps={register(
+                        `products.${index}.validityInMonths`,
+                        {
+                          valueAsNumber: true,
+                        },
+                      )}
                     />
-
-                    <input
+                    <InputWithLabel
+                      labelText=""
+                      inputType="number"
                       placeholder="0"
                       disabled={!getValues(`products.${index}.isSelected`)}
-                      type="number"
-                      className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.discount`, {
+                      inputProps={register(`products.${index}.discount`, {
                         valueAsNumber: true,
                         required: true,
                       })}
                     />
-
-                    <input
-                      type="date"
+                    <InputWithLabel
+                      labelText=""
+                      inputType="date"
                       disabled={!getValues(`products.${index}.isSelected`)}
-                      className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                      {...register(`products.${index}.validityFrom`, {
-                        required: true,
-                      })}
+                      inputProps={register(`products.${index}.validityFrom`)}
                     />
-
-                    <input
-                      type="date"
+                    <InputWithLabel
+                      labelText=""
+                      inputType="date"
                       className="hidden"
-                      readOnly
-                      value={new Date().toISOString().slice(0, 10)}
-                      {...register(`products.${index}.validityUntil`)}
+                      defaultValue={new Date().toISOString().split("T")[0]}
+                      disabled={!getValues(`products.${index}.isSelected`)}
+                      inputProps={register(`products.${index}.validityUntil`)}
                     />
                   </div>
                   {errors?.products && errors?.products[index]?.message && (
@@ -296,100 +271,85 @@ const NewOrder = ({ id }: { id: number }) => {
           {/* order details section */}
           <div className="flex flex-wrap justify-between w-full px-20">
             {/* Left section */}
-            <div className="flex flex-col text-gray-600 divide-y-2">
-              <div className="gap-y-3 flex flex-col py-4">
-                <p>Payment Mode*</p>
+            {/* <div className="flex flex-col space-y-4 text-gray-600 divide-y-2"> */}
+            <div className="flex flex-col space-y-8  text-gray-600 divide-y-2 min-w-[25rem]">
+              <div>
+                <p className="font-semibold">Payment Mode*</p>
                 <div className="flex gap-4">
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Online"
-                      {...register("paymentMode", { required: true })}
-                    />
-                    Online
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Wallet"
-                      {...register("paymentMode", { required: true })}
-                    />
-                    Wallet
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Cheque"
-                      {...register("paymentMode", { required: true })}
-                    />
-                    Cheque
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Cash"
-                      {...register("paymentMode", { required: true })}
-                    />
-                    Cash
-                  </label>
-                </div>
-                {errors.paymentMode && (
-                  <span className="block text-sm text-red-400">
-                    {errors.paymentMode.message}
-                  </span>
-                )}
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center gap-4">
-                  Paid By
-                  <input
-                    type="text"
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("paidBy", { required: true })}
+                  <InputWithLabel
+                    labelText="Online"
+                    inputType="radio"
+                    value="Online"
+                    inputProps={register("paymentMode")}
                   />
-                </label>
-                {errors.paidBy && (
-                  <span className="block text-sm text-red-400">
-                    {errors.paidBy.message}
-                  </span>
-                )}
+                  <InputWithLabel
+                    labelText="Wallet"
+                    inputType="radio"
+                    value="Wallet"
+                    inputProps={register("paymentMode")}
+                  />
+                  <InputWithLabel
+                    labelText="Cash"
+                    inputType="radio"
+                    value="Cash"
+                    inputProps={register("paymentMode")}
+                  />
+                  <InputWithLabel
+                    labelText="Cheque"
+                    inputType="radio"
+                    value="Cheque"
+                    inputProps={register("paymentMode")}
+                  />
+                  {errors.paymentMode && (
+                    <span className="block text-sm text-red-400">
+                      {errors.paymentMode.message}
+                    </span>
+                  )}
+                </div>
               </div>
 
+              <InputWithLabel
+                labelText="Paid By"
+                inputType="text"
+                inputProps={register("paidBy", { required: true })}
+                error={errors.paidBy?.message as string}
+              />
+
               <div className="gap-y-3 flex flex-col py-4">
-                <p>Receiving Account</p>
+                <p className="font-semibold">Receiving Account</p>
                 <div className="flex gap-4">
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Account 1"
-                      {...register("receivingAccount", { required: true })}
-                    />
-                    Account 1
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Account 2"
-                      {...register("receivingAccount", { required: true })}
-                    />
-                    Account 2
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Account 3"
-                      {...register("receivingAccount", { required: true })}
-                    />
-                    Account 3
-                  </label>
-                  <label className="flex gap-1">
-                    <input
-                      type="radio"
-                      value="Account 4"
-                      {...register("receivingAccount", { required: true })}
-                    />
-                    Account 4
-                  </label>
+                  <InputWithLabel
+                    labelText="Account 1"
+                    inputType="radio"
+                    value="Account 1"
+                    inputProps={register("receivingAccount", {
+                      required: true,
+                    })}
+                  />
+                  <InputWithLabel
+                    labelText="Account 2"
+                    inputType="radio"
+                    value="Account 2"
+                    inputProps={register("receivingAccount", {
+                      required: true,
+                    })}
+                  />
+                  <InputWithLabel
+                    labelText="Account 3"
+                    inputType="radio"
+                    value="Account 3"
+                    inputProps={register("receivingAccount", {
+                      required: true,
+                    })}
+                  />
+                  <InputWithLabel
+                    labelText="Account 4"
+                    inputType="radio"
+                    value="Account 4"
+                    inputProps={register("receivingAccount", {
+                      required: true,
+                    })}
+                  />
                 </div>
                 {errors.receivingAccount && (
                   <span className="block text-sm text-red-400">
@@ -399,112 +359,68 @@ const NewOrder = ({ id }: { id: number }) => {
               </div>
             </div>
             {/* Right section */}
-            <div className="flex flex-col justify-between text-gray-600 divide-y-2 min-w-[25rem] ">
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Total Amount
-                  <input
-                    type="number"
-                    placeholder="0"
-                    disabled
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("totalAmount", { valueAsNumber: true })}
-                  />
-                </label>
-                {errors.totalAmount && (
-                  <span className="block text-sm text-red-400">
-                    {errors.totalAmount.message}
-                  </span>
-                )}
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Total Discount
-                  <input
-                    type="number"
-                    placeholder="0"
-                    disabled
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("totalDiscount", { valueAsNumber: true })}
-                  />
-                </label>
-                {errors.totalDiscount && (
-                  <span className="block text-sm text-red-400">
-                    {errors.totalDiscount.message}
-                  </span>
-                )}
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Payable Amount
-                  <input
-                    disabled
-                    placeholder="0"
-                    type="number"
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("payableAmount", { valueAsNumber: true })}
-                  />
-                </label>
-                {errors.payableAmount && (
-                  <span className="block text-sm text-red-400">
-                    {errors.payableAmount.message}
-                  </span>
-                )}
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Paid Amount
-                  <input
-                    type="number"
-                    placeholder="0"
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("paidAmount", {
-                      valueAsNumber: true,
-                      required: true,
-                    })}
-                  />
-                </label>
-                {errors.paidAmount && (
-                  <span className="block text-sm text-red-400">
-                    {errors.paidAmount.message}
-                  </span>
-                )}
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Due Amount
-                  <input
-                    type="number"
-                    placeholder="0"
-                    disabled
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("dueAmount", { valueAsNumber: true })}
-                  />
-                </label>
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Due Date
-                  <input
-                    type="date"
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("dueDate", { required: true })}
-                  />
-                </label>
-              </div>
-              <div className=" py-4">
-                <label className="flex items-center justify-between gap-4">
-                  Order Date
-                  <input
-                    type="date"
-                    disabled
-                    // defaultValue={new Date().toISOString().slice(0, 10)}
-                    className=" focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md"
-                    {...register("orderDate")}
-                  />
-                </label>
-              </div>
+            <div className="flex flex-col space-y-4 justify-between text-gray-600 divide-y-2 min-w-[25rem] ">
+              <InputWithLabel
+                labelText="Total Amount"
+                inputType="number"
+                placeholder="0"
+                disabled={true}
+                inputProps={register("totalAmount", { valueAsNumber: true })}
+                error={errors.totalAmount?.message as string}
+              />
+              <InputWithLabel
+                labelText="Total Discount"
+                inputType="number"
+                placeholder="0"
+                disabled={true}
+                inputProps={register("totalDiscount", {
+                  valueAsNumber: true,
+                })}
+                error={errors.totalDiscount?.message as string}
+              />
+              <InputWithLabel
+                labelText="Payable Amount"
+                inputType="number"
+                placeholder="0"
+                disabled={true}
+                inputProps={register("payableAmount", {
+                  valueAsNumber: true,
+                })}
+                error={errors.payableAmount?.message as string}
+              />
+              <InputWithLabel
+                labelText="Paid Amount"
+                inputType="number"
+                placeholder="0"
+                inputProps={register("paidAmount", {
+                  valueAsNumber: true,
+                  required: true,
+                })}
+                error={errors.paidAmount?.message as string}
+              />
+              <InputWithLabel
+                labelText="Due Amount"
+                inputType="number"
+                placeholder="0"
+                disabled={true}
+                inputProps={register("dueAmount", { valueAsNumber: true })}
+                error={errors.dueAmount?.message as string}
+              />
+              <InputWithLabel
+                labelText="Due Date"
+                inputType="date"
+                inputProps={register("dueDate", { required: true })}
+                error={errors.dueDate?.message as string}
+              />
+              <InputWithLabel
+                labelText="Order Date"
+                inputType="date"
+                disabled={true}
+                inputProps={register("orderDate")}
+                error={errors.orderDate?.message as string}
+              />
             </div>
+            {/* </div> */}
           </div>
           {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
           <button type="submit" className="p-2 bg-blue-200 rounded-md">

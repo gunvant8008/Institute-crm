@@ -24,13 +24,6 @@ export const ProductInOrderSchema = z
     {
       message: "Start From is required for selected products",
     },
-  )
-  .refine(
-    (product) =>
-      product.isSelected !== true || product.validityUntil !== undefined,
-    {
-      message: "Validity Until is required for selected products",
-    },
   );
 export const AddProductSchema = z.object({
   productName: z
