@@ -1,7 +1,7 @@
 import { rest } from "msw";
 import { Product } from "@/features/product/types/productTypes";
 
-let products: Product[] = [
+export let products: Product[] = [
   {
     id: 1,
     productName: "Gyanam PCMB",
