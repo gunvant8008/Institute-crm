@@ -20,9 +20,9 @@ const SingleProduct = ({ product, mutate }: ProductProps) => {
           <p className="text-sm text-gray-500">Id:{product.id}</p>
         </div>
       </div>
-      <p className="sm:text-left text-right text-gray-600">
+      <h4 className="sm:text-left text-right text-gray-600">
         <span>{product.productName}</span>
-      </p>
+      </h4>
       <p className="md:flex hidden">{product.productDescription}</p>
       <div className="sm:flex items-center justify-between hidden">
         {product.validityInMonths}

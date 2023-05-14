@@ -178,6 +178,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   <div className="bg-gray-50 grid grid-cols-6 p-2 my-3 rounded-lg">
                     <InputWithLabel
                       labelText=""
+                      alt={`Select-${index}`}
                       inputType="checkbox"
                       inputProps={register(`products.${index}.isSelected`)}
                       className="scale-[200%] mr-24 w-8 h-8"
@@ -198,6 +199,7 @@ const NewOrder = ({ id }: { id: number }) => {
                               valueAsNumber: true,
                             },
                           )}
+                          alt={`Price-${index}`}
                           className="w-13 font-bold text-gray-800"
                         />
                         <InputWithLabel
@@ -217,6 +219,7 @@ const NewOrder = ({ id }: { id: number }) => {
                       disabled={true}
                       defaultValue={product.productName}
                       inputProps={register(`products.${index}.productName`)}
+                      alt={`Product Name-${index}`}
                     />
                     <InputWithLabel
                       labelText=""
@@ -228,10 +231,12 @@ const NewOrder = ({ id }: { id: number }) => {
                           valueAsNumber: true,
                         },
                       )}
+                      alt={`Validity-${index}`}
                     />
                     <InputWithLabel
                       labelText=""
                       inputType="number"
+                      alt={`Discount-${index}`}
                       placeholder="0"
                       disabled={!getValues(`products.${index}.isSelected`)}
                       inputProps={register(`products.${index}.discount`, {
@@ -242,6 +247,7 @@ const NewOrder = ({ id }: { id: number }) => {
                     <InputWithLabel
                       labelText=""
                       inputType="date"
+                      alt={`Start From-${index}`}
                       disabled={!getValues(`products.${index}.isSelected`)}
                       inputProps={register(`products.${index}.validityFrom`)}
                     />
@@ -273,7 +279,7 @@ const NewOrder = ({ id }: { id: number }) => {
             {/* Left section */}
             {/* <div className="flex flex-col space-y-4 text-gray-600 divide-y-2"> */}
             <div className="flex flex-col space-y-8  text-gray-600 divide-y-2 min-w-[25rem]">
-              <div>
+              <div className="gap-y-4 flex flex-col">
                 <p className="font-semibold">Payment Mode*</p>
                 <div className="flex gap-4">
                   <InputWithLabel
@@ -300,12 +306,12 @@ const NewOrder = ({ id }: { id: number }) => {
                     value="Cheque"
                     inputProps={register("paymentMode")}
                   />
-                  {errors.paymentMode && (
-                    <span className="block text-sm text-red-400">
-                      {errors.paymentMode.message}
-                    </span>
-                  )}
                 </div>
+                {errors.paymentMode && (
+                  <span className="block text-sm text-red-400">
+                    {errors.paymentMode.message}
+                  </span>
+                )}
               </div>
 
               <InputWithLabel

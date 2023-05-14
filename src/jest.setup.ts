@@ -1,5 +1,7 @@
 import "@testing-library/jest-dom";
 
+process.env.NEXT_PUBLIC_DEV_MODE = "enabled";
+process.env.NEXT_PUBLIC_API_MOCKING = "enabled";
 // // src/setupTests.js
 // import { server } from "./mocks/server";
 // // Establish API mocking before all tests.

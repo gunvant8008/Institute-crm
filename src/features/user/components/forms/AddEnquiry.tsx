@@ -3,12 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addEnquiry } from "@/features/user/axios/userApi";
 import { TAddEnquiry, User } from "@/features/user/types/userTypes";
 import { UserSchema } from "../../zod/userSchemas";
-// import { DevTool } from "@hookform/devtools"
 
 const AddEnquiry = () => {
   const router = useRouter();
@@ -32,7 +30,6 @@ const AddEnquiry = () => {
     },
     onError: (context: { previousEnquiries: User[] }) => {
       queryClient.setQueryData(["enquiries"], context.previousEnquiries);
-      // await queryClient.invalidateQueries(["photos"])
     },
     onSettled: async () => {
       await queryClient.invalidateQueries(["enquiries"]);
@@ -46,12 +43,6 @@ const AddEnquiry = () => {
     formState: { errors },
   } = useForm<TAddEnquiry>({
     resolver: zodResolver(UserSchema),
-    //  defaultValues: {
-    //    albumId: 1,
-    //    title: "New Photo Title",
-    //    url: "Enter URL",
-    //    thumbnailUrl: "Enter Thumbnail URL"
-    //  }
   });
 
   const onSubmit = (data: TAddEnquiry) => {

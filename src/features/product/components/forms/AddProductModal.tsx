@@ -35,7 +35,6 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
         return newProduct && old ? [newProduct, ...old] : old;
       });
       setShowModal(false);
-
       return { previousProducts };
     },
     onError: (context: { previousProducts: Product[] }) => {
@@ -96,6 +95,7 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
                 </div>
                 <div className="relative flex-auto p-6">
                   <form
+                    data-testid="form"
                     className="flex flex-col w-full px-8 pt-6 pb-8 space-y-4 bg-gray-200 rounded shadow-md"
                     onSubmit={handleSubmit(onSubmit)}
                   >
@@ -103,12 +103,14 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
                       labelText="Id"
                       placeholder="Id"
                       disabled={true}
+                      flexDirection="column"
                     />
 
                     <InputWithLabel
                       labelText="Product Name"
                       inputProps={register("productName")}
                       error={errors.productName?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Product Price"
@@ -117,11 +119,13 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
                         valueAsNumber: true,
                       })}
                       error={errors.productPrice?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Product Description"
                       inputProps={register("productDescription")}
                       error={errors.productDescription?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Validity in Months"
@@ -130,6 +134,8 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
                         valueAsNumber: true,
                       })}
                       error={errors.validityInMonths?.message}
+                      flexDirection="column"
+                      placeholder="12"
                     />
 
                     <div className="border-blueGray-200 flex items-center justify-between pt-8">

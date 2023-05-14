@@ -108,11 +108,13 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
                       labelText="Id"
                       placeholder={id.toString()}
                       disabled={true}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Product Name"
                       inputProps={register("productName")}
                       error={errors.productName?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Product Price"
@@ -121,11 +123,13 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
                         valueAsNumber: true,
                       })}
                       error={errors.productPrice?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Product Description"
                       inputProps={register("productDescription")}
                       error={errors.productDescription?.message}
+                      flexDirection="column"
                     />
                     <InputWithLabel
                       labelText="Validity in Months"
@@ -134,6 +138,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
                         valueAsNumber: true,
                       })}
                       error={errors.validityInMonths?.message}
+                      flexDirection="column"
                     />
                     <div className="border-blueGray-200 flex items-center justify-between pt-8">
                       <button
