@@ -14,6 +14,7 @@ import { TProductInOrder } from "@/features/product/types/productTypes";
 import { getAllProducts } from "@/features/product/axios/productApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
+import Button from "@/AppComponents/basic/Button";
 
 const EditOrder = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -168,8 +169,10 @@ const EditOrder = ({ id }: { id: number }) => {
           </div>
           {/* Add products section */}
           <div className="flex flex-col w-full gap-4 p-8">
-            <h2 className="text-2xl text-gray-600">Add Products/Services</h2>
-            <div className="grid grid-cols-6 font-semibold">
+            <h2 className="text-2xl text-gray-600">
+              Purchased Products/Services
+            </h2>
+            <div className=" ml-14 grid grid-cols-6 font-semibold">
               <span>Add/Remove</span>
               <span>Price</span>
               <span>Name</span>
@@ -181,18 +184,18 @@ const EditOrder = ({ id }: { id: number }) => {
             <ul>
               {fields?.map((product: TProductInOrder, index) => (
                 <li key={product.id}>
-                  <div className="bg-gray-50 grid grid-cols-6 p-2 my-3 rounded-lg">
+                  <div className="bg-gray-50 place-items-center grid grid-cols-6 p-2 my-3 rounded-lg">
                     <InputWithLabel
                       labelText=""
                       alt={`Select-${index}`}
                       inputType="checkbox"
                       disabled={true}
                       inputProps={register(`products.${index}.isSelected`)}
-                      className="scale-[200%] mr-24 w-8 h-8"
+                      className="scale-[200%] mr-24 w-8 h-8 outline-none active:outline-none "
                     />
-                    <div className="flex">
-                      <div className="p-3 bg-orange-200 rounded-lg">
-                        <FaProductHunt className="text-orange-800" />
+                    <div className="flex items-center">
+                      <div className="flex items-center w-10 h-10 p-3 bg-orange-200 rounded-lg">
+                        <FaProductHunt className=" text-xl text-orange-800" />
                       </div>
                       <div className="pl-4">
                         <InputWithLabel
@@ -385,7 +388,7 @@ const EditOrder = ({ id }: { id: number }) => {
               </div>
             </div>
             {/* Right section */}
-            <div className="flex flex-col space-y-6 justify-between text-gray-600 divide-y-1 min-w-[25rem] ">
+            <div className="flex flex-col gap-y-4 text-gray-600 divide-y-2 min-w-[25rem] ">
               <InputWithLabel
                 labelText="Total Amount"
                 inputType="number"
@@ -393,6 +396,7 @@ const EditOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("totalAmount", { valueAsNumber: true })}
                 error={errors.totalAmount?.message as string}
+                flexDirection="column"
               />
 
               <InputWithLabel
@@ -404,6 +408,7 @@ const EditOrder = ({ id }: { id: number }) => {
                   valueAsNumber: true,
                 })}
                 error={errors.totalDiscount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Payable Amount"
@@ -414,6 +419,7 @@ const EditOrder = ({ id }: { id: number }) => {
                   valueAsNumber: true,
                 })}
                 error={errors.payableAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Paid Amount"
@@ -424,6 +430,7 @@ const EditOrder = ({ id }: { id: number }) => {
                   required: true,
                 })}
                 error={errors.paidAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Due Amount"
@@ -432,12 +439,14 @@ const EditOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("dueAmount", { valueAsNumber: true })}
                 error={errors.dueAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Due Date"
                 inputType="date"
                 inputProps={register("dueDate", { required: true })}
                 error={errors.dueDate?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Order Date"
@@ -445,13 +454,12 @@ const EditOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("orderDate")}
                 error={errors.orderDate?.message as string}
+                flexDirection="column"
               />
             </div>
           </div>
           {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
-          <button type="submit" className="p-2 bg-blue-200 rounded-md">
-            Submit
-          </button>
+          <Button type="submit">Submit</Button>
         </div>
       </form>
     </>

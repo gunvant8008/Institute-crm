@@ -5,6 +5,9 @@ import { deleteUser, getUser, getUserOrders } from "../../axios/userApi";
 import Loading from "@/AppComponents/basic/Loading";
 import UserContactInfo from "../cards/UserContactInfo";
 import OrderInfo from "@/features/orders/components/cards/OrderInfo";
+import ButtonLink from "@/AppComponents/basic/ButtonLink";
+import { RxPinLeft } from "react-icons/rx";
+import Button from "@/AppComponents/basic/Button";
 
 const UserDetails = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -34,9 +37,9 @@ const UserDetails = ({ id }: { id: number }) => {
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-        <Link href="/enquiries" className="p-2 font-bold bg-white rounded-md">
+        <ButtonLink href="/enquiries" variant="light">
           Go To Enquiries
-        </Link>
+        </ButtonLink>
 
         <div className="flex justify-between w-full p-4 bg-white rounded-md">
           <h2 className="text-2xl font-semibold text-gray-400">
@@ -46,18 +49,12 @@ const UserDetails = ({ id }: { id: number }) => {
             </span>
           </h2>
           <div className="gap-x-2 flex items-center">
-            <Link
-              href={`/edituser/${user.id}`}
-              className="p-1.5 bg-blue-200 rounded-md"
-            >
+            <ButtonLink href={`/edituser/${user.id}`} variant="dark">
               Edit
-            </Link>
-            <button
-              className="bg-red-200 p-1.5 rounded-md"
-              onClick={() => mutate(user.id)}
-            >
+            </ButtonLink>
+            <Button className="bg-red-500" onClick={() => mutate(user.id)}>
               Delete
-            </button>
+            </Button>
           </div>
         </div>
         <div className="w-full">

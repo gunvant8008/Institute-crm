@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addEnquiry } from "@/features/user/axios/userApi";
 import { TAddEnquiry, User } from "@/features/user/types/userTypes";
 import { UserSchema } from "../../zod/userSchemas";
+import Button from "@/AppComponents/basic/Button";
 
 const AddEnquiry = () => {
   const router = useRouter();
@@ -82,6 +83,7 @@ const AddEnquiry = () => {
               placeholder="Id"
               readOnly
               className="p-1 text-gray-400 rounded-md"
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Institute Name"
@@ -89,6 +91,7 @@ const AddEnquiry = () => {
               placeholder="Institute Name"
               error={errors.instituteName?.message as string}
               inputProps={register("instituteName")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Owner's Name"
@@ -96,6 +99,7 @@ const AddEnquiry = () => {
               placeholder="Enter Owner's Name"
               error={errors.ownersName?.message as string}
               inputProps={register("ownersName")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Manager's Name"
@@ -103,6 +107,7 @@ const AddEnquiry = () => {
               placeholder="Enter Manager's Name"
               error={errors.managersName?.message as string}
               inputProps={register("managersName")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Address"
@@ -110,6 +115,7 @@ const AddEnquiry = () => {
               placeholder="Enter Address"
               error={errors.address?.message as string}
               inputProps={register("address")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Phone"
@@ -117,6 +123,7 @@ const AddEnquiry = () => {
               placeholder="Phone 1"
               error={errors.phone1?.message as string}
               inputProps={register("phone1")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Alternate Phone"
@@ -124,6 +131,7 @@ const AddEnquiry = () => {
               placeholder="phone 2"
               error={errors.phone2?.message as string}
               inputProps={register("phone2")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Email"
@@ -131,6 +139,7 @@ const AddEnquiry = () => {
               placeholder="Enter Email"
               error={errors.email?.message as string}
               inputProps={register("email")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Website"
@@ -138,6 +147,7 @@ const AddEnquiry = () => {
               placeholder="Enter Website"
               error={errors.website?.message as string}
               inputProps={register("website")}
+              flexDirection="column"
             />
             <InputWithLabel
               labelText="Description"
@@ -145,6 +155,7 @@ const AddEnquiry = () => {
               placeholder="Enter Description"
               error={errors.description?.message as string}
               inputProps={register("description")}
+              flexDirection="column"
             />
 
             <div className="flex items-start w-full gap-10">
@@ -182,14 +193,10 @@ const AddEnquiry = () => {
             </div>
           </div>
         </div>
-        <button className="self-center p-2 font-semibold bg-orange-200 rounded-md">
+        <Button type="submit" className="self-center">
           Add Enquiry
-        </button>
+        </Button>
       </form>
-      {/* <DevTool control={control} /> */}
-      <Link className=" self-center p-2 bg-white rounded-md" href="/enquiries">
-        Go To Enquiries
-      </Link>
     </div>
   );
 };

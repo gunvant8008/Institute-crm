@@ -11,29 +11,110 @@
     -moz-appearance: textfield !important;
   }
 }
-
-/*
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  /* #region  /**=========== Primary Color- yellow shade =========== */
+  --tw-color-primary-50: 254 252 232;
+  --tw-color-primary-100: 254 249 195;
+  --tw-color-primary-200: 254 240 138;
+  --tw-color-primary-300: 253 224 71;
+  --tw-color-primary-400: 250 204 21;
+  --tw-color-primary-500: 234 179 8;
+  --tw-color-primary-600: 202 138 4;
+  --tw-color-primary-700: 161 98 7;
+  --tw-color-primary-800: 133 77 14;
+  --tw-color-primary-900: 113 63 18;
+  --color-primary-50: rgb(var(--tw-color-primary-50)); /* #fefce8 */
+  --color-primary-100: rgb(var(--tw-color-primary-100)); /* #fef9c3 */
+  --color-primary-200: rgb(var(--tw-color-primary-200)); /* #fef08a */
+  --color-primary-300: rgb(var(--tw-color-primary-300)); /* #fde047 */
+  --color-primary-400: rgb(var(--tw-color-primary-400)); /* #facc15 */
+  --color-primary-500: rgb(var(--tw-color-primary-500)); /* #eab308 */
+  --color-primary-600: rgb(var(--tw-color-primary-600)); /* #ca8a04 */
+  --color-primary-700: rgb(var(--tw-color-primary-700)); /* #a16207 */
+  --color-primary-800: rgb(var(--tw-color-primary-800)); /* #854d0e */
+  --color-primary-900: rgb(var(--tw-color-primary-900)); /* #713f12 */
+  /* #endregion  /**======== Primary Color =========== */
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
-*/
+
+@layer base {
+  /* #region  /**=========== Typography =========== */
+  .h0 {
+    @apply font-primary text-3xl font-bold md:text-5xl;
+  }
+  body {
+    scroll-behavior: smooth;
+  }
+  h1,
+  .h1 {
+    @apply font-primary text-2xl font-bold md:text-4xl;
+  }
+
+  h2,
+  .h2 {
+    @apply font-primary text-xl font-bold md:text-3xl;
+  }
+
+  h3,
+  .h3 {
+    @apply font-primary text-lg font-bold md:text-2xl;
+  }
+
+  h4,
+  .h4 {
+    @apply font-primary text-base font-bold md:text-lg;
+  }
+
+  body,
+  .p {
+    @apply font-primary text-sm md:text-base;
+  }
+  input {
+    @apply p-2;
+  }
+  /* #endregion  /**======== Typography =========== */
+
+  .layout {
+    /* 1120px */
+    max-width: 70rem;
+    @apply mx-auto w-11/12;
+  }
+
+  .bg-dark a.custom-link {
+    @apply border-gray-200 hover:border-gray-200/0;
+  }
+
+  /* Class to adjust with sticky footer */
+  .min-h-main {
+    @apply min-h-[calc(100vh-56px)];
+  }
+}
+
+@layer utilities {
+  .animated-underline {
+    background-image: linear-gradient(#33333300, #33333300),
+      linear-gradient(
+        to right,
+        var(--color-primary-400),
+        var(--color-primary-500)
+      );
+    background-size: 100% 2px, 0 2px;
+    background-position: 100% 100%, 0 100%;
+    background-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .animated-underline {
+      transition: 0.3s ease;
+      transition-property: background-size, color, background-color,
+        border-color;
+    }
+  }
+  .animated-underline:hover,
+  .animated-underline:focus-visible {
+    background-size: 0 2px, 100% 2px;
+  }
+}

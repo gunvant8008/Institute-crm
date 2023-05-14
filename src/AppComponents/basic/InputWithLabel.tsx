@@ -34,11 +34,11 @@ export const InputWithLabel = ({
 }: InputWithLabelProps) => {
   return (
     <label
-      className={`flex gap-2 ${flexDirection === "column" ? "flex-col" : ""} `}
+      className={`flex gap-1 ${flexDirection === "column" ? "flex-col" : ""} `}
     >
       <span className="p-0.5 flex-0">{labelText}</span>
       <input
-        className={`focus:ring focus:ring-opacity-75 focus:ring-gray-400 p-1 text-black rounded-md flex-1 w-full + 
+        className={`p-1 text-black rounded-md flex-1 w-full + 
         ${className ?? ""} + ${
           disabled ? "bg-gray-50 p-1 text-gray-400 rounded-md" : ""
         }`}

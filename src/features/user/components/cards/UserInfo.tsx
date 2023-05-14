@@ -19,6 +19,7 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
             inputProps={inputProps ?? {}}
             error={error}
             disabled={true}
+            flexDirection="column"
           />
         </div>
         <InputWithLabel
@@ -26,18 +27,21 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
           inputType="text"
           defaultValue={userData.instituteName}
           disabled={true}
+          flexDirection="column"
         />
         <InputWithLabel
           labelText="Owner's Name"
           inputType="text"
           placeholder={userData.ownersName}
           disabled={true}
+          flexDirection="column"
         />
         <InputWithLabel
           labelText="Manager's Name"
           inputType="text"
           placeholder={userData.managersName}
           disabled={true}
+          flexDirection="column"
         />
 
         <InputWithLabel
@@ -45,15 +49,17 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
           inputType="number"
           placeholder={userData.phone1}
           disabled={true}
+          flexDirection="column"
         />
         <InputWithLabel
           labelText="Email"
           inputType="email"
           placeholder={userData.email}
           disabled={true}
+          flexDirection="column"
         />
 
-        <div className="flex items-start w-full gap-10">
+        <div className="flex w-full gap-10">
           <label
             htmlFor="countries"
             className="block mb-2 text-sm font-medium text-gray-900"

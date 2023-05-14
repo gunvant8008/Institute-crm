@@ -17,6 +17,7 @@ import { getAllProducts } from "@/features/product/axios/productApi";
 import { addOrder } from "../../axios/ordersApi";
 import UserInfo from "@/features/user/components/cards/UserInfo";
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
+import Button from "@/AppComponents/basic/Button";
 
 const NewOrder = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -163,7 +164,7 @@ const NewOrder = ({ id }: { id: number }) => {
           {/* Add products section */}
           <div className="flex flex-col w-full gap-4 p-8">
             <h2 className="text-2xl text-gray-600">Add Products/Services</h2>
-            <div className="grid grid-cols-6 font-semibold">
+            <div className="ml-14 grid grid-cols-6 font-semibold">
               <span>Add/Remove</span>
               <span>Price</span>
               <span>Name</span>
@@ -175,7 +176,7 @@ const NewOrder = ({ id }: { id: number }) => {
             <ul>
               {fields?.map((product: Product, index) => (
                 <li key={product.id}>
-                  <div className="bg-gray-50 grid grid-cols-6 p-2 my-3 rounded-lg">
+                  <div className="bg-gray-50 place-items-center grid grid-cols-6 p-2 my-3 rounded-lg">
                     <InputWithLabel
                       labelText=""
                       alt={`Select-${index}`}
@@ -313,13 +314,14 @@ const NewOrder = ({ id }: { id: number }) => {
                   </span>
                 )}
               </div>
-
-              <InputWithLabel
-                labelText="Paid By"
-                inputType="text"
-                inputProps={register("paidBy", { required: true })}
-                error={errors.paidBy?.message as string}
-              />
+              <div className="pt-8">
+                <InputWithLabel
+                  labelText="Paid By"
+                  inputType="text"
+                  inputProps={register("paidBy", { required: true })}
+                  error={errors.paidBy?.message as string}
+                />
+              </div>
 
               <div className="gap-y-3 flex flex-col py-4">
                 <p className="font-semibold">Receiving Account</p>
@@ -373,6 +375,7 @@ const NewOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("totalAmount", { valueAsNumber: true })}
                 error={errors.totalAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Total Discount"
@@ -383,6 +386,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   valueAsNumber: true,
                 })}
                 error={errors.totalDiscount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Payable Amount"
@@ -393,6 +397,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   valueAsNumber: true,
                 })}
                 error={errors.payableAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Paid Amount"
@@ -403,6 +408,7 @@ const NewOrder = ({ id }: { id: number }) => {
                   required: true,
                 })}
                 error={errors.paidAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Due Amount"
@@ -411,12 +417,14 @@ const NewOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("dueAmount", { valueAsNumber: true })}
                 error={errors.dueAmount?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Due Date"
                 inputType="date"
                 inputProps={register("dueDate", { required: true })}
                 error={errors.dueDate?.message as string}
+                flexDirection="column"
               />
               <InputWithLabel
                 labelText="Order Date"
@@ -424,14 +432,13 @@ const NewOrder = ({ id }: { id: number }) => {
                 disabled={true}
                 inputProps={register("orderDate")}
                 error={errors.orderDate?.message as string}
+                flexDirection="column"
               />
             </div>
             {/* </div> */}
           </div>
           {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
-          <button type="submit" className="p-2 bg-blue-200 rounded-md">
-            Submit
-          </button>
+          <Button type="submit">Submit</Button>
         </div>
       </form>
     </>

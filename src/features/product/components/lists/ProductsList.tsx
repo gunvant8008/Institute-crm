@@ -41,12 +41,12 @@ const ProductsList = () => {
   }
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
-      <div className=" flex justify-between w-full">
+      <div className=" flex items-center justify-between w-full px-4">
         <h2 className="p-4 text-2xl">Products List</h2>
         <AddProductModal
           buttonText="Add Product"
           title="Add Product"
-          className="p-2 m-2 bg-green-200 rounded-md shadow-md"
+          className=""
         />
       </div>
       <div className="w-full p-4 overflow-y-auto bg-white border rounded-lg">

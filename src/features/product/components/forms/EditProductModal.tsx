@@ -6,6 +6,7 @@ import { Product, TEditProduct } from "@/features/product/types/productTypes";
 import { EditProductSchema } from "@/features/product/zod/productSchemas";
 import { getProduct, updateProduct } from "../../axios/productApi";
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
+import Button from "@/AppComponents/basic/Button";
 
 type TModalProps = {
   buttonText: string;
@@ -75,13 +76,9 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
 
   return (
     <>
-      <button
-        className="active:bg-blue-400 focus:outline-none px-6 text-black bg-blue-200 rounded shadow outline-none"
-        type="button"
-        onClick={() => setShowModal(true)}
-      >
+      <Button variant="light" onClick={() => setShowModal(true)}>
         {buttonText}
-      </button>
+      </Button>
       {showModal ? (
         <>
           <div className="fixed inset-0 z-40 bg-black opacity-25" />

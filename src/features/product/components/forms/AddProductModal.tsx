@@ -6,6 +6,7 @@ import { Product, TAddProduct } from "@/features/product/types/productTypes";
 import { AddProductSchema } from "@/features/product/zod/productSchemas";
 import { addProduct } from "../../axios/productApi";
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
+import Button from "@/AppComponents/basic/Button";
 
 type TModalProps = {
   buttonText: string;
@@ -66,16 +67,9 @@ const AddProductModal = ({ buttonText, title, className }: TModalProps) => {
 
   return (
     <>
-      <button
-        className={
-          "active:bg-green-400 focus:outline-none px-6 font-semibold text-black bg-green-200 rounded shadow outline-none " +
-          className
-        }
-        type="button"
-        onClick={() => setShowModal(true)}
-      >
+      <Button className="h-10" onClick={() => setShowModal(true)}>
         {buttonText}
-      </button>
+      </Button>
       {showModal ? (
         <>
           <div className="fixed inset-0 z-40 bg-black opacity-25" />
