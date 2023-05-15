@@ -1,4 +1,4 @@
-import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 import React from "react";
 import { User } from "../../types/userTypes";
 
@@ -13,51 +13,53 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
     <div>
       <div className=" flex flex-wrap items-start gap-10">
         <div>
-          <label className="flex flex-col">
-            User ID
-            <input
-              className="bg-gray-50 p-1 text-gray-400 rounded-md"
-              disabled
-              type="number"
-              {...(inputProps ?? {})}
-            />
-          </label>
-          {error && <span className="block text-sm text-red-400">{error}</span>}
+          <InputWithLabel
+            labelText="User ID"
+            inputType="number"
+            inputProps={inputProps ?? {}}
+            error={error}
+            disabled={true}
+            flexDirection="column"
+          />
         </div>
-        <TextFieldWithLabel
+        <InputWithLabel
           labelText="Institute Name"
           inputType="text"
           defaultValue={userData.instituteName}
-          readOnly
-          className="focus-none p-1 text-gray-400 rounded-md"
+          disabled={true}
+          flexDirection="column"
         />
-        <TextFieldWithLabel
+        <InputWithLabel
           labelText="Owner's Name"
           inputType="text"
           placeholder={userData.ownersName}
-          readOnly
+          disabled={true}
+          flexDirection="column"
         />
-        <TextFieldWithLabel
+        <InputWithLabel
           labelText="Manager's Name"
           inputType="text"
           placeholder={userData.managersName}
-          readOnly
+          disabled={true}
+          flexDirection="column"
         />
 
-        <TextFieldWithLabel
+        <InputWithLabel
           labelText="Phone"
           inputType="number"
           placeholder={userData.phone1}
-          readOnly
+          disabled={true}
+          flexDirection="column"
         />
-        <TextFieldWithLabel
+        <InputWithLabel
           labelText="Email"
           inputType="email"
           placeholder={userData.email}
-          readOnly
+          disabled={true}
+          flexDirection="column"
         />
 
-        <div className="flex items-start w-full gap-10">
+        <div className="flex w-full gap-10">
           <label
             htmlFor="countries"
             className="block mb-2 text-sm font-medium text-gray-900"

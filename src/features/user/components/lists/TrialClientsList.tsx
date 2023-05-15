@@ -5,6 +5,8 @@ import React from "react";
 import { User } from "@/features/user/types/userTypes";
 import { BsPersonFill } from "react-icons/bs";
 import Loading from "@/AppComponents/basic/Loading";
+import ButtonLink from "@/AppComponents/basic/ButtonLink";
+import Button from "@/AppComponents/basic/Button";
 
 const TrialClientsList = () => {
   const queryClient = useQueryClient();
@@ -44,10 +46,8 @@ const TrialClientsList = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
       <div className="flex items-center justify-between w-full">
-        <h2 className="p-4 text-2xl">Clients List</h2>
-        <Link className="p-2 m-2 bg-green-200 rounded-md shadow-md" href="/new">
-          Add Enquiry
-        </Link>
+        <h2 className="p-4 text-2xl">Trial Clients List</h2>
+        <ButtonLink href="/new">Add Enquiry</ButtonLink>
       </div>
       <div className="gap-x-4 flex items-start w-full p-4 bg-gray-200">
         <Link href="/clients">
@@ -79,10 +79,6 @@ const TrialClientsList = () => {
         <ul>
           {trialClients.map(
             (user: User) => (
-              // while (index < 10) {
-              //   // just be careful doing this if you have loads of data.
-              //   // the cache will become gigantic!
-              // queryClient.setQueryData(["user", user.id.toString()], user);
               <li
                 key={user.id}
                 className="bg-gray-50 hover:bg-gray-100 lg:grid-cols-6 grid items-center justify-between grid-cols-3 p-2 my-3 cursor-pointer"
@@ -108,24 +104,18 @@ const TrialClientsList = () => {
                 <p className="lg:block hidden">{user.address}</p>
                 <div className="gap-x-10 flex items-center justify-between">
                   <div className="gap-x-2 flex">
-                    <Link
-                      href={`/user/${user.id}`}
-                      className="p-1.5  bg-gray-200 rounded-md"
-                    >
+                    <ButtonLink href={`/user/${user.id}`} variant="outline">
                       View
-                    </Link>
-                    <button
-                      className="p-1 bg-red-200 rounded-md"
+                    </ButtonLink>
+                    <Button
+                      className="bg-red-500"
                       onClick={() => deleteUserMutation.mutate(user.id)}
                     >
                       Delete
-                    </button>
-                    <Link
-                      href={`/edituser/${user.id}`}
-                      className="p-1.5  bg-blue-200 rounded-md"
-                    >
+                    </Button>
+                    <ButtonLink href={`/edituser/${user.id}`} variant="light">
                       Edit
-                    </Link>
+                    </ButtonLink>
                   </div>
                 </div>
               </li>

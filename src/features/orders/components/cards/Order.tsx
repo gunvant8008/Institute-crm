@@ -2,6 +2,7 @@ import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { OrderList } from "../../types/orderTypes";
 import Link from "next/link";
+import ButtonLink from "@/AppComponents/basic/ButtonLink";
 
 type OrderProps = {
   order: OrderList;
@@ -50,14 +51,13 @@ const Order = ({ order }: OrderProps) => {
         {order.dueAmount > 0 ? order.dueDate : "N/A"}
       </p>
       <div>
-        <Link
+        <ButtonLink
           href={`/orders/edit/${order.id}`}
-          className={`p-1.5  bg-blue-200 rounded-md + ${
-            order.dueAmount > 0 ? "inline-block" : "hidden"
-          }`}
+          variant="dark"
+          className={`${order.dueAmount > 0 ? "inline-block" : "hidden"}`}
         >
           Pay Balance
-        </Link>
+        </ButtonLink>
       </div>
     </div>
   );

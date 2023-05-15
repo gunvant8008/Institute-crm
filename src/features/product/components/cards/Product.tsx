@@ -2,6 +2,7 @@ import React from "react";
 import { Product } from "../../types/productTypes";
 import { FaProductHunt } from "react-icons/fa";
 import EditProductModal from "../forms/EditProductModal";
+import Button from "@/AppComponents/basic/Button";
 type ProductProps = {
   product: Product;
   mutate: (id: number) => void;
@@ -20,9 +21,9 @@ const SingleProduct = ({ product, mutate }: ProductProps) => {
           <p className="text-sm text-gray-500">Id:{product.id}</p>
         </div>
       </div>
-      <p className="sm:text-left text-right text-gray-600">
+      <h4 className="sm:text-left p text-right text-gray-600">
         <span>{product.productName}</span>
-      </p>
+      </h4>
       <p className="md:flex hidden">{product.productDescription}</p>
       <div className="sm:flex items-center justify-between hidden">
         {product.validityInMonths}
@@ -32,12 +33,9 @@ const SingleProduct = ({ product, mutate }: ProductProps) => {
             title="Edit Product"
             id={product.id}
           />
-          <button
-            className="bg-red-200 p-1.5 rounded-md"
-            onClick={() => mutate(product.id)}
-          >
+          <Button className="bg-red-500" onClick={() => mutate(product.id)}>
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>

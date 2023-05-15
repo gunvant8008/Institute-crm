@@ -9,7 +9,7 @@ const dashbardApi = axios.create({
   // baseURL: "https://institute-crm.vercel.app/api/",
 });
 
-export const getDashboardData = async (): Promise<DashboardData> => {
+export const getDashboardData = async () => {
   return await dashbardApi
     .get("/dashboard-data")
     .then((response) => response.data as DashboardData);

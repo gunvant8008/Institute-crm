@@ -5,6 +5,7 @@ import React from "react";
 import { User } from "@/features/user/types/userTypes";
 import { BsPersonFill } from "react-icons/bs";
 import Loading from "@/AppComponents/basic/Loading";
+import ButtonLink from "@/AppComponents/basic/ButtonLink";
 
 const EnquiriesList = () => {
   // const queryClient = useQueryClient();
@@ -25,14 +26,9 @@ const EnquiriesList = () => {
   }
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full px-4">
         <h2 className="p-4 text-2xl">Enquiries List</h2>
-        <Link
-          className="p-2 m-2 bg-green-200 rounded-md shadow-md"
-          href="/enquiries/new"
-        >
-          Add Enquiry
-        </Link>
+        <ButtonLink href="/enquiries/new">Add Enquiry</ButtonLink>
       </div>
       <div className="w-full p-4 overflow-y-auto bg-white border rounded-lg">
         <div className="lg:grid-cols-6 grid items-center justify-between grid-cols-3 p-2 my-3 font-semibold cursor-pointer">
@@ -70,18 +66,12 @@ const EnquiriesList = () => {
                 <p className="lg:block hidden">{user.address}</p>
                 <div className=" gap-x-10 flex items-center justify-between">
                   <div className="gap-x-2 flex items-center">
-                    <Link
-                      href={`/user/${user.id}`}
-                      className="p-1.5  bg-gray-200 rounded-md"
-                    >
+                    <ButtonLink href={`/user/${user.id}`} variant="light">
                       View
-                    </Link>
-                    <Link
-                      href={`/orders/new/${user.id}`}
-                      className="p-1.5  bg-blue-200 rounded-md"
-                    >
+                    </ButtonLink>
+                    <ButtonLink href={`/orders/new/${user.id}`} variant="dark">
                       Add Services
-                    </Link>
+                    </ButtonLink>
                   </div>
                 </div>
               </li>

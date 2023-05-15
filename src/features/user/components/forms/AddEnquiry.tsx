@@ -2,19 +2,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { TextFieldWithLabel } from "@/AppComponents/basic/TextFieldWithLabel";
-
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addEnquiry } from "@/features/user/axios/userApi";
-import { TAddEnquirySchema, User } from "@/features/user/types/userTypes";
-import { AddEnquirySchema } from "../../zod/userSchemas";
-// import { DevTool } from "@hookform/devtools"
+import { TAddEnquiry, User } from "@/features/user/types/userTypes";
+import { UserSchema } from "../../zod/userSchemas";
+import Button from "@/AppComponents/basic/Button";
 
 const AddEnquiry = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutate, isError } = useMutation(addEnquiry, {
-    onMutate: async (user: TAddEnquirySchema) => {
+    onMutate: async (user: TAddEnquiry) => {
       await queryClient.cancelQueries(["enquiries"]);
       const previousEnquiries = queryClient.getQueryData<User[]>(["enquiries"]);
       const newId = 0;
@@ -32,7 +31,6 @@ const AddEnquiry = () => {
     },
     onError: (context: { previousEnquiries: User[] }) => {
       queryClient.setQueryData(["enquiries"], context.previousEnquiries);
-      // await queryClient.invalidateQueries(["photos"])
     },
     onSettled: async () => {
       await queryClient.invalidateQueries(["enquiries"]);
@@ -44,17 +42,11 @@ const AddEnquiry = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TAddEnquirySchema>({
-    resolver: zodResolver(AddEnquirySchema),
-    //  defaultValues: {
-    //    albumId: 1,
-    //    title: "New Photo Title",
-    //    url: "Enter URL",
-    //    thumbnailUrl: "Enter Thumbnail URL"
-    //  }
+  } = useForm<TAddEnquiry>({
+    resolver: zodResolver(UserSchema),
   });
 
-  const onSubmit = (data: TAddEnquirySchema) => {
+  const onSubmit = (data: TAddEnquiry) => {
     mutate({
       addedOn: new Date().toISOString().split("T")[0],
       userStatus: "ENQUIRY",
@@ -85,75 +77,85 @@ const AddEnquiry = () => {
       >
         <div>
           <div className=" flex flex-wrap items-start gap-10">
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Id"
               inputType="number"
               placeholder="Id"
               readOnly
               className="p-1 text-gray-400 rounded-md"
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Institute Name"
               inputType="text"
               placeholder="Institute Name"
               error={errors.instituteName?.message as string}
               inputProps={register("instituteName")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Owner's Name"
               inputType="text"
               placeholder="Enter Owner's Name"
               error={errors.ownersName?.message as string}
               inputProps={register("ownersName")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Manager's Name"
               inputType="text"
               placeholder="Enter Manager's Name"
               error={errors.managersName?.message as string}
               inputProps={register("managersName")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Address"
               inputType="text"
               placeholder="Enter Address"
               error={errors.address?.message as string}
               inputProps={register("address")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Phone"
               inputType="number"
               placeholder="Phone 1"
               error={errors.phone1?.message as string}
               inputProps={register("phone1")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Alternate Phone"
               inputType="number"
               placeholder="phone 2"
               error={errors.phone2?.message as string}
               inputProps={register("phone2")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Email"
               inputType="email"
               placeholder="Enter Email"
               error={errors.email?.message as string}
               inputProps={register("email")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Website"
               inputType="text"
               placeholder="Enter Website"
               error={errors.website?.message as string}
               inputProps={register("website")}
+              flexDirection="column"
             />
-            <TextFieldWithLabel
+            <InputWithLabel
               labelText="Description"
               inputType="text"
               placeholder="Enter Description"
               error={errors.description?.message as string}
               inputProps={register("description")}
+              flexDirection="column"
             />
 
             <div className="flex items-start w-full gap-10">
@@ -191,14 +193,10 @@ const AddEnquiry = () => {
             </div>
           </div>
         </div>
-        <button className="self-center p-2 font-semibold bg-orange-200 rounded-md">
+        <Button type="submit" className="self-center">
           Add Enquiry
-        </button>
+        </Button>
       </form>
-      {/* <DevTool control={control} /> */}
-      <Link className=" self-center p-2 bg-white rounded-md" href="/enquiries">
-        Go To Enquiries
-      </Link>
     </div>
   );
 };

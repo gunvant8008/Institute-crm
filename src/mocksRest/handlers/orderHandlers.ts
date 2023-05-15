@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { Order } from "@/features/orders/types/orderTypes";
-import { ProductInOrder } from "@/features/product/types/productTypes";
+import { TProductInOrder } from "@/features/product/types/productTypes";
 import { users } from "./userHandlers";
 
 export let orders: Order[] = [
@@ -40,7 +40,7 @@ export let orders: Order[] = [
     orderDate: "2023-03-01",
     paymentMode: "Online",
     paidBy: "John Doe",
-    receivingAccount: "Current Account 1",
+    receivingAccount: "Account 1",
   },
   {
     id: 2,
@@ -65,9 +65,9 @@ export let orders: Order[] = [
     dueAmount: 10000,
     dueDate: "2023-06-30",
     orderDate: "2023-03-01",
-    paymentMode: "UPI",
+    paymentMode: "Cash",
     paidBy: "John Doe",
-    receivingAccount: "Current Account 2",
+    receivingAccount: "Account 2",
   },
 ];
 
@@ -123,7 +123,7 @@ export const orderHandlers = [
     const filteredUpdatedProducts = updatedProducts.filter(
       (product) => !!product,
     );
-    newOrder.products = filteredUpdatedProducts as ProductInOrder[];
+    newOrder.products = filteredUpdatedProducts as TProductInOrder[];
     if (!user) {
       return res(
         ctx.status(404),

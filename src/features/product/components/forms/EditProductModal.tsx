@@ -2,12 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Product,
-  TEditProductSchema,
-} from "@/features/product/types/productTypes";
+import { Product, TEditProduct } from "@/features/product/types/productTypes";
 import { EditProductSchema } from "@/features/product/zod/productSchemas";
 import { getProduct, updateProduct } from "../../axios/productApi";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
+import Button from "@/AppComponents/basic/Button";
 
 type TModalProps = {
   buttonText: string;
@@ -58,7 +57,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TEditProductSchema>({
+  } = useForm<TEditProduct>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: data ? data : undefined,
   });
@@ -68,7 +67,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
     reset(data);
   }, [reset, showModal, data]);
 
-  const onSubmit = (data: TEditProductSchema) => {
+  const onSubmit = (data: Omit<TEditProduct, "id">) => {
     mutate({
       id,
       ...data,
@@ -77,13 +76,9 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
 
   return (
     <>
-      <button
-        className="active:bg-blue-400 focus:outline-none px-6 text-black bg-blue-200 rounded shadow outline-none"
-        type="button"
-        onClick={() => setShowModal(true)}
-      >
+      <Button variant="light" onClick={() => setShowModal(true)}>
         {buttonText}
-      </button>
+      </Button>
       {showModal ? (
         <>
           <div className="fixed inset-0 z-40 bg-black opacity-25" />
@@ -106,64 +101,42 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
                     className="flex flex-col w-full px-8 pt-6 pb-8 space-y-4 bg-gray-200 rounded shadow-md"
                     onSubmit={handleSubmit(onSubmit)}
                   >
-                    <label className="block mb-1 text-sm font-semibold text-black">
-                      Id
-                      <input
-                        readOnly
-                        placeholder={id.toString()}
-                        className="w-full px-1 py-2 text-black border rounded shadow appearance-none"
-                      />
-                    </label>
-                    <label className="block mb-1 text-sm font-semibold text-black">
-                      Product Name
-                      <input
-                        className="w-full px-1 py-2 text-black border rounded shadow appearance-none"
-                        {...register("productName")}
-                      />
-                    </label>
-                    {errors.productName ? (
-                      <span className=" text-sm text-red-400">
-                        {errors.productName.message}
-                      </span>
-                    ) : null}
-                    <label className="block mb-1 text-sm font-semibold text-black">
-                      Product Price
-                      <input
-                        className="w-full px-1 py-2 text-black border rounded shadow appearance-none"
-                        {...register("productPrice", { valueAsNumber: true })}
-                      />
-                    </label>
-                    {errors.productPrice ? (
-                      <span className=" text-sm text-red-400">
-                        {errors.productPrice.message}
-                      </span>
-                    ) : null}
-                    <label className="block mb-1 text-sm font-semibold text-black">
-                      Description
-                      <input
-                        className="w-full px-1 py-2 text-black border rounded shadow appearance-none"
-                        {...register("productDescription")}
-                      />
-                    </label>
-                    {errors.productDescription ? (
-                      <span className=" text-sm text-red-400">
-                        {errors.productDescription.message}
-                      </span>
-                    ) : null}
-                    <label className="block mb-1 text-sm font-semibold text-black">
-                      Validity
-                      <input
-                        className="w-full px-1 py-2 text-black border rounded shadow appearance-none"
-                        {...register("validityInMonths", {
-                          valueAsNumber: true,
-                        })}
-                      />
-                    </label>
-                    {errors.productDescription ? (
-                      <span className=" text-sm text-red-400">
-                        {errors.productDescription.message}
-                      </span>
-                    ) : null}
+                    <InputWithLabel
+                      labelText="Id"
+                      placeholder={id.toString()}
+                      disabled={true}
+                      flexDirection="column"
+                    />
+                    <InputWithLabel
+                      labelText="Product Name"
+                      inputProps={register("productName")}
+                      error={errors.productName?.message}
+                      flexDirection="column"
+                    />
+                    <InputWithLabel
+                      labelText="Product Price"
+                      inputType="number"
+                      inputProps={register("productPrice", {
+                        valueAsNumber: true,
+                      })}
+                      error={errors.productPrice?.message}
+                      flexDirection="column"
+                    />
+                    <InputWithLabel
+                      labelText="Product Description"
+                      inputProps={register("productDescription")}
+                      error={errors.productDescription?.message}
+                      flexDirection="column"
+                    />
+                    <InputWithLabel
+                      labelText="Validity in Months"
+                      inputType="number"
+                      inputProps={register("validityInMonths", {
+                        valueAsNumber: true,
+                      })}
+                      error={errors.validityInMonths?.message}
+                      flexDirection="column"
+                    />
                     <div className="border-blueGray-200 flex items-center justify-between pt-8">
                       <button
                         className="background-transparent focus:outline-none px-6 py-2 mb-1 mr-1 text-sm font-bold text-red-500 uppercase outline-none"

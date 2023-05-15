@@ -4,7 +4,7 @@ import Link from "next/link";
 import { OrderList } from "@/features/orders/types/orderTypes";
 
 type RecentOrdersProps = {
-  recentOrders: OrderList[] | undefined;
+  recentOrders?: OrderList[];
 };
 
 const RecentOrders = ({ recentOrders }: RecentOrdersProps) => {

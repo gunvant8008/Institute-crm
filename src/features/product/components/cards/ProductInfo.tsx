@@ -1,9 +1,9 @@
 import React from "react";
-import { ProductInOrder } from "../../types/productTypes";
+import { TProductInOrder } from "../../types/productTypes";
 import { FaProductHunt } from "react-icons/fa";
 
 type ProductInfoProps = {
-  product: ProductInOrder;
+  product: TProductInOrder;
 };
 const ProductInfo = ({ product }: ProductInfoProps) => {
   return (
