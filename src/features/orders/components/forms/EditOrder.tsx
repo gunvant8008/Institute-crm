@@ -32,11 +32,10 @@ const EditOrder = ({ id }: { id: number }) => {
 
   const { mutate } = useMutation(updateOrder, {
     onSuccess: async () => {
-      await queryClient.cancelQueries(["orders"]);
-      await router.push(`/user/${userData?.id as number}`);
+      await router.push(`/`);
     },
     onError: async () => {
-      await router.push(`/user/${userData?.id as number}`);
+      await router.push(`/`);
     },
   });
 
