@@ -17,7 +17,7 @@ export let users: User[] = [
     leadType: "HOT",
     leadSource: "Google",
     // NOT COMING FROM USER FORM
-    addedOn: "2023-03-01",
+    addedOn: "2023-04-01",
     userStatus: "ACTIVE",
   },
   {
@@ -34,7 +34,7 @@ export let users: User[] = [
     leadType: "HOT",
     leadSource: "Google",
     // NOT COMING FROM USER FORM
-    addedOn: "2023-03-01",
+    addedOn: "2023-04-30",
     userStatus: "ACTIVE",
   },
   {
@@ -51,7 +51,7 @@ export let users: User[] = [
     leadType: "HOT",
     leadSource: "Google",
     // NOT COMING FROM USER FORM
-    addedOn: "2023-03-01",
+    addedOn: "2023-05-01",
     userStatus: "TRIAL",
   },
   {
@@ -68,7 +68,7 @@ export let users: User[] = [
     leadType: "HOT",
     leadSource: "Google",
     // NOT COMING FROM USER FORM
-    addedOn: "2023-03-01",
+    addedOn: "2023-04-21",
     userStatus: "INACTIVE",
   },
   {
@@ -85,7 +85,7 @@ export let users: User[] = [
     leadType: "HOT",
     leadSource: "Google",
     // NOT COMING FROM USER FORM
-    addedOn: "2023-03-01",
+    addedOn: "2023-04-21",
     userStatus: "ENQUIRY",
   },
 ];
