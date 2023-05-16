@@ -70,7 +70,9 @@ export let orders: Order[] = [
     receivingAccount: "Account 2",
   },
 ];
-
+export function deleteOrderByUserId(id: number) {
+  orders = orders.filter((order) => order.userId !== id);
+}
 let lastOrderId = orders.length + 1;
 
 export const orderHandlers = [

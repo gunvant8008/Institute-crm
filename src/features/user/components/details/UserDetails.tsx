@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { deleteUser, getUser, getUserOrders } from "../../axios/userApi";
 import Loading from "@/AppComponents/basic/Loading";
 import UserContactInfo from "../cards/UserContactInfo";
 import OrderInfo from "@/features/orders/components/cards/OrderInfo";
 import ButtonLink from "@/AppComponents/basic/ButtonLink";
-import { RxPinLeft } from "react-icons/rx";
 import Button from "@/AppComponents/basic/Button";
 
 const UserDetails = ({ id }: { id: number }) => {

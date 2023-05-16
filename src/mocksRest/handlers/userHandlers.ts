@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { User } from "@/features/user/types/userTypes";
-import { orders } from "./orderHandlers";
+import { deleteOrderByUserId, orders } from "./orderHandlers";
 
 export let users: User[] = [
   {
@@ -170,6 +170,9 @@ export const userHandlers = [
   // api for deleting a user
   rest.delete("/api/users/:id", (req, res, ctx) => {
     const id = parseInt(req.params.id.toString());
+    // also delete all the orders related to this user
+    // orders = orders.filter( order => order.userId !== id)
+    deleteOrderByUserId(id);
     users = users.filter((user) => user.id !== id);
     return res(ctx.status(204));
   }),
