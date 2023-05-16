@@ -111,8 +111,8 @@ const EditUser = ({ id }: { id: number }) => {
             <InputWithLabel
               labelText="Id"
               inputType="number"
-              placeholder="Id"
-              readOnly
+              disabled
+              defaultValue={id.toString()}
               className="p-1 text-gray-400 rounded-md"
               flexDirection="column"
             />
