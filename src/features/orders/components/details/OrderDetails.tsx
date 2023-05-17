@@ -8,6 +8,7 @@ import ProductInfo from "@/features/product/components/cards/ProductInfo";
 import TermsAndConditions from "../cards/TermsAndConditions";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Button from "@/AppComponents/basic/Button";
 
 export const OrderDetails = ({ id }: { id: number }) => {
   const orderDetailsRef = useRef(null);
@@ -100,18 +101,10 @@ export const OrderDetails = ({ id }: { id: number }) => {
   return (
     <>
       <div className="gap-x-4 flex items-center justify-center pt-8">
-        <button
-          className="w-24 p-1 bg-blue-200 rounded-md"
-          onClick={handleConvertToPDF}
-        >
+        <Button variant="light" isDarkBg={true} onClick={handleConvertToPDF}>
           ⇩ PDF
-        </button>
-        <button
-          className="w-24 p-1 bg-orange-200 rounded-md"
-          onClick={handleSendPDFByEmail}
-        >
-          ✉️ PDF
-        </button>
+        </Button>
+        <Button onClick={handleSendPDFByEmail}>✉️ PDF</Button>
       </div>
       <div ref={orderDetailsRef}>
         <div className="py-14 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto px-4">

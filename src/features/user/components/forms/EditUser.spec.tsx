@@ -13,14 +13,16 @@ afterEach(() => mswServer.resetHandlers());
 afterAll(() => mswServer.close());
 
 describe("EditUser Component", () => {
-  it("renders correctly, should display Update User heading, Update User button and user id number in user id input", async () => {
+  beforeEach(() => {
     mswServer.use(
       rest.get("http://localhost:3000/api/users/1", (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(users[0]));
       }),
     );
+  });
+  it("renders correctly, should display Update User heading, Update User button and user id number in user id input", async () => {
     customRender(
-      <RouterContext.Provider value={createMockRouter({})}>
+      <RouterContext.Provider value={createMockRouter({ query: { id: "1" } })}>
         <EditUser id={1} />
       </RouterContext.Provider>,
     );
@@ -41,12 +43,17 @@ describe("EditUser Component", () => {
     it("should redirect to /enquiries when user click on Update User button with all the data filled if all the data is valid", async () => {
       const pushMock = jest.fn();
       mswServer.use(
-        rest.get("http://localhost:3000/api/users/1", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json(users[0]));
+        rest.patch("http://localhost:3000/api/users/1", (req, res, ctx) => {
+          return res(
+            ctx.status(200),
+            ctx.json({ message: "User updated successfully" }),
+          );
         }),
       );
       customRender(
-        <RouterContext.Provider value={createMockRouter({ push: pushMock })}>
+        <RouterContext.Provider
+          value={createMockRouter({ push: pushMock, query: { id: "1" } })}
+        >
           <EditUser id={1} />
         </RouterContext.Provider>,
       );

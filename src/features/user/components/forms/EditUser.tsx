@@ -9,6 +9,7 @@ import { TEditUser, User } from "../../types/userTypes";
 import { useEffect } from "react";
 import { UserSchema } from "../../zod/userSchemas";
 import Button from "@/AppComponents/basic/Button";
+import SelectWithLabel from "@/AppComponents/basic/selectWithLabel";
 // import { DevTool } from "@hookform/devtools"
 
 const EditUser = ({ id }: { id: number }) => {
@@ -87,7 +88,7 @@ const EditUser = ({ id }: { id: number }) => {
     return (
       <div className="flex items-center justify-center gap-4 mt-10">
         <p>Something went wrong!</p>
-        <Link className="self-center p-2 bg-teal-800" href="/list">
+        <Link className="self-center p-2 bg-teal-800" href="/">
           Try again{" "}
         </Link>
       </div>
@@ -190,37 +191,18 @@ const EditUser = ({ id }: { id: number }) => {
             />
 
             <div className="flex items-start w-full gap-10">
-              <label
-                htmlFor="countries"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Lead Type
-                <select
-                  id="countries"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  {...register("leadType")}
-                >
-                  <option value="HOT">HOT</option>
-                  <option value="WARM">WARM</option>
-                  <option value="COLD">COLD</option>
-                </select>
-              </label>
-              <label
-                htmlFor="countries"
-                className="block mb-2 text-sm font-medium text-gray-900"
-              >
-                Lead Source
-                <select
-                  id="countries"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  {...register("leadSource")}
-                >
-                  <option value="WEBSITE">WEBSITE</option>
-                  <option value="REFERRAL">REFERRAL</option>
-                  <option value="SOCIAL MEDIA">SOCIAL MEDIA</option>
-                  <option value="SALES FUNNEL">SALES FUNNEL</option>
-                </select>
-              </label>
+              <SelectWithLabel
+                labelText="Lead Type"
+                options={["HOT", "WARM", "COLD"]}
+                error={errors.leadType?.message as string}
+                inputProps={register("leadType")}
+              />
+              <SelectWithLabel
+                labelText="Lead Source"
+                options={["WEBSITE", "REFERRAL", "SOCIAL MEDIA"]}
+                error={errors.leadSource?.message as string}
+                inputProps={register("leadSource")}
+              />
             </div>
           </div>
         </div>
