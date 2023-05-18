@@ -1,7 +1,7 @@
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 import React from "react";
 import { User } from "../../types/userTypes";
-import SelectWithLabel from "@/AppComponents/basic/selectWithLabel";
+import { SelectWithLabel } from "@/AppComponents/basic/SelectWithLabel";
 
 type userInfoProps = {
   userData: User;
@@ -68,18 +68,6 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
             disabled={true}
             defaultValue={userData.leadType}
           />
-          {/* <label
-            htmlFor="countries"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Lead Type
-            <input
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-              placeholder={userData.leadType}
-              readOnly
-            ></input>
-          </label> */}
           <SelectWithLabel
             labelText="Lead Source"
             options={["WEBSITE", "REFERRAL", "SOCIAL MEDIA"]}
@@ -87,18 +75,6 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
             disabled={true}
             defaultValue={userData.leadSource}
           />
-          {/* <label
-            htmlFor="countries"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Lead Source
-            <input
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-              placeholder={userData.leadSource}
-              readOnly
-            ></input>
-          </label> */}
         </div>
       </div>
     </div>

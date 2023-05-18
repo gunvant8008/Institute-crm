@@ -9,7 +9,7 @@ import { TEditUser, User } from "../../types/userTypes";
 import { useEffect } from "react";
 import { UserSchema } from "../../zod/userSchemas";
 import Button from "@/AppComponents/basic/Button";
-import SelectWithLabel from "@/AppComponents/basic/selectWithLabel";
+import { SelectWithLabel } from "@/AppComponents/basic/SelectWithLabel";
 // import { DevTool } from "@hookform/devtools"
 
 const EditUser = ({ id }: { id: number }) => {

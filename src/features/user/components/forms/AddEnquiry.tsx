@@ -8,7 +8,7 @@ import { addEnquiry } from "@/features/user/axios/userApi";
 import { TAddEnquiry, User } from "@/features/user/types/userTypes";
 import { UserSchema } from "../../zod/userSchemas";
 import Button from "@/AppComponents/basic/Button";
-import SelectWithLabel from "@/AppComponents/basic/selectWithLabel";
+import { SelectWithLabel } from "@/AppComponents/basic/SelectWithLabel";
 
 const AddEnquiry = () => {
   const router = useRouter();

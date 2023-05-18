@@ -1,15 +1,13 @@
-import React from "react";
-
-type SelectWithLabelProps = {
+interface SelectWithLabelProps {
   labelText: string;
   inputProps?: unknown;
   options: string[];
   error?: string;
   disabled?: boolean;
   defaultValue?: string;
-};
+}
 
-export default function SelectWithLabel({
+export const SelectWithLabel = ({
   labelText,
   options,
   error,
@@ -17,7 +15,7 @@ export default function SelectWithLabel({
   disabled,
   defaultValue,
   ...rest
-}: SelectWithLabelProps) {
+}: SelectWithLabelProps) => {
   return (
     <label className="block mb-2 text-sm font-medium text-gray-900">
       {labelText}
@@ -37,4 +35,4 @@ export default function SelectWithLabel({
       {error ? <span className=" text-sm text-red-300">{error}</span> : null}
     </label>
   );
-}
+};
