@@ -10,7 +10,7 @@ import { products } from "@/mocksRest/handlers/productHandlers";
 import { users } from "@/mocksRest/handlers/userHandlers";
 
 beforeAll(() => mswServer.listen());
-afterEach(() => mswServer.resetHandlers());
+// afterEach(() => mswServer.resetHandlers());
 afterAll(() => mswServer.close());
 
 describe("NewOrder Component", () => {
