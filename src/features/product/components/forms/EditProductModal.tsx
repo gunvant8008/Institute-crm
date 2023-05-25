@@ -18,7 +18,7 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
   const [showModal, setShowModal] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(["product", id.toString()], () =>
+  const { data, isLoading } = useQuery(["product", id.toString()], () =>
     id ? getProduct(id) : null,
   );
 
@@ -73,6 +73,8 @@ const EditProductModal = ({ id, buttonText, title }: TModalProps) => {
       ...data,
     });
   };
+
+  // if (isLoading) return <div>Loading...</div>
 
   return (
     <>

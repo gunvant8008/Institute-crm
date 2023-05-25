@@ -64,14 +64,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               "disabled:bg-primary-700",
             ],
             variant === "outline" && [
-              "text-primary-500",
-              "border border-primary-500",
+              "text-primary-700",
+              "border border-primary-700",
               "hover:bg-primary-50 active:bg-primary-100 disabled:bg-primary-100",
               isDarkBg &&
                 "hover:bg-gray-900 active:bg-gray-800 disabled:bg-gray-800",
             ],
             variant === "ghost" && [
-              "text-primary-500",
+              "text-primary-700",
               "shadow-none",
               "hover:bg-primary-50 active:bg-primary-100 disabled:bg-primary-100",
               isDarkBg &&

@@ -55,7 +55,7 @@ describe("AddProductModal", () => {
     fireEvent.click(buttonElement);
     const closeButtonElement = screen.getByRole("button", { name: "Close" });
     fireEvent.click(closeButtonElement);
-    const modalElement = screen.queryByRole("dialog");
-    expect(modalElement).not.toBeInTheDocument();
+
+    expect(screen.queryByRole("heading", { level: 3 })).not.toBeInTheDocument();
   });
 });

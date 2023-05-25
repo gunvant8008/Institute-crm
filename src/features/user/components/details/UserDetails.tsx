@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { deleteUser, getUser, getUserOrders } from "../../axios/userApi";
 import Loading from "@/AppComponents/basic/Loading";
 import UserContactInfo from "../cards/UserContactInfo";
 import OrderInfo from "@/features/orders/components/cards/OrderInfo";
 import ButtonLink from "@/AppComponents/basic/ButtonLink";
-import { RxPinLeft } from "react-icons/rx";
 import Button from "@/AppComponents/basic/Button";
+import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 
 const UserDetails = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -37,10 +36,6 @@ const UserDetails = ({ id }: { id: number }) => {
   if (user) {
     return (
       <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
-        <ButtonLink href="/enquiries" variant="light">
-          Go To Enquiries
-        </ButtonLink>
-
         <div className="flex justify-between w-full p-4 bg-white rounded-md">
           <h2 className="text-2xl font-semibold text-gray-400">
             USER ID- {user.id}
@@ -57,66 +52,81 @@ const UserDetails = ({ id }: { id: number }) => {
             </Button>
           </div>
         </div>
-        <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">
-            USER INFORMATION
-          </h3>
-          <div className="flex flex-wrap items-center gap-8 p-4">
-            <div className="flex flex-col space-y-2 min-w-[18rem]">
-              <p className="text-sm font-semibold text-gray-500">
-                INSTITUTE NAME
-              </p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.instituteName}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem]">
-              <p className="text-sm font-semibold text-gray-500">OWNER NAME</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.ownersName}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem]">
-              <p className="text-sm font-semibold text-gray-500">
-                MANAGER NAME
-              </p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.managersName}
-              </span>
-            </div>
-            <div className="flex flex-col space-y-2 min-w-[18rem]">
-              <p className="text-sm font-semibold text-gray-500">DESCRIPTION</p>
-              <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                {user.description}
-              </span>
+        <div className="grid grid-cols-2 divide-x-2">
+          <div className="first:pl-0 last:pr-0 w-full px-10">
+            <h3 className="text-md font-semibold text-gray-400">
+              USER INFORMATION
+            </h3>
+            <div className="flex flex-wrap items-center gap-8 p-4">
+              <InputWithLabel
+                labelText="INSTITUTE NAME"
+                labelClassName="text-sm font-semibold text-gray-500"
+                inputType="text"
+                defaultValue={user.instituteName}
+                disabled={true}
+                flexDirection="column"
+                className="p-2 text-gray-500 shadow-md"
+              />
+              <InputWithLabel
+                labelText="OWNER NAME"
+                labelClassName="text-sm font-semibold text-gray-500"
+                inputType="text"
+                defaultValue={user.ownersName}
+                disabled={true}
+                flexDirection="column"
+                className="p-2 text-gray-500 shadow-md"
+              />
+              <InputWithLabel
+                labelText=" MANAGER NAME"
+                labelClassName="text-sm font-semibold text-gray-500"
+                inputType="text"
+                defaultValue={user.managersName}
+                disabled={true}
+                flexDirection="column"
+                className="p-2 text-gray-500 shadow-md"
+              />
+              <InputWithLabel
+                labelText="DESCRIPTION"
+                labelClassName="text-sm font-semibold text-gray-500"
+                inputType="text"
+                defaultValue={user.description}
+                disabled={true}
+                flexDirection="column"
+                className="p-2 text-gray-500 shadow-md min-w-[25rem]"
+              />
             </div>
           </div>
-        </div>
-        <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">STATUS</h3>
-          <div className="flex flex-col p-4 space-y-2">
-            <div className="flex flex-wrap items-center gap-8">
-              <div className="flex flex-col space-y-2 min-w-[18rem] ">
-                <p className="text-sm font-semibold text-gray-500">
-                  CURRENT STATUS
-                </p>
-                <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                  {user.userStatus}
-                </span>
-              </div>
-              <div className="flex flex-col min-w-[18rem] space-y-2">
-                <p className="text-sm font-semibold text-gray-500">LEAD TYPE</p>
-                <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                  {user.leadType}
-                </span>
-              </div>
-              <div className="flex flex-col min-w-[18rem] space-y-2">
-                <p className="text-sm font-semibold text-gray-500">
-                  LEAD SOURCE
-                </p>
-                <span className="p-2 font-thin bg-white rounded-md shadow-md">
-                  {user.leadSource}
-                </span>
+          <div className="first:pl-0 last:pr-0 w-full px-10">
+            <h3 className="text-md font-semibold text-gray-400">STATUS</h3>
+            <div className="flex flex-col p-4 space-y-2">
+              <div className="flex flex-wrap items-center gap-8">
+                <InputWithLabel
+                  labelText="CURRENT STATUS"
+                  labelClassName="text-sm font-semibold text-gray-500"
+                  inputType="text"
+                  defaultValue={user.userStatus}
+                  disabled={true}
+                  flexDirection="column"
+                  className="p-2 text-gray-500 shadow-md"
+                />
+                <InputWithLabel
+                  labelText="LEAD TYPE"
+                  labelClassName="text-sm font-semibold text-gray-500"
+                  inputType="text"
+                  defaultValue={user.leadType}
+                  disabled={true}
+                  flexDirection="column"
+                  className="p-2 text-gray-500 shadow-md"
+                />
+                <InputWithLabel
+                  labelText="LEAD SOURCE"
+                  labelClassName="text-sm font-semibold text-gray-500"
+                  inputType="text"
+                  defaultValue={user.leadSource}
+                  disabled={true}
+                  flexDirection="column"
+                  className="p-2 text-gray-500 shadow-md"
+                />
               </div>
             </div>
           </div>
@@ -135,12 +145,15 @@ const UserDetails = ({ id }: { id: number }) => {
             <span className="sm:grid hidden">Paid By</span>
           </div>
           <ul className="bg-gray-50 p-1.5 border">
-            {userOrders &&
-              userOrders.map((order) => (
+            {userOrders && userOrders.length === 0 ? (
+              <li>No orders</li>
+            ) : (
+              userOrders?.map((order) => (
                 <li key={order.id}>
                   <OrderInfo order={order} />
                 </li>
-              ))}
+              ))
+            )}
           </ul>
         </div>
 

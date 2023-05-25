@@ -70,7 +70,7 @@ describe("EditOrder Component", () => {
       const productDiscount = screen.getByAltText(/discount-0/i);
       expect(productDiscount).toHaveValue(10000);
       const productStartDate = screen.getByAltText(/start from-0/i);
-      expect(productStartDate).toHaveValue("2023-01-30");
+      expect(productStartDate).toHaveValue("2023-04-30");
     }),
     it("when paid amount is updated, due amount should be updated automatically", async () => {
       customRender(
@@ -111,6 +111,6 @@ describe("EditOrder Component", () => {
       expect(submitButton).toBeInTheDocument();
       await userEvent.click(submitButton);
       expect(pushMock).toHaveBeenCalledTimes(1);
-      expect(pushMock).toHaveBeenCalledWith("/user/1");
+      expect(pushMock).toHaveBeenCalledWith("/");
     });
 });

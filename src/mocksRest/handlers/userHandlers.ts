@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { User } from "@/features/user/types/userTypes";
-import { orders } from "./orderHandlers";
+import { deleteOrderByUserId, orders } from "./orderHandlers";
 
 export let users: User[] = [
   {
@@ -15,7 +15,7 @@ export let users: User[] = [
     website: "www.johndoe.com",
     description: "This is a description",
     leadType: "HOT",
-    leadSource: "Google",
+    leadSource: "WEBSITE",
     // NOT COMING FROM USER FORM
     addedOn: "2023-04-01",
     userStatus: "ACTIVE",
@@ -32,7 +32,7 @@ export let users: User[] = [
     website: "www.johndoe.com",
     description: "This is a description",
     leadType: "HOT",
-    leadSource: "Google",
+    leadSource: "WEBSITE",
     // NOT COMING FROM USER FORM
     addedOn: "2023-04-30",
     userStatus: "ACTIVE",
@@ -49,7 +49,7 @@ export let users: User[] = [
     website: "www.johndoe.com",
     description: "This is a description",
     leadType: "HOT",
-    leadSource: "Google",
+    leadSource: "SOCIAL MEDIA",
     // NOT COMING FROM USER FORM
     addedOn: "2023-05-01",
     userStatus: "TRIAL",
@@ -65,8 +65,8 @@ export let users: User[] = [
     email: "johndoe@gmail.com",
     website: "www.johndoe.com",
     description: "This is a description",
-    leadType: "HOT",
-    leadSource: "Google",
+    leadType: "COLD",
+    leadSource: "REFERRAL",
     // NOT COMING FROM USER FORM
     addedOn: "2023-04-21",
     userStatus: "INACTIVE",
@@ -82,8 +82,8 @@ export let users: User[] = [
     email: "johndoe@gmail.com",
     website: "www.johndoe.com",
     description: "This is a description",
-    leadType: "HOT",
-    leadSource: "Google",
+    leadType: "WARM",
+    leadSource: "WEBSITE",
     // NOT COMING FROM USER FORM
     addedOn: "2023-04-21",
     userStatus: "ENQUIRY",
@@ -170,6 +170,9 @@ export const userHandlers = [
   // api for deleting a user
   rest.delete("/api/users/:id", (req, res, ctx) => {
     const id = parseInt(req.params.id.toString());
+    // also delete all the orders related to this user
+    // orders = orders.filter( order => order.userId !== id)
+    deleteOrderByUserId(id);
     users = users.filter((user) => user.id !== id);
     return res(ctx.status(204));
   }),

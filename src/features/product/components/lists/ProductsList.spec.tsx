@@ -7,7 +7,7 @@ import ProductsList from "./ProductsList";
 import { products } from "@/mocksRest/handlers/productHandlers";
 
 beforeAll(() => mswServer.listen());
-afterEach(() => mswServer.resetHandlers());
+afterAll(() => mswServer.resetHandlers());
 afterAll(() => mswServer.close());
 
 describe("ProductsList Component", () => {
@@ -33,7 +33,7 @@ describe("ProductsList Component", () => {
       screen.getByRole("button", { name: /add product/i }),
     ).toBeInTheDocument();
   }),
-    it("should display add product modal, submit button when Add Product button is clicked", async () => {
+    it("should display add product modal & submit button when Add Product button is clicked", async () => {
       customRender(<ProductsList />);
       await waitForElementToBeRemoved(() =>
         screen.queryByRole("heading", {
@@ -132,7 +132,9 @@ describe("ProductsList Component", () => {
         name: /gyanam pcmb/i,
       });
       expect(product1Name).toBeInTheDocument();
-      const deleteButton = screen.getAllByRole("button", { name: /delete/i });
+      const deleteButton = screen.getAllByRole("button", {
+        name: /delete/i,
+      });
       // selecting delete button of first product
       await userEvent.click(deleteButton[0]);
       expect(product1Name).not.toBeInTheDocument();

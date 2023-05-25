@@ -20,6 +20,7 @@ interface InputWithLabelProps {
   flexDirection?: "row" | "column";
   onClick?: () => void;
   alt?: string;
+  labelClassName?: string;
 }
 
 export const InputWithLabel = ({
@@ -30,13 +31,16 @@ export const InputWithLabel = ({
   className,
   disabled,
   flexDirection,
+  labelClassName,
   ...rest
 }: InputWithLabelProps) => {
   return (
     <label
       className={`flex gap-1 ${flexDirection === "column" ? "flex-col" : ""} `}
     >
-      <span className="p-0.5 flex-0">{labelText}</span>
+      <span className={`p-0.5 flex-0 + ${labelClassName || ""}`}>
+        {labelText}
+      </span>
       <input
         className={`p-1 text-black rounded-md flex-1 w-full + 
         ${className ?? ""} + ${

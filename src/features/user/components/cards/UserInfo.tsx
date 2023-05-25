@@ -1,6 +1,7 @@
 import { InputWithLabel } from "@/AppComponents/basic/InputWithLabel";
 import React from "react";
 import { User } from "../../types/userTypes";
+import { SelectWithLabel } from "@/AppComponents/basic/SelectWithLabel";
 
 type userInfoProps = {
   userData: User;
@@ -60,30 +61,20 @@ const UserInfo = ({ userData, error, inputProps }: userInfoProps) => {
         />
 
         <div className="flex w-full gap-10">
-          <label
-            htmlFor="countries"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Lead Type
-            <input
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-              placeholder={userData.leadType}
-              readOnly
-            ></input>
-          </label>
-          <label
-            htmlFor="countries"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Lead Source
-            <input
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-              placeholder={userData.leadSource}
-              readOnly
-            ></input>
-          </label>
+          <SelectWithLabel
+            labelText="Lead Type"
+            options={["HOT", "WARM", "COLD"]}
+            error={error}
+            disabled={true}
+            defaultValue={userData.leadType}
+          />
+          <SelectWithLabel
+            labelText="Lead Source"
+            options={["WEBSITE", "REFERRAL", "SOCIAL MEDIA"]}
+            error={error}
+            disabled={true}
+            defaultValue={userData.leadSource}
+          />
         </div>
       </div>
     </div>
