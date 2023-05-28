@@ -1,11 +1,7 @@
 import { mswServer } from "../../../../mocksRest/mswServer";
 import { rest } from "msw";
 import userEvent from "@testing-library/user-event";
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { screen, waitForElementToBeRemoved } from "@testing-library/react";
 import EditOrder from "./EditOrder";
 import { customRender } from "@/mocksRest/utils";
 import { createMockRouter } from "@/mocksRest/createMockRouter";
