@@ -35,15 +35,17 @@ const UserDetails = ({ id }: { id: number }) => {
   }
   if (user) {
     return (
-      <div className="gap-y-10 flex flex-col items-center p-8 bg-gray-100">
+      <div className="flex flex-col items-center p-8 bg-gray-100 gap-y-10">
         <div className="flex justify-between w-full p-4 bg-white rounded-md">
-          <h2 className="text-2xl font-semibold text-gray-400">
-            USER ID- {user.id}
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-400">
+              USER ID- {user.id}
+            </h2>
             <span className="block text-sm text-gray-500">
               Status:{user.userStatus}
             </span>
-          </h2>
-          <div className="gap-x-2 flex items-center">
+          </div>
+          <div className="flex items-center gap-x-2">
             <ButtonLink href={`/edituser/${user.id}`} variant="dark">
               Edit
             </ButtonLink>
@@ -53,8 +55,8 @@ const UserDetails = ({ id }: { id: number }) => {
           </div>
         </div>
         <div className="grid grid-cols-2 divide-x-2">
-          <div className="first:pl-0 last:pr-0 w-full px-10">
-            <h3 className="text-md font-semibold text-gray-400">
+          <div className="w-full px-10 first:pl-0 last:pr-0">
+            <h3 className="font-semibold text-gray-400 text-md">
               USER INFORMATION
             </h3>
             <div className="flex flex-wrap items-center gap-8 p-4">
@@ -96,8 +98,8 @@ const UserDetails = ({ id }: { id: number }) => {
               />
             </div>
           </div>
-          <div className="first:pl-0 last:pr-0 w-full px-10">
-            <h3 className="text-md font-semibold text-gray-400">STATUS</h3>
+          <div className="w-full px-10 first:pl-0 last:pr-0">
+            <h3 className="font-semibold text-gray-400 text-md">STATUS</h3>
             <div className="flex flex-col p-4 space-y-2">
               <div className="flex flex-wrap items-center gap-8">
                 <InputWithLabel
@@ -132,17 +134,17 @@ const UserDetails = ({ id }: { id: number }) => {
           </div>
         </div>
         <div className="w-full">
-          <h3 className="text-md font-semibold text-gray-400">PURCHASES</h3>
-          <div className="md:grid-cols-9 sm:grid-cols-3 grid items-center justify-between grid-cols-2 gap-4 p-2 my-3 font-semibold">
+          <h3 className="font-semibold text-gray-400 text-md">PURCHASES</h3>
+          <div className="grid items-center justify-between grid-cols-2 gap-4 p-2 my-3 font-semibold md:grid-cols-9 sm:grid-cols-3">
             <span>Order No</span>
-            <span className="sm:text-left text-right">Products</span>
-            <span className="md:grid hidden">Total</span>
-            <span className="sm:grid hidden">Discount</span>
-            <span className="sm:grid hidden">Paid</span>
-            <span className="sm:grid hidden">Balance</span>
-            <span className="sm:grid hidden">Due Date</span>
-            <span className="sm:grid hidden">Method</span>
-            <span className="sm:grid hidden">Paid By</span>
+            <span className="text-right sm:text-left">Products</span>
+            <span className="hidden md:grid">Total</span>
+            <span className="hidden sm:grid">Discount</span>
+            <span className="hidden sm:grid">Paid</span>
+            <span className="hidden sm:grid">Balance</span>
+            <span className="hidden sm:grid">Due Date</span>
+            <span className="hidden sm:grid">Method</span>
+            <span className="hidden sm:grid">Paid By</span>
           </div>
           <ul className="bg-gray-50 p-1.5 border">
             {userOrders && userOrders.length === 0 ? (
